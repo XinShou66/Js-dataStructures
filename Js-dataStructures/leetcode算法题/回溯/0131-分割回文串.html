@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0131-分割回文串</title>
+</head>
+<body>
+<script>
+    /*给你一个字符串 s，请你将 s 分割成一些子串，使每个子串都是 回文串 。返回 s 所有可能的分割方案。
+    回文串 是正着读和反着读都一样的字符串。*/
+
+
+    /*方法1：回溯*/
+    /**
+     * @param {string} s
+     * @return {string[][]}
+     */
+    var partition = function(s) {
+        let res = [];
+        let strArr = [];
+        backTrack(0);
+        return res;
+
+        function backTrack(index) {
+            if (index === s.length) {
+                res.push(strArr.slice());//注意一定要.slice()--->拷贝（[...strArr]也行）
+                return;
+            }
+            for (let i = index; i < s.length; i++) {
+                let str = s.slice(index, i + 1);
+                if (palindrome(str)) {
+                    strArr.push(str);
+                    backTrack(i + 1);
+                    strArr.pop();
+                }
+            }
+
+        }
+
+
+        function palindrome(str) {
+            let i = 0;
+            let j = str.length - 1;
+            while (i <= j) {
+                if (str[i] == str[j]) {
+                    i++;
+                    j--;
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+    };
+
+    //运行结果：运行时间击败80.73%(284ms)，内存消耗击败94.41%(60.1mb)
+
+
+    /*方法2-1：回溯 + 记忆化搜索*/
+
+    /**
+     * @param {string} s
+     * @return {string[][]}
+     */
+    var partition = function(s) {
+        const n = s.length;
+        const res = [], strArr = [];
+        const memo = new Array(n).fill(0).map(() => new Array(n).fill(0));
+        backTrack(0);
+        return res;
+
+        function backTrack(index) {
+            if (index === n) {
+                res.push(strArr.slice());
+                return;
+            }
+            for (let i = index; i < s.length; i++) {
+                if (palindrome(index, i) === 1) {
+                    strArr.push(s.slice(index, i + 1));
+                    backTrack(i + 1);
+                    strArr.pop();
+                }
+            }
+
+        }
+
+        // 记忆化搜索中，temp[i][j] = 0 表示未搜索，1 表示是回文串，-1 表示不是回文串
+        function palindrome(i, j) {
+            if (memo[i][j] !== 0) {
+                return memo[i][j];
+            }
+            if (i >= j) {
+                memo[i][j] = 1;
+            } else if(s[i] === s[j]) {
+                memo[i][j] = palindrome(i + 1, j - 1);
+            } else {
+                memo[i][j] = -1;
+            }
+            return memo[i][j];
+        }
+    };
+    //运行结果：运行时间击败73.74%(288ms)，内存消耗击败52.97%(60.6mb)
+
+
+    /*方法2-2：回溯 + 记忆化搜索*/
+    /**
+     * @param {string} s
+     * @return {string[][]}
+     */
+    var partition = function(s) {
+        let res = [];
+        let strArr = [];
+        const memo = new Array(s.length);
+        for (let i = 0; i < memo.length; i++) {
+            memo[i] = new Array(s.length);
+        }
+        backTrack(0);
+        return res;
+
+        function backTrack(index) {
+            if (index === s.length) {
+                res.push(strArr.slice());//注意一定要.slice()
+                return;
+            }
+            for (let i = index; i < s.length; i++) {
+                if (memo[index][i] === false) {
+                    continue
+                }
+                if (memo[index][i] || palindrome(index, i)) {
+                    strArr.push(s.slice(index, i + 1));
+                    backTrack(i + 1);
+                    strArr.pop();
+                }
+            }
+
+        }
+
+
+        function palindrome(i, j) {
+            while (i < j) {
+                if (s[i] == s[j]) {
+                    i++;
+                    j--;
+                } else {
+                    memo[i][j] = false;
+                    return false;
+                }
+            }
+            memo[i][j] = true;
+            return true;
+        }
+    };
+    //运行结果：运行时间击败86.92%(280ms)，内存消耗击败45.48%(60.7mb)
+
+</script>
+</body>
+</html>

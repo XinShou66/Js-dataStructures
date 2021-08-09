@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>096-不同的二叉搜索树</title>
+</head>
+<body>
+<script>
+    /*给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。*/
+
+    /***** 方法1：动态规划 *****/
+
+    /**
+     G(n): 长度为 n 的序列能构成的不同二叉搜索树的个数。
+     F(i, n): 以 i 为根、序列长度为 n 的不同二叉搜索树个数(1 ≤ i ≤ n)。
+
+     G(n) = F(1, n) + .... + F(i, n);
+     F(i,n) = G(i−1)⋅G(n−i)
+
+     G(n) += G(i−1)⋅G(n−i) (i从1-n)
+
+     * */
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numTrees = function(n) {
+        const G = new Array(n+1).fill(0);
+        //空树
+        G[0] = 1;
+        //只有根节点
+        G[1] = 1;
+
+        for (let i = 2; i <= n; i++) {
+            for (let j = 1; j <= i; j++) {
+                G[i] += G[j-1] * G[i-j];
+            }
+        }
+        return G[n];
+    };
+
+    //运行结果：运行时间击败76.27%(80ms)，内存消耗击败35.78%(37.7mb)
+
+
+    /***** 方法2：数学 *****/
+    //在方法一中推导出的 G(n)函数的值在数学上被称为卡塔兰数 Cn,卡塔兰数更便于计算的定义如下:
+    // C0 = 1, Cn+1 = 2(2n+1)Cn/n+2;
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numTrees = function(n) {
+        let C = 1;
+        for (let i = 0; i < n; i++) {
+            C = C * 2 * (2 * i + 1) / (i + 2);
+        }
+        return C;
+    };
+
+    //运行结果：运行时间击败24.64%(96ms)，内存消耗击败33.51%(37.7mb)
+
+</script>
+</body>
+</html>

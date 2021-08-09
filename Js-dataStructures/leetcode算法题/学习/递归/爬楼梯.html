@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>爬楼梯</title>
+</head>
+<body>
+<script>
+    /*假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+    每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+    注意：给定 n 是一个正整数。*/
+
+    /********************* 010-2-青蛙跳台阶问题 解法相似 *********************/
+
+    /*方法1：迭代*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var climbStairs = function(n) {
+        if (n <= 1) return 1;
+        let fib0 = 1;
+        let fib1 = 1;
+        let fibn;
+        for (let i = 2; i <= n; i++) { // n >= 2
+            fibn = fib1 + fib0; //f(n) = f(n-1) + f(n-2)
+            fib0 = fib1;
+            fib1 = fibn;
+        }
+        return fibn;
+    };
+    //运行结果：运行时间击败34.63%(88ms)，内存消耗击败81.15%(37.5mb)
+
+    /*方法2：记忆化递归*/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var climbStairs = function(n) {
+        let memo = [];
+        return climb(0, n, memo);
+
+        function climb(i, n, memo) {
+            if (i > n) {
+                return 0;
+            }
+            if (i == n) {
+                return 1;
+            }
+            if (memo[i] > 0) {
+                return memo[i];
+            }
+            memo[i] = climb(i + 1, n, memo) + climb(i + 2, n, memo);
+            return memo[i];
+        }
+    };
+    //运行结果：运行时间击败73.06%(80ms)，内存消耗击败78.48%(37.6mb)
+
+
+
+
+    /*方法3：递归-----（超时）*/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var climbStairs = function(n) {
+        if (n <= 1) {
+            return 1;
+        } else {
+            return  climbStairs(n - 1) + climbStairs(n - 2);
+        }
+    };
+</script>
+</body>
+</html>

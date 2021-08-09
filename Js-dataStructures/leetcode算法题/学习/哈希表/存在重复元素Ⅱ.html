@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>存在重复元素Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个整数数组和一个整数 k，判断数组中是否存在两个不同的索引 i 和 j，
+    使得 nums [i] = nums [j]，并且 i 和 j 的差的 绝对值 至多为 k。*/
+
+    /*********************** 方法1： 哈希表 ***********************/
+
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {boolean}
+     */
+    var containsNearbyDuplicate = function(nums, k) {
+        const map = {};
+        for (let i = 0; i < nums.length; i++) {
+            if (map[nums[i]] != null) {
+                if (Math.abs(map[nums[i]] - i) <= k) {
+                    return true;
+                } else {//如果之前出现过的重复元素与此时的元素下标不满足绝对值关系，与此时元素之后的元素也不会满足
+                    //所以需要更新其下标
+                    map[nums[i]] = i;
+                }
+            } else {
+                map[nums[i]] = i;
+            }
+        }
+        return false;
+    };
+
+    //运行结果：运行时间击败57.93%(104ms)，内存消耗击败21.97%(44.8mb)
+
+
+    /*********************** 方法2： 暴力法 ***********************/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {boolean}
+     */
+    var containsNearbyDuplicate = function(nums, k) {
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = i + 1; j < nums.length; j++) {
+                if (nums[i] == nums[j] && Math.abs(i - j) <= k) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    //运行结果：运行时间击败30.45%(1096ms)，内存消耗击败74.68%(39.6mb)
+
+</script>
+</body>
+</html>

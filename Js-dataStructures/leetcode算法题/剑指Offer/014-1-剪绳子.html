@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>剪绳子1</title>
+</head>
+<body>
+<script>
+    /*
+    * 给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），
+    * 每段绳子的长度记为 k[0],k[1]...k[m-1] 。
+    * 请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？
+    * 例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。*/
+
+    //贪心算法（尽可能多剪3）
+
+    /*切分规则：
+    最优： 3 。把绳子尽可能切为多个长度为 3 的片段，留下的最后一段绳子的长度可能为 0,1,2 三种情况。
+    次优： 2 。若最后一段绳子长度为 2 ；则保留，不再拆为 1+1 。
+    最差： 1 。若最后一段绳子长度为 1 ；则应把一份 3 + 1 替换为 2 + 2，因为 2 * 2 > 3 * 1。*/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var cuttingRope = function(n) {
+        let remainder = n % 3;//计算尽可能多剪3后，剩余的长度
+        let result = Math.floor(n / 3); //计算最多可以剪几段3
+        let product = 1;
+        if (n == 2) return 1;
+        if (n == 3) return 2;
+        if (remainder == 0) {//绳子可以剪为m段3
+            product = Math.pow(3,result);
+        } else if( remainder == 1) {//绳子可以拆分为m-1段3，剩下4的长度（尽量剪为2的倍数）
+            product = Math.pow(3,result - 1) * 4;
+        } else {//绳子可以剪为m-1段3，剩下2的长度（尽量剪为2的倍数）
+            product = Math.pow(3,result) * 2;
+        }
+        //return product;
+        console.log(product)
+        console.log(typeof product + '111')
+    };
+
+    //运行结果：运行时间击败16.95%(96ms)，内存消耗击败56.37%(37.7mb)
+    cuttingRope(6)
+</script>
+</body>
+</html>

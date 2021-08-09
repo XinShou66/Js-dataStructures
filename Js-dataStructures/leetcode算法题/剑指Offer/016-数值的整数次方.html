@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数值的整数次方</title>
+</head>
+<body>
+<script>
+    /*实现函数double Power(double base, int exponent)，
+    求base的exponent次方。不得使用库函数，同时不需要考虑大数问题。
+    */
+
+    /*注意：
+        单纯循环计算会超时
+        */
+    /**
+     * @param {number} x
+     * @param {number} n
+     * @return {number}
+     */
+    /*方法一：使用库函数，但题中规定了不可用库函数*/
+    var myPow = function(x, n) {
+        let result = Math.pow(x,n);
+        return result;
+    };
+
+    //运行结果：运行时间击败43.24%(92ms)，内存消耗击败10.70%(39.3mb)
+
+    /*方法二：二分法递归*/
+    var myPow = function(x, n) {
+        if (n === 0) return 1;
+        if (n === 1) return x;
+        if (n < 0) {//如果n是负数
+            n = -n;
+            x = (1 / x);
+        }
+        let result = 1;
+        if (n % 2 === 1) {//如果n是奇数
+            result = x;
+            n = n -1;
+        }
+        let lastResult = myPow(x,n/2);
+        result = lastResult * lastResult * result;
+        return result;
+    };
+    //运行结果：运行时间击败43.24%(92ms)，内存消耗击败33.73%(39mb)
+
+</script>
+</body>
+</html>

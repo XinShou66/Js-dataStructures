@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ⅲ-在排序数组中查找元素的第一个和最后一个位置</title>
+</head>
+<body>
+<script>
+    /*给定一个按照升序排列的整数数组 nums，和一个目标值 target。找出给定目标值在数组中的开始位置和结束位置。
+        如果数组中不存在目标值 target，返回 [-1, -1]。
+      进阶：
+        你可以设计并实现时间复杂度为 O(log n) 的算法解决此问题吗？*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} target
+     * @return {number[]}
+     */
+    var searchRange = function(nums, target) {
+        let res = [-1, -1];
+        let leftIndex = binarySearch(nums, target, true);   //查找左边范围的下标
+        let rightIndex = binarySearch(nums, target, false) - 1; //查找右边范围的下标
+        if (leftIndex <= rightIndex && rightIndex < nums.length && nums[leftIndex] === target && nums[rightIndex] === target) {
+            //如果符合条件则将开始位置和结束位置的下标放进数组返回
+            res = [leftIndex, rightIndex];
+        }
+        return res;
+    };
+
+    const binarySearch = function(nums, target, mark) {
+        let left = 0;
+        let right = nums.length - 1;
+        resIndex = nums.length;
+        while (left <= right) {
+            let mid = parseInt((left + right) / 2);
+            if (mark) {//情况1：如果mark是true,则查找第一个大于等于target的下标（开始位置）
+                if (nums[mid] >= target) {
+                    right = mid - 1;
+                    resIndex = mid;
+                } else {
+                    left = mid + 1;
+                }
+            } else {//情况2：如果mark是false,查找第一个大于target的下标（结束位置）
+                if (nums[mid] > target) {
+                    right = mid - 1;
+                    resIndex = mid;
+                } else {
+                    left = mid + 1;
+                }
+            }
+        }
+        return resIndex;
+    }
+
+    //运行结果：运行时间击败71.75%(84ms)，内存消耗击败8.28%(40.1mb)
+
+</script>
+</body>
+</html>

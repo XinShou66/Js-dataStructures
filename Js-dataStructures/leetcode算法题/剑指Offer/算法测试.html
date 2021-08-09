@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>剑指Offer-算法测试</title>
+    <style>
+        .container{
+           /* overflow: hidden;*/
+        }
+        .left{
+            float:left;
+            width: 200px;
+            height: 300px;
+            background: #00A0E9;
+            margin-left: -100%;
+        }
+        .right{
+            float:left;
+            width: 200px;
+            height: 300px;
+            background: #00b894;
+            margin-left: -200px;
+        }
+        .center{
+            float:left;
+            width: 100%;
+            height: 300px;
+            background: red;
+        }
+        .inner-center{
+            margin: 0 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="center">
+            <div class="inner-center">2</div></div>
+        <div class="left"> 1</div>
+        <div class="right">3</div>
+    </div>
+<script>
+    //运行结果：运行时间击败5.00%(432ms)，内存消耗击败5.20%(56.2mb)
+
+    /*4.归并排序 */
+/*    function quickSort(arr) {
+        return quick(arr, 0, arr.length -1);
+    }
+
+    function quick(arr, left, right) {
+        const stack = [];
+        stack.push(left);
+        stack.push(right);
+        let index;
+        while (stack.length) {
+            let right = stack.pop();
+            let left = stack.pop();
+            index = partition(arr, left, right);
+            if (left < index - 1) {
+                stack.push(left);
+                stack.push(index-1);
+            }
+            if (index < right) {
+                stack.push(index);
+                stack.push(right);
+            }
+        }
+        return arr;
+    }
+
+    function partition(arr, left, right) {
+        let pivot = arr[Math.floor((left+right)/2)];
+        let i = left, j = right;
+        while (i <= j) {
+            while (arr[i] < pivot) {
+                i++;
+            }
+            while (arr[j] > pivot) {
+                j--;
+            }
+            if (i <= j) {
+                let temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                //交换完元素后，要移动指针，从下一个位置开始接着找
+                i++;
+                j--;
+            }
+        }
+
+        return i;
+    }
+
+    console.log(quickSort([4,3,1,2,3,0,-1]));*/
+  /*  let a = 5;
+    let b = 4;
+    console.log(a + + (+(+(+b))))*/
+
+/*    function Person() {
+        this.name = name;
+        return {
+            name:'li'
+        }
+    }
+    var person = new Person('z')
+    console.log(person.name);*/
+
+/*    var x = 0;
+    switch(++x) {
+        case 0: ++x;
+        case 1: ++x;
+        case 2: ++x;
+
+    }
+    console.log(x);*/
+
+ /*   var a = 10.52;
+   // console.log(a.split('.')[0]);
+    console.log(Math.ceil(a));
+    console.log(Math.floor(a));
+    console.log(parseInt(a));*/
+
+
+
+    /*function findIdNum(n, arr) {
+        let res = [];
+        for (let i = 0; i < n; i++) {
+            let count = find(arr[i])
+            console.log(count);
+            res.push(count)
+        }
+        return res;
+
+        function find(idNum) {
+            let count = 0;
+            const tempArr = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
+            const map = new Map()
+            map.set(0, 1);
+            map.set(1, 0);
+            map.set(2, 'X');
+            map.set(3, 9);
+            map.set(4, 8);
+            map.set(5, 7);
+            map.set(6, 6);
+            map.set(7, 5);
+            map.set(8, 4);
+            map.set(9, 3);
+            map.set(10, 2);
+            let numSum = 0;
+            for (let i = 0; i < 14; i++) {
+                numSum += idNum[i] * tempArr[i];
+            }
+
+            let tempNumSum = numSum;
+
+            help(14)
+            function help(i) {
+                if (i < 17) {
+                    if (idNum[i] === '*') {
+                        for (let j = 0; j <= 9; j++) {
+                            let temp = j * tempArr[i]
+                            tempNumSum += temp;
+                            if (i === 16) {
+                                tempNumSum += temp;
+                                console.log(tempNumSum);
+                                if (map.has(tempNumSum % 11)) {
+                                    if (map.get(tempNumSum % 11) == idNum[17]) {
+                                        count++;
+                                        return;
+                                    }
+                                }
+                            } else {
+                                help(i+1);
+                            }
+                            tempNumSum -= temp;
+                        }
+                    } else {
+                        tempNumSum += idNum[i] * tempArr[i]
+                        if (i === 16) {
+                            tempNumSum += idNum[i] * tempArr[i]
+                            if (map.has(tempNumSum % 11)) {
+                                if (map.get(tempNumSum % 11) == idNum[17]) {
+                                    count++;
+                                    return;
+                                }
+                            }
+                        } else {
+                            help(i+1)
+                        }
+                    }
+                }
+            }
+            return count;
+        }
+    }
+
+    console.log(findIdNum(2,['34088119480815*663','520123200501169**4']));*/
+
+    var compareVersion = function(version1, version2) {
+        const temp1 = version1.split('.');
+        const temp2 = version2.split('.');
+        console.log(temp1, temp2);
+    };
+    compareVersion("7.5.2.4","07.5.3")
+    console.log('01' == '001')    int i1, i2;
+    for (int i = 0; i < Math.max(n1, n2); ++i) {
+        i1 = i < n1 ? Integer.parseInt(nums1[i]) : 0;
+        i2 = i < n2 ? Integer.parseInt(nums2[i]) : 0;
+        if (i1 != i2) {
+            return i1 > i2 ? 1 : -1;
+        }
+    }
+    // the versions are equal
+    return 0;
+
+
+</script>
+</body>
+</html>
+

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设计链表</title>
+</head>
+<body>
+<script>
+    /*设计链表的实现。您可以选择使用单链表或双链表。
+    单链表中的节点应该具有两个属性：val 和 next。val 是当前节点的值，next 是指向下一个节点的指针/引用。
+    如果要使用双向链表，则还需要一个属性 prev 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
+    在链表类中实现这些功能：
+        get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+        addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+        addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+        addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，
+                               则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+        deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。*/
+
+    /**
+     * Initialize your data structure here.
+     */
+    var MyLinkedList = function() {
+        //属性
+        //属性head指向链表的第一个节点
+        this.head = null;
+        this.length = 0;
+
+    };
+
+    //封装一个节点类
+    var Node = function(val) {
+        this.val = val;
+        this.next = null;
+    }
+
+    /**
+     * Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+     * @param {number} index
+     * @return {number}
+     */
+    MyLinkedList.prototype.get = function(index) {
+        //1.越界判断
+        if (index < 0 || index >= this.length) {
+            return -1;
+        }
+        //2.获取指定的index位置的后一个节点的val
+        //同样使用一个变量间接操作节点
+        let cur = this.head;
+        let temp = 0;
+        while (temp++ < index) {
+            cur = cur.next;
+        }
+        return cur.val;
+    };
+
+    /**
+     * Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtHead = function(val) {
+        //1.初始化一个新结点 newNode
+        let newNode = new Node(val);
+        //2.将新结点链接到我们的原始头结点 head。
+        newNode.next = this.head;
+        //3.将 cur 指定为 head
+        this.head = newNode;
+        //4.添加完新结点之后length+1
+        this.length++;
+    };
+
+    /**
+     * Append a node of value val to the last element of the linked list.
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtTail = function(val) {
+        //1.创建新节点
+        let newNode = new Node(val);
+        //2.添加新节点
+        if (this.length == 0) {//情况1：只有一个节点时候
+            this.head = newNode;
+        } else {//情况2：节点数大于1，在链表的最后添加新节点
+            let cur = this.head;    //让变量cur指向第一个节点
+            while (cur.next) {//当cur.next(下一个节点不为空)不为空时，一直循环，直到cur指向最后一个节点
+                cur = cur.next;
+            }
+            // 最后节点的next指向新的节点
+            cur.next = newNode;
+        }
+        //3.添加完新结点之后length+1
+        this.length++;
+    };
+
+    /**
+     * Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+     * @param {number} index
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtIndex = function(index, val) {
+        //1.越界判断
+        if (index < 0 || index > this.length) {
+            return false;
+        }
+        //2.创建新节点
+        let newNode = new Node(val);
+        //3.插入新节点
+        if (index == 0) {
+            newNode.next = this.head;
+            this.head = newNode;
+        } else {
+            let temp = 0;
+            let prev = null;//节点的前一个节点
+            let cur = this.head;
+            //步骤1：通过while循环使变量cur指向index位置的后一个节点(注意while循环的写法)
+            while (temp++ < index) {
+                //步骤2：在cur指向下一个节点之前，让prev指向cur当前指向的节点
+                prev = cur;
+                cur = cur.next;
+            }
+            // 步骤3：通过变量cur(此时cur已经指向index位置的后一个节点)，使newNode指向index位置的后一个节点
+            newNode.next = cur;
+            //步骤4：通过变量prev，使index位置的前一个节点指向newNode
+            prev.next = newNode;
+        }
+        this.length++;
+        return true;
+    };
+
+    /**
+     * Delete the index-th node in the linked list, if the index is valid.
+     * @param {number} index
+     * @return {void}
+     */
+    MyLinkedList.prototype.deleteAtIndex = function(index) {
+        //1.越界判断
+        if (index >= 0 && index < this.length ) {
+            //2.删除元素
+            let cur = this.head;
+            if (index == 0) {//情况1：index = 0时(删除第一个节点)
+                this.head = this.head.next;
+            } else {//情况2：index > 0时
+                let temp = 0;
+                let prev = null;
+                while (temp++ < index) {
+                    prev = cur;
+                    cur = cur.next;
+                }
+                prev.next = cur.next;
+            }
+            //3.长度-1
+            this.length--;
+        }
+    };
+
+    /**
+     * Your MyLinkedList object will be instantiated and called as such:
+     * var obj = new MyLinkedList()
+     * var param_1 = obj.get(index)
+     * obj.addAtHead(val)
+     * obj.addAtTail(val)
+     * obj.addAtIndex(index,val)
+     * obj.deleteAtIndex(index)
+     */
+
+    //运行结果：运行时间击败40.48%(172ms)，内存消耗击败55.49%(45.2mb)
+
+</script>
+</body>
+</html>

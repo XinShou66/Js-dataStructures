@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>判断是否互为字符重排</title>
+</head>
+<body>
+<script>
+    /*给定两个字符串 s1 和 s2，请编写一个程序，确定其中一个字符串的字符重新排列后，能否变成另一个字符串。*/
+
+    /**
+     * @param {string} s1
+     * @param {string} s2
+     * @return {boolean}
+     */
+    var CheckPermutation = function(s1, s2) {
+        return [...s1].sort().join('') === [...s2].sort().join('')
+    };
+
+    //运行结果：运行时间击败49.43%(84ms)，内存消耗击败43.45%(37.7mb)
+
+</script>
+</body>
+</html>

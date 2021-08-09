@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>找出第 k 小的距离对</title>
+</head>
+<body>
+<script>
+   /*给定一个整数数组，返回所有数对之间的第 k 个最小距离。
+   一对 (A, B) 的距离被定义为 A 和 B 之间的绝对差值。*/
+
+    /*示例：
+    *   输入：
+        nums = [1,3,1]
+        k = 1
+        输出：0
+        解释：
+        所有数对如下：
+        (1,3) -> 2
+        (1,1) -> 0
+        (3,1) -> 2
+        因此第 1 个最小距离的数对是 (1,1)，它们之间的距离为 0。
+    *
+    * */
+
+
+   /**
+    * @param {number[]} nums
+    * @param {number} k
+    * @return {number}
+    */
+   var smallestDistancePair = function(nums, k) {
+       // 首先对数组进行排序，方便进行二分查找
+       nums.sort((a,b) => a - b);
+       console.log(nums);
+       let min = 0; //数组中两个数相差的最小值(最小距离对)
+       let max = nums[nums.length - 1] - nums[0]; //数组中两个数相差的最大值（最大距离对）
+       while (min < max) {
+           //找到差值的中间值--->第k小的距离对一定会在最小和最大距离对范围内产生
+           let mid = Math.floor((min + max) / 2);
+           //用来统计符合要求的对数
+           let count = 0;
+           //初始化双指针, left = 0, right = 1
+           //left和right分别是nums上的左右指针
+           let left = 0;
+
+           for (let right = 1; right < nums.length; right++) {
+               //通过while循环来将所有<=mid的距离对的个数算出来，并加到count中
+               while (nums[right] - nums[left] > mid) {//说明left小了
+                   left++;
+               }
+               count += right - left; //满足条件的距离对的个数
+           }
+
+           if (count < k) {// 目标值一定在mid右边
+               min = mid + 1;
+           } else {
+               max = mid; //可能目标值就是mid或者在左边
+           }
+       }
+
+       return min;
+   };
+
+   //运行结果：运行时间击败18.18%(124ms)，内存消耗击败50.00%(39.5mb)
+
+</script>
+</body>
+</html>

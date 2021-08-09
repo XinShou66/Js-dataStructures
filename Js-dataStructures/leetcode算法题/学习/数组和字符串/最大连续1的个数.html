@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>最大连续1的个数</title>
+</head>
+<body>
+<script>
+    /*给定一个二进制数组， 计算其中最大连续 1 的个数。*/
+
+    /*为了得到数组中最大连续 1 的个数，需要遍历数组，并记录最大的连续 1 的个数和当前的连续 1 的个数。
+    如果当前元素是 1 ，则将当前的连续 1 的个数加 1，否则，使用之前的连续 1 的个数更新最大的连续 1 的个数，并将当前的连续 1 的个数清零。
+    遍历数组结束之后，需要再次使用当前的连续 1 的个数更新最大的连续 1 的个数，因为数组的最后一个元素可能是 1，
+    且最长连续 1 的子数组可能出现在数组的末尾，如果遍历数组结束之后不更新最大的连续 1 的个数，则会导致结果错误。
+    */
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findMaxConsecutiveOnes = function(nums) {
+        let maxCount = 0, count = 0;
+        for (let i = 0; i < nums.length; i++) {
+            if (nums[i] == 1) {
+                count++;
+            } else {
+                maxCount = Math.max(maxCount,count);
+                count = 0;
+            }
+        }
+        maxCount = Math.max(maxCount,count);
+        return maxCount;
+    };
+
+    //运行结果：运行时间击败26.79%(104ms)，内存消耗击败52.53%(40.5mb)
+
+
+
+</script>
+</body>
+</html>

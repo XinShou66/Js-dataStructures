@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>滑动窗口的最大值</title>
+</head>
+<body>
+<script>
+    /*给定一个数组 nums 和滑动窗口的大小 k，请找出所有滑动窗口里的最大值。*/
+    /*示例：
+            输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+            输出: [3,3,5,5,6,7]
+            解释:
+
+              滑动窗口的位置                最大值
+            ---------------               -----
+            [1  3  -1] -3  5  3  6  7       3
+             1 [3  -1  -3] 5  3  6  7       3
+             1  3 [-1  -3  5] 3  6  7       5
+             1  3  -1 [-3  5  3] 6  7       5
+             1  3  -1  -3 [5  3  6] 7       6
+             1  3  -1  -3  5 [3  6  7]      7
+    * */
+
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {number[]}
+     */
+    var maxSlidingWindow = function(nums, k) {
+        let res = [];//定义最后要返回的最大值数组
+        let deque = [];//定义双端队列用来存放滑动窗口的数，保持队列是递减的，即队首为最大值
+        for (let i = 1 - k, j = 0; j < nums.length; i++, j++) {
+            //定义滑动窗口的左边界 1 - k,右边界0，滑动窗口逐渐右移
+            //如果在原数组内的滑动窗口存在且队列首位元素等于上一个滑动窗口的左边界，删除队首元素
+            if (i > 0 && deque[0] == nums[i-1]) deque.shift();
+            //如果队列长度不为0且队尾元素小于滑动窗口右边界的值（也就是下一个要放进队列的值）
+            //将队尾元素删除，保持队列是逐渐递减的
+            while (deque && deque[deque.length - 1] < nums[j]) {
+                deque.pop();
+            }
+            //将窗口右边界的元素依次放进队列
+            deque.push(nums[j]);
+            //真正在原数组内的滑动窗口形成，将队首的元素（每个滑动窗口内最大的）放进返回数组
+            if (i >= 0) res.push(deque[0]);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败99.80%(92ms)，内存消耗击败50.57%(44.4mb)
+
+
+
+
+
+
+
+
+    /************************************************效率慢的笨方法*********************************************************/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {number[]}
+     */
+
+    var maxSlidingWindow = function(nums, k) {
+        if(nums.length===0) return []
+        let stack=[];
+        for(let i=0;i<nums.length-k+1;i++){
+            let arr=[];
+            for(let j=i;j<i+k;j++){
+                arr.push(nums[j]);
+            }
+            stack.push(Math.max(...arr));
+        }
+        return stack
+    };
+    //运行结果：运行时间击败7.12%(380ms)，内存消耗击败9.62%(48.7mb)
+</script>
+</body>
+</html>

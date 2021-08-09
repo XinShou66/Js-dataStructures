@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树中的插入操作</title>
+</head>
+<body>
+<script>
+    /*给定二叉搜索树（BST）的根节点和要插入树中的值，将值插入二叉搜索树。
+     返回插入后二叉搜索树的根节点。 输入数据 保证 ，新值和原始二叉搜索树中的任意节点值都不同。
+    注意，可能存在多种有效的插入方式，只要树在插入后仍保持为二叉搜索树即可。 你可以返回 任意有效的结果 。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {number} val
+     * @return {TreeNode}
+     */
+    var insertIntoBST = function(root, val) {
+        let newNode = new TreeNode(val);
+        if (!root) {//根节点为空，直接让该节点为根节点
+            root = newNode;
+        } else {//根节点存在时,调用插入节点的方法
+            insertNode(root, newNode);
+        }
+
+        //非根节点的插入方法
+        function insertNode(node, newNode) {
+            //1.向左查找
+            if (newNode.val < node.val) {
+                if (!node.left) {//情况1：node无左子节点，直接插入
+                    node.left = newNode
+                } else {
+                    //情况2：node有左子节点，递归调用,直到遇到无左子节点成功插入newNode后，不再符合该情况，也就不再调用insertNode()，递归停止。
+                    insertNode(node.left, newNode)
+                }
+            } else {
+                //2.向右查找
+                if (!node.right) {//情况1：node无右子节点，直接插入
+                    node.right = newNode
+                } else { //情况2：node有右子节点，依然递归调用insertNode(),直到遇到无右子节点成功插入newNode为止
+                    insertNode(node.right, newNode)
+                }
+            }
+        }
+        //返回插入后的树的根节点
+        return root;
+    };
+
+    //运行结果：运行时间击败18.98%(160ms)，内存消耗击败81.66%(45.2mb)
+
+</script>
+</body>
+</html>

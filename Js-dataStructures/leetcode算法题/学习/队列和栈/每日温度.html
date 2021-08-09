@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>每日温度</title>
+</head>
+<body>
+<script>
+    /*请根据每日 气温 列表，重新生成一个列表。对应位置的输出为：要想观测到更高的气温，至少需要等待的天数。
+    如果气温在这之后都不会升高，请在该位置用 0 来代替。
+    例如，给定一个列表 temperatures = [73, 74, 75, 71, 69, 72, 76, 73]，你的输出应该是 [1, 1, 4, 2, 1, 1, 0, 0]。
+    提示：气温 列表长度的范围是 [1, 30000]。每个气温的值的均为华氏度，都是在 [30, 100] 范围内的整数。*/
+
+
+    /**
+     * @param {number[]} T
+     * @return {number[]}
+     */
+    var dailyTemperatures = function(T) {
+        const res = new Array(T.length).fill(0);
+        //存储气温数组的元素下标
+        const stack = [];
+        for (let i = T.length - 1; i >= 0; i--) {
+            //如果当前元素比栈顶对应的下标元素对应的气温数组元素大，则出栈，保证栈是单调递减
+            while (stack.length && T[i] >= T[stack[stack.length - 1]]) {
+                stack.pop();
+            }
+            if (stack.length) {
+                //如果栈不为空，说明当前元素右侧有比它大的值，将栈中的下标元素减当前下标，就可得最近天数
+                res[i] = stack[stack.length - 1] - i;
+            }
+            stack.push(i)
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败56.14%(188ms)，内存消耗击败79.04%(47.8mb)
+
+</script>
+</body>
+</html>

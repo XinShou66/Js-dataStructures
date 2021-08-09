@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0239-滑动窗口最大值</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。
+    你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。
+    返回滑动窗口中的最大值。*/
+
+    /**方法1：单调队列*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {number[]}
+     */
+    var maxSlidingWindow = function(nums, k) {
+        const res = [];
+        const queue = [];//维护一个(下标对应元素)单调递减队列（存放的是元素下标，为了取值方便）
+        for (let i = 0; i < nums.length; i++) {
+            // 若队列不为空，且当前元素大于等于队尾所存下标的元素，则弹出队尾
+            while (queue.length && nums[i] >= nums[queue[queue.length-1]]) {
+                queue.pop();
+            }
+            // 入队当前元素下标
+            queue.push(i);
+            // 判断当前最大值（即队首元素）是否在窗口中，若不在便将其出队
+            while (queue[0] <= i - k) {
+                queue.shift();
+            }
+
+            // 当达到窗口大小时便开始向结果中添加数据
+            if (i >= k - 1) {
+                res.push(nums[queue[0]])
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败86.92%(392ms)，内存消耗击败68.58%(72.9mb)
+
+    /** 方法2：库函数找每个滑动窗口的最大值----超时*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {number[]}
+     */
+    var maxSlidingWindow = function(nums, k) {
+        const res = [];
+        for (let i = 0; i < nums.length - k + 1; i++) {
+            let arr = nums.slice(i, k + i);
+            let max = Math.max(...arr);
+            res.push(max);
+        }
+        return res;
+    };
+
+
+</script>
+</body>
+</html>

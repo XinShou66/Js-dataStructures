@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据流中的中位数</title>
+</head>
+<body>
+<script>
+    /*如何得到一个数据流中的中位数？
+    如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。
+    如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。
+        例如，
+        [2,3,4] 的中位数是 3
+        [2,3] 的中位数是 (2 + 3) / 2 = 2.5
+        设计一个支持以下两种操作的数据结构：
+        void addNum(int num) - 从数据流中添加一个整数到数据结构中。
+        double findMedian() - 返回目前所有元素的中位数。
+      */
+
+    /*大小堆方法*/
+
+
+    //由于JavaScript中没有堆，所以需要自己封装实现
+    //默认是最大堆
+    const defaultCompare = (x,y) => x > y;
+    //交换函数
+    const swap = (arr,i,j) => [arr[i],arr[j]] = [arr[j],arr[i]]
+
+    class MaxHeap {
+        //创建堆类
+        constructor(compareFn = defaultCompare) {
+            this.compareFn = compareFn;
+            this.heap = [];
+        }
+
+        top(){
+            return this.heap[0];
+        }
+
+        getLeftIndex(index){//获取左侧子节点的位置
+            return 2 * index + 1;
+        }
+
+        getRightIndex(index){//获取右侧子节点的位置
+            return 2 * index + 2;
+        }
+
+        getParentIndex(index){//获取父节点的位置
+            if(index === 0) {
+                return undefined;
+            }
+            return Math.floor((index - 1)/2);
+        }
+
+        size(){
+            return this.heap.length;
+        }
+
+        isEmpty(){
+            return this.size() === 0;
+        }
+
+        insert(value){//向堆中插入新值
+            if (value != null) {
+                this.heap.push(value);
+                //表示我们要将这个值和它的父节点进行交换，直到父节点大于这个插入的值
+                this.siftUp(this.heap.length - 1);
+                return true;
+            }
+            return false;
+        }
+
+        siftUp(index){//上移操作
+            let parent = this.getParentIndex(index);
+            while(index>0 && this.compareFn(this.heap[index],this.heap[parent])){
+                //如果插入的值大于它的父节点（最大堆中），那么将这个元素和父节点交换
+                swap(this.heap,index,parent);
+                index = parent;
+                //重复这个过程直到堆的根节点也经过了交换节点和父节点位置的操作
+                parent = this.getParentIndex(index);
+            }
+
+        }
+
+        extract(){//移除最小值（最小堆）或最大值（最大堆）
+            if (this.isEmpty()) {   //  如果堆为空，没有值可以移除，可以返回undefined
+                return null;
+            }
+            if (this.size() === 1) {//如果堆中只有一个值，直接移除并返回它
+                return this.heap.shift();
+            }
+            swap(this.heap,0,this.heap.length - 1)
+            const removedValue = this.heap.pop();//如果堆中有不止一个值，我们需要将第一个值移除，并储存在一个临时变量中，以便在执行完下移操作后，返回它
+            //this.heap[0] = this.heap.pop();
+            this.siftDown(0);
+            return removedValue;
+        }
+
+        siftDown(index){
+            //let element = index;
+            let left = this.getLeftIndex(index);
+
+            const size = this.size();
+            while (left < size) {
+                const right = this.getRightIndex(index);
+                if (right < size && this.compareFn(this.heap[right],this.heap[left])) {
+                    left = right;
+                }
+                if (!this.compareFn(this.heap[left],this.heap[index])) {
+                    break;
+                }
+                swap(this.heap,left,index);
+                index = left;
+                left = this.getLeftIndex(index);
+            }
+        }
+
+    }
+
+    class MinHeap extends MaxHeap {
+        constructor(compareFn = defaultCompare) {
+            super(compareFn);
+            this.compareFn = reveseCompare(compareFn)
+        }
+    }
+
+    function reveseCompare(compareFn) {
+        return (x,y) => compareFn(y,x);
+    }
+
+    module.exports = MinHeap;
+    module.exports = MaxHeap;
+
+    /**
+     * initialize your data structure here.
+     */
+    var MedianFinder = function() {
+        this.minHeap = new MinHeap();   //最小堆，保存较大的一半，堆顶元素为最小的
+        this.maxHeap = new MaxHeap();   //最大堆，保存较小的一半，堆顶元素为最大的
+    };
+
+    /**
+     * @param {number} num
+     * @return {void}
+     */
+    MedianFinder.prototype.addNum = function(num) {
+        this.maxHeap.insert(num);
+        this.minHeap.insert(this.maxHeap.extract());
+        if (this.minHeap.size() > this.maxHeap.size()) {
+            this.maxHeap.insert(this.minHeap.extract());
+
+        }
+    };
+
+    /**
+     * @return {number}
+     */
+    MedianFinder.prototype.findMedian = function() {
+        if (this.maxHeap.size() > this.minHeap.size()) {
+            return this.maxHeap.top();
+        } else {
+            return (this.maxHeap.top() + this.minHeap.top()) / 2;
+        }
+    };
+
+    /**
+     * Your MedianFinder object will be instantiated and called as such:
+     * var obj = new MedianFinder()
+     * obj.addNum(num)
+     * var param_2 = obj.findMedian()
+     */
+
+    //运行结果：运行时间击败66.39%(332ms)，内存消耗击败61.07%(57.9mb)
+
+
+
+
+
+    /****************************************很慢的方法*********************************************************/
+
+    class MinHeap {
+        constructor() {
+            this.heap = [];
+        }
+        size(){
+            return this.heap.length;
+        }
+        push(value){
+            this.heap.push(value)
+            this.heap.sort((a,b) => a-b)
+        }
+        minValue(){
+            return this.heap[0]
+        }
+        shift(){
+            return this.heap.shift();
+        }
+    }
+    class MaxHeap {
+        constructor() {
+            this.heap = [];
+        }
+        size(){
+            return this.heap.length;
+        }
+        push(value){
+            this.heap.unshift(value)
+            this.heap.sort((a,b) => b-a)
+        }
+        maxValue(){
+            return this.heap[0]
+        }
+        shift(){
+            return this.heap.shift();
+        }
+    }
+    module.exports = MinHeap;
+    module.exports = MaxHeap;
+
+
+    /**
+     * initialize your data structure here.
+     */
+    var MedianFinder = function() {
+        this.minHeap = new MinHeap();
+        this.maxHeap = new MaxHeap();
+    };
+
+    /**
+     * @param {number} num
+     * @return {void}
+     */
+    MedianFinder.prototype.addNum = function(num) {
+        this.minHeap.push(num);
+        this.maxHeap.push(this.minHeap.shift());
+        if (this.minHeap.size()+1 < this.maxHeap.size()) {
+            this.minHeap.push(this.maxHeap.shift())
+        }
+    };
+
+    /**
+     * @return {number}
+     */
+    MedianFinder.prototype.findMedian = function() {
+        if (this.maxHeap.size() > this.minHeap.size()){
+            return this.maxHeap.maxValue();
+        } else {
+            return (this.maxHeap.maxValue() + this.minHeap.minValue()) / 2
+        }
+    };
+
+    /**
+     * Your MedianFinder object will be instantiated and called as such:
+     * var obj = new MedianFinder()
+     * obj.addNum(num)
+     * var param_2 = obj.findMedian()
+     */
+    //运行结果：运行时间击败5.33%(6096ms)，内存消耗击败20.91%(58.9mb)
+
+</script>
+</body>
+</html>

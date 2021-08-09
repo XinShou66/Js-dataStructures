@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0122-买卖股票的最佳时机Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个数组 prices ，其中 prices[i] 是一支给定股票第 i 天的价格。
+    设计一个算法来计算你所能获取的最大利润。你可以尽可能地完成更多的交易（多次买卖一支股票）。
+    注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。*/
+
+    /********* 方法1：动态规划 ********/
+    /**
+     * @param {number[]} prices
+     * @return {number}
+     */
+    var maxProfit = function(prices) {
+        //交易完后手里没有股票的最大利润
+        let dp0 = 0;
+        //交易完后手里持有一支股票的最大利润
+        let dp1 = -prices[0];
+        for (let i = 1; i < prices.length; i++) {
+            let newDp0 = Math.max(dp0, dp1 + prices[i]);
+            let newDp1 = Math.max(dp1, dp0 - prices[i]);
+            dp0 = newDp0;
+            dp1 = newDp1;
+        }
+        return dp0;
+    };
+    //运行结果：运行时间击败10.27%(108ms)，内存消耗击败45.43%(39.5mb)
+
+
+
+    /********* 方法2：贪心算法 ********/
+
+    /**
+     * @param {number[]} prices
+     * @return {number}
+     */
+    var maxProfit = function(prices) {
+        let res = 0;
+        for (let i = 1; i < prices.length; i++) {
+            //如果是负的就不进行相加（不赚钱的）
+            res += Math.max(0, prices[i] - prices[i - 1]);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败33.54%(96ms)，内存消耗击败91.08%(39.2mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1~n整数中1出现的次数</title>
+</head>
+<body>
+<script>
+    /*输入一个整数 n ，求1～n这n个整数的十进制表示中1出现的次数。
+    例如，输入12，1～12这些整数中包含1 的数字有1、10、11和12，1一共出现了5次。
+    */
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var countDigitOne = function(n) {
+        //初始化各变量（出现的次数、当前位的数、低位的数、高位的数、位数（个））
+        let res = 0, low = 0, cur = n % 10, high = parseInt(n/10), digit = 1;
+        while (cur || high) {//只要当前位与高位不为零
+            //情况判断
+            if (!cur) res += high * digit;
+            if (cur === 1) res += high * digit + low + 1;
+            if (cur > 1) res += (high + 1)*digit;
+            //各变量更新
+            low += cur * digit;
+            cur = high % 10;
+            high = parseInt(high/10);
+            digit = digit * 10;
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败84.83%(76ms)，内存消耗击败54.98%(37.7mb)
+
+</script>
+</body>
+</html>

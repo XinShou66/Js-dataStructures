@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>复杂链表的复制</title>
+</head>
+<body>
+<script>
+    /*请实现 copyRandomList 函数，复制一个复杂链表。
+    在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，
+    还有一个 random 指针指向链表中的任意节点或者 null。
+    */
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, next, random) {
+     *    this.val = val;
+     *    this.next = next;
+     *    this.random = random;
+     * };
+     */
+
+    /**
+     * @param {Node} head
+     * @return {Node}
+     */
+    var copyRandomList = function(head) {
+        if (!head) return null;
+        let m = new Map();
+        let node = head;
+        while (node) {//复制节点的val值，创建新节点，将原链表节点作为key，新链表节点作为value写入map
+            let newNode = new Node(node.val);
+            m.set(node,newNode);
+            node = node.next;
+        }
+        node = head;
+        while (node) {//通过哈希表获得节点对应的复制节点,，更新next和 random 指针
+            let newNode = m.get(node);
+            if (node.next !== null) {
+                newNode.next = m.get(node.next);
+            }
+            if (node.random !== null) {
+                newNode.random = m.get(node.random);
+            }
+            node = node.next;
+        }
+        return m.get(head);
+    };
+
+    //运行结果：运行时间击败22.99%(96ms)，内存消耗击败100.00%(38.4mb)
+
+</script>
+</body>
+</html>

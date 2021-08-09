@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>杨辉三角Ⅱ</title>
+</head>
+<body>
+<script>
+    /***************************** 与递归中的杨辉三角Ⅱ 一样 *********************************/
+
+
+    /*给定一个非负索引 k，其中 k ≤ 33，返回杨辉三角的第 k 行。*/
+    /*示例:
+        输入: 3
+        输出: [1,3,3,1]
+
+        */
+    /*你可以优化你的算法到 O(k) 空间复杂度吗？*/
+
+    /*********************** 方法1：递推 ******************************/
+
+    var getRow = function(rowIndex) {
+        const row = new Array(rowIndex + 1).fill(0);
+        row[0] = 1;
+        for (let i = 1; i <= rowIndex; ++i) {
+            for (let j = i; j > 0; --j) {
+                //当前行的这个位置的值等于上一行该位置的值加上一行前一个位置的值
+                row[j] += row[j - 1];
+            }
+        }
+        return row;
+    };
+
+    //运行结果：运行时间击败33.62%(88ms)，内存消耗击败55.22%(37.8mb)
+
+
+    /*********************** 方法2：递归 ***********************/
+
+    /**
+     * @param {number} rowIndex
+     * @return {number[]}
+     */
+    var getRow = function(rowIndex) {
+        if (rowIndex < 0) return [];
+        let pre = getRow(rowIndex - 1);
+        let res = [];
+        for (let i = 0; i <= rowIndex; i++) {
+            if (i == 0 || i == rowIndex) {
+                res.push(1);
+            } else {
+                res.push(pre[i- 1] + pre[i]);
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败53.51%(84ms)，内存消耗击败42.02%(37.8mb)
+
+</script>
+</body>
+</html>

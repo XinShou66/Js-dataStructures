@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>杨辉三角</title>
+</head>
+<body>
+<script>
+    /***************************** 与递归 中的杨辉三角 一样 *********************************/
+
+
+    /*给定一个非负整数 numRows，生成杨辉三角的前 numRows 行。*/
+
+    /*示例:
+        输入: 5
+        输出:
+        [
+             [1],
+            [1,1],
+           [1,2,1],
+          [1,3,3,1],
+         [1,4,6,4,1]
+         ]
+     */
+
+    /*********************************  方法1：数学  *********************************/
+    /**
+     * @param {number} numRows
+     * @return {number[][]}
+     */
+    var generate = function(numRows) {
+        const res = [];
+        for (let i = 0; i < numRows; i++) {
+            /* ES6为Array增加了fill()函数，使用制定的元素填充数组，其实就是用默认内容初始化数组。
+            该函数有三个参数。arr.fill(value, start, end)
+            value：填充值。
+            start：填充起始位置，可以省略。
+            end：填充结束位置，可以省略，实际结束位置是end-1。*/
+            const row = new Array(i+1).fill(1);//创建每行的数组，全部用1填充，长度为该行的下标加1
+            for (let j = 1; j < row.length - 1; j++) {//为该行的每个数赋值，左右两边界为1，不用变
+                //第i行的第j个数等于第i-1行的第j-1个数和第j个数之和
+                row[j] = res[i-1][j-1] + res[i-1][j];
+            }
+            res.push(row);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败23.78%(92ms)，内存消耗击败27.77%(37.8mb)
+
+    /********************************* 方法2：递归 *********************************/
+    /**
+     * @param {number} numRows
+     * @return {number[][]}
+     */
+    var generate = function(numRows) {
+        let res = [];
+        helper(1);//从第一层开始
+        return res;
+
+        function helper(row) {
+            if (row > numRows) {//如果层数超限则返回
+                return;
+            }
+            let arr = [];//创建数组用来存放每层的元素
+            for (let i = 0; i < row; i++) {// 1.循环得到每层各个位置上的元素并放进该层的数组
+                if (i == 0 || i == row -1) { // 1.1 如果是第一和最后一个元素,则为1
+                    arr.push(1)
+                } else {// 1.2 如果是中间元素,则为上一行的左上和右上元素之和（从第三行,开始才会用到）
+                    arr.push(res[row - 2][i - 1] + res[row - 2][i]);
+                }
+            }
+            res.push(arr); // 2.将该层数组放进结果数组
+            helper(row+1); // 3.递归进行下一行操作
+        }
+    };
+
+    //运行结果：运行时间击败73.79%(80ms)，内存消耗击败13.32%(37.9mb)
+
+</script>
+</body>
+</html>

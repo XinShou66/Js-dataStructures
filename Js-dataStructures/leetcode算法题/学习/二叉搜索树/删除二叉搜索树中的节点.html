@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除二叉搜索树中的节点</title>
+</head>
+<body>
+<script>
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {number} key
+     * @return {TreeNode}
+     */
+    var deleteNode = function(root, key) {
+        if (!root) return root;
+        if (root.val > key) {// 往左子树找
+            root.left = deleteNode(root.left, key);
+        } else if(root.val < key) {// 往右子树找
+            root.right = deleteNode(root.right, key);
+        } else {// 找到了
+            //分三种情况
+            //1.没有子树
+            if (!root.left && !root.right) {
+                return null;
+            }
+            //2.只有一个子树
+            if (!root.left) {
+                return root.right
+            } else if(!root.right) {
+                return root.left
+            }
+            //3.左右两个子树都存在
+            if (root.left && root.right) {
+
+                /*//方法1：找前序(比当前节点小的最大节点)
+                let pre = root.left;
+                while (pre.right) {
+                    pre = pre.right;
+                }
+                //将前序的值赋给根节点
+                root.val = pre.val;
+                //删除前序
+                root.left = deleteNode(root.left, pre.val);*/
+
+                //方法2：找后继(比当前节点大的最小值)
+                let successor = root.right;
+                while (successor.left) {
+                    successor = successor.left;
+                }
+                //将后继的值赋给根节点
+                root.val = successor.val;
+                //删去后继
+                root.right = deleteNode(root.right, successor.val);
+            }
+        }
+
+        return root;
+    }
+
+    //前序----运行结果：运行时间击败76.72%(120ms)，内存消耗击败48.42%(46.3mb)
+    //后继----运行结果：运行时间击败62.20%(124ms)，内存消耗击败26.07%(46.4mb)
+
+</script>
+</body>
+</html>

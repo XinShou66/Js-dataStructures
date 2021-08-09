@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路经总和</title>
+</head>
+<body>
+<script>
+    /*给你二叉树的根节点 root 和一个表示目标和的整数 targetSum ，
+    判断该树中是否存在 根节点到叶子节点 的路径，这条路径上所有节点值相加等于目标和 targetSum 。
+    叶子节点 是指没有子节点的节点。*/
+
+    /*方法1：dfs 递归*/
+    /*总体思路：
+            如果当前节点不是叶子节点，递归它的所有子节点，传递的参数就是 targetSum 减去当前的节点值；
+            如果当前节点是叶子节点，判断参数 targetSum   是否等于当前节点值，如果相等就返回 true，否则返回 false*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {number} targetSum
+     * @return {boolean}
+     */
+    var hasPathSum = function(root, targetSum) {
+        // 根节点为空
+        if (!root) return false;
+        // 是叶节点 同时 targetSum 参数等于叶节点值
+        if (!root.left && !root.right) return root.val === targetSum;
+        //不是叶子节点
+        targetSum = targetSum - root.val;
+        return hasPathSum(root.left, targetSum) || hasPathSum(root.right, targetSum);
+    };
+
+    //运行结果：运行时间击败89.64%(88ms)，内存消耗击败28.36%(41.8mb)
+
+
+    /*方法2：bfs 迭代*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {number} targetSum
+     * @return {boolean}
+     */
+    var hasPathSum = function(root, targetSum) {
+        // 根节点为空
+        if (!root) return false;
+        let queue = [];
+        let queueSum = [];
+        //初始化
+        queue.push(root);
+        queueSum.push(root.val);
+        //BFS
+        while (queue.length) {
+            let cur = queue.shift();
+            let temp = queueSum.shift();
+            if (!cur.left && !cur.right && targetSum === temp) {
+                return true;
+            }
+            if (cur.left) {
+                queue.push(cur.left);
+                queueSum.push(cur.left.val + temp);
+            }
+            if (cur.right) {
+                queue.push(cur.right);
+                queueSum.push(cur.right.val + temp);
+            }
+
+
+        }
+        return false;
+    };
+    //运行结果：运行时间击败95.91%(84ms)，内存消耗击败6.04%(42.7mb)
+
+
+</script>
+</body>
+</html>

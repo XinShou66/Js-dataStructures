@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>验证二叉搜索树</title>
+</head>
+<body>
+<script>
+    /*给定一个二叉树，判断其是否是一个有效的二叉搜索树。
+    假设一个二叉搜索树具有如下特征：
+    节点的左子树只包含小于当前节点的数。
+    节点的右子树只包含大于当前节点的数。
+    所有左子树和右子树自身必须也是二叉搜索树。*/
+
+    /********************************** 方法1：递归 ****************************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isValidBST = function(root) {
+        return helper(root, -Infinity, Infinity);
+
+        function helper(root, small, big) {
+            if (!root) return true;
+            if (root.val <= small || root.val >= big) {
+                return false;
+            }
+            //左侧节点要小于根节点的值，右侧节点要大于根节点的值
+            return helper(root.left, small, root.val) && helper(root.right, root.val, big);
+        }
+
+    };
+
+    //运行结果：运行时间击败62.61%(92ms)，内存消耗击败17.47%(40.3mb)
+
+
+    /********************************** 方法2：中序遍历 ****************************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isValidBST = function(root) {
+        let arr = [];
+        function inorder(node) {
+            if (node) {
+                inorder(node.left);
+                arr.push(node.val);
+                inorder(node.right);
+            }
+        }
+        inorder(root);
+        for (let i = 0; i < arr.length - 1; i++) {
+            if (arr[i] >= arr[i+1]) {
+                return false;
+            }
+        }
+        return true;
+
+    };
+
+    //运行结果：运行时间击败20.94%(108ms)，内存消耗击败21.76%(42.3mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从尾到头打印链表</title>
+</head>
+<body>
+<script>
+    /*
+    * 输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）
+    * */
+    //注意事项：链表结构、数组的插入方法
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @return {number[]}
+     */
+    var reversePrint = function(head) {
+        var newArr = [];
+        var node = head;
+        while (node != null) {
+            newArr.unshift(node.val);
+            node = node.next;
+        }
+        return newArr;
+    };
+
+    //运行结果：运行时间击败75.33%(92ms)，内存消耗击败65.18%(39.8mb)
+</script>
+</body>
+</html>

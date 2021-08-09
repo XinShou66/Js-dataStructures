@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>N叉树的最大深度</title>
+</head>
+<body>
+<script>
+    /*给定一个 N 叉树，找到其最大深度。
+    最大深度是指从根节点到最远叶子节点的最长路径上的节点总数。
+    N 叉树输入按层序遍历序列化表示，每组子节点由空值分隔（请参见示例）。*/
+
+    /**************************** 方法1：自底向上 dfs 后序遍历****************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val,children) {
+     *    this.val = val;
+     *    this.children = children;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {number}
+     */
+    var maxDepth = function(root) {
+        if (!root) return 0;
+        let depth = 1;
+        for (let i = 0; i < root.children.length; i++) {
+            depth = Math.max(depth, maxDepth(root.children[i]) + 1);
+        }
+        return depth;
+    };
+
+    //运行结果：运行时间击败85.61%(96ms)，内存消耗击败74.50%(40.3mb)
+
+    /**************************** 方法3：bfs 层序遍历****************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val,children) {
+     *    this.val = val;
+     *    this.children = children;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {number}
+     */
+    var maxDepth = function(root) {
+        if (!root) return 0;
+
+        let queue = [];
+        let maxDepth = 0;
+        //初始化
+        queue.push(root);
+        //BFS
+        while (queue.length) {
+            let length = queue.length;
+            for (let i = 0; i < length; i++) {
+                let cur = queue.shift();
+                for (let v of cur.children) {
+                    if (v) {
+                        queue.push(v);
+                    }
+                }
+            }
+            maxDepth++;
+        }
+        return maxDepth;
+    };
+
+    //运行结果：运行时间击败50.09%(108ms)，内存消耗击败48.64%(40.8mb)
+
+</script>
+</body>
+</html>

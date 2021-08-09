@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对称的二叉树</title>
+</head>
+<body>
+<script>
+    /*请实现一个函数，用来判断一棵二叉树是不是对称的。
+    如果一棵二叉树和它的镜像一样，那么它是对称的。*/
+
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isSymmetric = function(root) {
+        return !root ? true : recur(root.left,root.right);
+    };
+    var recur = function(L,R) {
+        if (!L && !R) return true;
+        if (!L || !R || L.val != R.val) return false;
+        //左节点的左子节点与右节点的右子节点进行比较，左节点的右子节点与右节点的左子节点进行比较
+        return recur(L.left,R.right) && recur(L.right,R.left);
+    };
+
+
+    //运行结果：运行时间击败57.72%(96ms)，内存消耗击败77.85%(39.9mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组中出现次数超过一半的数字</title>
+</head>
+<body>
+<script>
+    /*数组中有一个数字出现的次数超过数组长度的一半，请找出这个数字。
+    你可以假设数组是非空的，并且给定的数组总是存在多数元素。*/
+
+    /*摩尔投票法*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var majorityElement = function(nums) {
+        let majority = 0;   //用来存放超过一半的数
+        let count = 0;  // 用来消除不同的数，遇到相同的加一，遇到不同的减一
+        for (let i = 0; i < nums.length; i++) {
+            if (count === 0) {
+                majority = nums[i];
+            }
+            if ( nums[i] === majority) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+        return majority;
+    };
+
+    //运行结果：运行时间击败74.75%(88ms)，内存消耗击败98.02%(39.7mb)
+
+    /*排序取中间法*/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    /*1.冒泡排序*/
+    var majorityElement = function(nums) {
+        let length = nums.length;
+        for (let j = length - 1; j >= 0 ; j--) {
+            for (let i = 0; i < j; i++) {
+                if (nums[i] > nums[i+1]) {
+                    let temp = nums[i];
+                    nums[i] = nums[i+1];
+                    nums[i+1] = temp;
+                }
+            }
+        }
+        return nums[Math.floor(length/2)];
+    };
+
+    //运行结果：运行时间击败5.05%(2536ms)，内存消耗击败76.38%(40.1mb)
+
+
+    /*2.数组sort排序*/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var majorityElement = function(nums) {
+        nums.sort(function(a,b) {
+            return a - b;
+        })
+        return nums[Math.floor(nums.length/2)];
+    };
+    //运行结果：运行时间击败42.29%(96ms)，内存消耗击败17.40%(42.1mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树的中序遍历</title>
+</head>
+<body>
+<script>
+    /************************** 队列和栈中有该题dfs **************************/
+    /*给定一个二叉树的根节点 root ，返回它的 中序 遍历。*/
+    /*进阶:
+            递归算法很简单，你可以通过迭代算法完成吗？*/
+
+    /********************************************* 方法1：递归 *********************************************/
+    /**
+    * Definition for a binary tree node.
+    * function TreeNode(val, left, right) {
+    *     this.val = (val===undefined ? 0 : val)
+        *     this.left = (left===undefined ? null : left)
+        *     this.right = (right===undefined ? null : right)
+            * }
+    */
+    /**
+     * @param {TreeNode} root
+     * @return {number[]}
+     */
+    var inorderTraversal = function(root) {
+        let res = [];
+        function inOrder (node) {
+            if (node) {
+                inOrder(node.left);
+                res.push(node.val);
+                inOrder(node.right);
+            }
+        }
+        inOrder(root);
+        return res;
+    };
+
+    //运行结果：运行时间击败61.25%(84ms)，内存消耗击败12.29%(38.2mb)
+
+
+    /********************************************* 方法2：迭代 *********************************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {number[]}
+     */
+    var inorderTraversal = function(root) {
+        let res = [];
+        let stack = [];
+        while (root || stack.length) {
+            while (root) {
+                //先遍历左子节点然后根节点
+                //栈的后进先出原则，所以根节点先进，左子节点后进
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            res.push(root.val);
+            //对右子节点做处理,转换右子树
+            root = root.right;
+
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败90.88%(76ms)，内存消耗击败29.78%(38mb)
+
+</script>
+</body>
+</html>

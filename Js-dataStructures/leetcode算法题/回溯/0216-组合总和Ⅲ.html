@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组合总和Ⅲ</title>
+</head>
+<body>
+<script>
+    /*找出所有相加之和为 n 的 k 个数的组合。组合中只允许含有 1 - 9 的正整数，并且每种组合中不存在重复的数字。
+    说明：
+        所有数字都是正整数。
+        解集不能包含重复的组合。*/
+
+    /************************ 与077-组合 解题方法相似 *************************/
+
+    /**
+     * @param {number} k
+     * @param {number} n
+     * @return {number[][]}
+     */
+    var combinationSum3 = function(k, n) {
+        let res = [];
+        backTrack([], 1, 0);
+        return res;
+
+        function backTrack(arr, index, sum) {
+            if (arr.length === k && sum == n) {
+                res.push([...arr]);  // 拷贝一份arr，推入res
+                return;
+            }
+
+            for (let i = index; i <= 9; i++) {
+                arr.push(i); // 选择
+                backTrack(arr, i + 1, sum + i); // 向下继续选择
+                arr.pop(); // 撤销选择
+
+            }
+
+        }
+    };
+
+    //运行结果：运行时间击败63.83%(84ms)，内存消耗击败73.96%(37.8mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>N叉树的后序遍历</title>
+</head>
+<body>
+<script>
+    /*给定一个 N 叉树，返回其节点值的 后序遍历 。
+    N 叉树 在输入中按层序遍历进行序列化表示，每组子节点由空值 null 分隔（请参见示例）。
+    进阶：
+        递归法很简单，你可以使用迭代法完成此题吗?*/
+
+    /********************************************* 方法1：递归 *********************************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val,children) {
+     *    this.val = val;
+     *    this.children = children;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {number[]}
+     */
+    var postorder = function(root) {
+        let res = [];
+        function postorderTraversal(node) {
+            if (node) {
+                for (let v of node.children) {
+                    postorderTraversal(v);
+                }
+                res.push(node.val);
+            }
+        }
+        postorderTraversal(root);
+
+        return res;
+    };
+
+    //运行结果：运行时间击败96.34%(96ms)，内存消耗击败57.80%(41.1mb)
+
+    /********************************************* 方法2：迭代 *********************************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val,children) {
+     *    this.val = val;
+     *    this.children = children;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {number[]}
+     */
+    var postorder = function(root) {
+        let res = [];
+        let stack = [];
+        if (root) stack.push(root);
+        while (stack.length) {
+            let cur = stack.pop();
+            //第一步，先访问根节点,从前添加，输出是就是先孩子后根节点
+            res.unshift(cur.val);
+            //第二步，处理孩子节点
+            //栈的后进先出原则与给定的是层序遍历的序列化以及结果数组要从前面添加
+            for (let i = 0; i < cur.children.length; i++) {
+                stack.push(cur.children[i]);
+            }
+        }
+
+        return res;
+    };
+
+    //运行结果：运行时间击败92.40%(100ms)，内存消耗击败73.68%(40.9mb)
+
+</script>
+</body>
+</html>

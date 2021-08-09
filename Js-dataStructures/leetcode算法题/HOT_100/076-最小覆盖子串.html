@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>076-最小覆盖子串</title>
+</head>
+<body>
+<script>
+  /*给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。
+    如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+    注意：如果 s 中存在这样的子串，我们保证它是唯一的答案。*/
+
+  /************ 滑动窗口 *************/
+  /**
+   * @param {string} s
+   * @param {string} t
+   * @return {string}
+   */
+  var minWindow = function(s, t) {
+      let res = '';
+      let map = {}; //存储目标字符和对应缺失的个数
+      let missType = 0; //存储不同目标字符的个数
+      for (const c of t) {
+          if (!map[c]) {
+              missType++;
+              map[c] = 1;
+          } else {
+              map[c]++;
+          }
+      }
+
+      let l = 0, r = 0; //左右指针
+      while (r < s.length) {//左边界先不动，扩张右边界，直到找到所有目标字符
+          let rightChar = s[r];
+          if (map[rightChar] !== undefined) {// 是目标字符，它的缺失个数-1
+              map[rightChar]--;
+          }
+          if (map[rightChar] == 0) {// 它的缺失个数新变为0，缺失的种类数就-1
+              missType--;
+          }
+          while (missType == 0) { //所有目标字符都已找到，开始收缩左边界
+
+
+              //左指针是逐渐右移的，左指针指向的字符是要被丢弃的
+              let leftChar = s[l];
+
+              let newRes = s.slice(l, r + 1)
+              if (!res || newRes.length < res.length) {//res为空或大于新的符合条件的字符串时，需要更新最小结果
+                  res = newRes;
+              }
+              if (map[leftChar] !== undefined) {// 被舍弃的是目标字符，缺失个数+1
+                  map[leftChar]++;
+              }
+              if (map[leftChar] > 0) {
+                  // 如果缺失个数新变为>0，缺失的种类+1(此时会跳出该while循环，扩张右边界，然后再缩小左边界，找最小的符合要求的滑动窗口)
+                  missType++;
+              }
+
+              l++;
+          }
+          r++;
+      }
+      return res;
+  };
+
+  //运行结果：运行时间击败91.42%(104ms)，内存消耗击败25.36%(42.3mb)
+
+
+
+
+  function Pagination(container, total, current) {
+      this.total = total;
+      this.current = current;
+      this.html = html;
+      this.val = val;
+      this.el = document.querySelector('.pagination'); //TODO: 创建分页组件根节点
+      if (!this.el) return;
+
+      this.el.innerHTML = this.html();
+      container.appendChild(this.el);
+      //返回高亮的结果
+      this.val();
+      if (this.total <= 1) {
+          this.el.className = 'hide'; //TODO: 判断是否需要隐藏当前元素
+      }
+
+
+      function html() {
+          //1.如果总页数小于等于1，不需要填充字符串
+          if (this.total <= 1) return '';
+
+          //TODO: 生成组件的内部html字符串
+          var inHtml = '';
+          //2.如果总页数在2-5页，只需显示页数，不用显示首页和末页
+          if (this.total <= 5) {
+              //范围会在1 ~ this.total
+              for (var i = 1; i <= this.total; i++) {
+                  if (i == this.current) {
+                      inHtml += '<li class="current">' + i + '</li>'
+                  } else {
+                      inHtml += '<li>' + i + '</li>'
+                  }
+              }
+          } else {
+              //3.如果总页数在6页以上
+              /*** 3.1 高亮页小于等于5 ***/
+              if (this.current <= 5) {
+                  /*** 3.1.1 高亮页+2 <= 5,不需要换页 ***/
+                  //此种情况不会出现首页
+                  if (this.current + 2 <= 5) {
+                      //范围会在1 ~ 5
+                      for (var i = 1; i <= 5; i++) {
+                          if (i == this.current) {
+                              inHtml += '<li class="current">' + i + '</li>'
+                          } else {
+                              inHtml += '<li>' + i + '</li>'
+                          }
+                      }
+
+                  } else {
+                      /*** 3.1.2 高亮页+2 > 5,需要换页 ***/
+                      //此种情况需要首页
+                      inHtml += '<li>首页</li>'
+                      //保持高亮页前后各有2页
+                      for (var i = this.current - 2; i <= this.current + 2; i++) {
+                          if (i == this.current) {
+                              inHtml += '<li class="current">' + i + '</li>'
+                          } else {
+                              inHtml += '<li>' + i + '</li>'
+                          }
+                      }
+                  }
+                  //最后加上末页
+                  inHtml += '<li>末页</li>'
+              } else {
+                  /* 3.2 高亮页大于5 ***/
+                  /*** 3.2.1 高亮页满足在最中间的情况（尽量让高亮页前后都各有两页） ***/
+                  //此种情况肯定会有首页
+                  inHtml += '<li>首页</li>'
+                  if (this.current + 2 <= this.total) {
+                      for (var i = this.current - 2; i <= this.current + 2; i++) {
+                          if (i == this.current) {
+                              inHtml += '<li class="current">' + i + '</li>'
+                          } else {
+                              inHtml += '<li>' + i + '</li>'
+                          }
+                      }
+                  } else {
+                      /*** 3.2.2 高亮页不满足在最中间的情况，第一个显示的与最后一个显示 ***/
+                      for (var i = this.total - 4; i <= this.total; i++) {
+                          if (i == this.current) {
+                              inHtml += '<li class="current">' + i + '</li>'
+                          } else {
+                              inHtml += '<li>' + i + '</li>'
+                          }
+                      }
+                  }
+
+                  if (this.current+2 < this.total) {
+                      inHtml += '<li>末页</li>'
+                  }
+
+              }
+
+          }
+          return inHtml;
+      }
+
+      function val(current) {
+          if (arguments.length === 0) return this.current;
+          if (current < 1 || current > this.total || current === this.current) return;
+          this.current = current;
+          this.el.innerHTML = this.html();
+      };
+  }
+</script>
+</body>
+</html>

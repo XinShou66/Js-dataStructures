@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0647-回文子串</title>
+</head>
+<body>
+<script>
+   /*给定一个字符串，你的任务是计算这个字符串中有多少个回文子串。
+    具有不同开始位置或结束位置的子串，即使是由相同的字符组成，也会被视作不同的子串。*/
+
+   /**
+    * @param {string} s
+    * @return {number}
+    */
+   var countSubstrings = function(s) {
+       const n = s.length;
+       let res = 0;
+       //需要考虑回文长度是奇数和回文长度是偶数的两种情况。如果回文长度是奇数，那么回文中心是一个字符；如果回文长度是偶数，那么中心是两个字符
+       //长度为n的字符串，会产生2n-1个回文中心
+       for (let center = 0; center < 2 * n - 1; i++) {
+           //长度为奇数时左右回文中心相等，长度为偶数时，右回文中心比左回文中心相等
+           let l = center / 2, r = l + center % 2;
+           while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+               l--;
+               r++;
+               res++;
+           }
+       }
+       return res;
+   };
+
+   //运行结果：运行时间击败68.69%(104ms)，内存消耗击败53.15%(44.1mb)
+
+
+   /**
+    * @param {string} s
+    * @return {number}
+    */
+   var countSubstrings = function(s) {
+       let res = 0;
+       for (let i = 0; i < s.length; i++) {
+           let str = '';//正向组合字符串
+           let restr = '';//反向组合字符串
+           for (let j = i; j < s.length; j++) {
+               str += s[j];
+               restr = s[j] + restr;
+               if (str == restr) {
+                   res++;
+               }
+           }
+       }
+
+       return res;
+   };
+
+   //运行结果：运行时间击败18.20%(264ms)，内存消耗击败57.03%(43.9mb)
+
+</script>
+</body>
+</html>

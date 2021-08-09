@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0581-最短无序连续子数组</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums ，你需要找出一个 连续子数组 ，
+    如果对这个子数组进行升序排序，那么整个数组都会变为升序排序。
+    请你找出符合题意的 最短 子数组，并输出它的长度。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findUnsortedSubarray = function(nums) {
+        //浅复制原数组，并排序做为参考
+        const temp = nums.slice();
+        temp.sort((a,b) => a - b);
+        //定义左右指针，找到符合题意的子数组的左右边界
+        let i = 0, j = temp.length - 1;
+        while (i <= j) {
+            if (temp[i] == nums[i]) {//如果相同，左指针一直右移
+                i++;
+            } else {//如果不同（此时子数组的左边界已经确定），则从右开始确定子数组的右边界
+                if (temp[j] == nums[j]) {//如果相同，右指针一直左移
+                    j--;
+                } else {//如果不同，此时左右边界都确定了，就可以得出最短子数组的长度返回了
+                    return j - i + 1;
+                }
+            }
+
+        }
+        //如果前面的循环里没有返回，说明原数组nums是有序的，最短子数组的长度为0
+        return 0;
+    };
+
+    //运行结果：运行时间击败60.49%(116ms)，内存消耗击败58.44%(41.9mb)
+
+</script>
+</body>
+</html>

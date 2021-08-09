@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0121-买卖股票的最佳时机</title>
+</head>
+<body>
+<script>
+    /*给定一个数组 prices ，它的第 i 个元素 prices[i] 表示一支给定股票第 i 天的价格。
+    你只能选择 某一天 买入这只股票，并选择在 未来的某一个不同的日子 卖出该股票。设计一个算法来计算你所能获取的最大利润。
+    返回你可以从这笔交易中获取的最大利润。如果你不能获取任何利润，返回 0 。*/
+
+    /************************* 与剑指0ffer 063-股票的最大利润 解题方法相同 **************************/
+
+
+    /*********************动态规划******************/
+    /*前i日最大利润=max(前(i−1)日最大利润,第i日价格−前i日最低价格)
+        dp[i]=max(dp[i−1],prices[i]−min(prices[0:i]))
+
+        时间复杂度降低：
+            优化后的状态转移方程为：
+            dp[i]=max(dp[i−1],prices[i]−min(cost,prices[i]) cost为每日的最低价格
+        空间复杂度降低：
+            由于 dp[i] 只与 dp[i - 1] , prices[i] , cost 相关，因此可使用一个变量（记为利润 profit ）代替 dp 列表。
+            优化后的状态转移方程为：
+            profit=max(profit,prices[i]−min(cost,prices[i])
+    */
+
+    /**
+     * @param {number[]} prices
+     * @return {number}
+     */
+    var maxProfit = function(prices) {
+        let profit = 0; //定义最大利润，初始值为0
+        let cost = Infinity;    //定义最低价格
+        for (let i = 0; i < prices.length; i++) {
+            cost = Math.min(cost,prices[i]) //更新最低价格
+            //最大利润为前一天的最大利润与今天的价格减去最低价格的最大值
+            profit = Math.max(profit,prices[i] - cost);
+        }
+        return profit;
+    };
+
+    //运行结果：运行时间击败85.23%(84ms)，内存消耗击败69.27%(39.4mb)
+</script>
+</body>
+</html>

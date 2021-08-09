@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组中的逆序对</title>
+</head>
+<body>
+<script>
+    /*在数组中的两个数字，如果前面一个数字大于后面的数字，
+    则这两个数字组成一个逆序对。输入一个数组，求出这个数组中的逆序对的总数。*/
+
+    /*分治思想---> 归并排序*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var reversePairs = function(nums) {
+        let count = 0;  //定义逆序对的个数
+        mergeSort(nums);    //对数组执行归并排序
+        return count;   //返回逆序对个数
+
+        //1.将大数组分成多个小数组，并调用用来排序的辅助函数
+        function mergeSort (nums) {
+            if (nums.length < 2) return nums;
+            let mid = parseInt(nums.length/2);
+            let left = mergeSort(nums.slice(0,mid));
+            let right = mergeSort(nums.slice(mid,nums.length));
+            //将分成的左右两个小数组进行排序
+            return merge(left,right);
+        }
+
+        //2.合并和排序小数组来产生大数组，直到回到原始数组并排序完成
+        function merge (left,right) {
+            let temp = [];      //建立数组用来存放排序后的数
+            let i = 0, j = 0;   //创建两个指针，分别指向左右两个数组的第一个元素，便于后边两个数组数比较
+            let leftLength = left.length;
+            let rightLength = right.length;
+            let length = leftLength + rightLength;
+            for (let index = 0; index < length; index++) {
+                if (i >= leftLength) {
+                    //表明左边数组没有数了，将右边数组指针指向的数放进辅助数组，指针右移
+                    temp[index] = right[j];
+                    j++;
+                } else if (j >= rightLength) {
+                    //表明右边数组没有数了，将左边数组指针指向的数放进辅助数组，指针右移
+                    temp[index] = left[i];
+                    i++;
+                } else if (left[i] <= right[j]) {
+                    //左侧数组指针指向的数小于右侧数组指针指向的数，不构成逆序对，左侧数放进辅助数组，指针右移
+                    temp[index] = left[i];
+                    i++;
+                } else {
+                    //左侧数组指针指向的数大于右侧数组指针指向的数，构成逆序对，右侧数放进辅助数组，指针右移
+                    //左侧数组指针指向的数及以后数的个数即为逆序对的个数
+                    temp[index] = right[j];
+                    j++;
+                    count += leftLength - i;
+                }
+            }
+            return temp;//将排序后的小数组返回,递归调用时逐渐合并
+
+        }
+    };
+
+    //运行结果：运行时间击败65.73%(200ms)，内存消耗击败49.54%(55.4mb)
+
+
+
+
+
+
+    /*********************************************************暴力法会超时，不可用****************************************************/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var reversePairs = function(nums) {
+        const length = nums.length;
+        if (length == 0 || length ==1) return 0;
+        let res = 0;
+        for (let i = 0; i < nums.length - 1; i++) {
+            for (let j = i + 1; j < nums.length; j++) {
+                if (nums[i] > nums[j]) {
+                    res++;
+                }
+            }
+
+        }
+        return res;
+    };
+    /*********************************************************暴力法会超时，不可用****************************************************/
+</script>
+</body>
+</html>

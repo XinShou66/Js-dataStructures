@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>不用加减乘除做加法</title>
+</head>
+<body>
+<script>
+    /*写一个函数，求两个整数之和，要求在函数体内不得使用 “+”、“-”、“*”、“/” 四则运算符号。*/
+
+    /**
+     * @param {number} a
+     * @param {number} b
+     * @return {number}
+     */
+    var add = function(a, b) {
+        //等于n(a^b) 与 s(a&b << 1)的和
+        while (b) {
+            let c = (a & b) << 1; //进位运算(与运算左移1位)
+            a ^= b; //非进位和(异或运算)
+            b = c;
+        }
+        return a;
+    };
+
+    //运行结果：运行时间击败17.29%(92ms)，内存消耗击败25.75%(37.7mb)
+
+</script>
+</body>
+</html>

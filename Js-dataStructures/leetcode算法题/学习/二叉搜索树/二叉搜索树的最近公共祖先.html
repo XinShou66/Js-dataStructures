@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树的最近公共祖先</title>
+</head>
+<body>
+<script>
+    /******************************** 与剑指offer 068-Ⅰ-二叉搜索树的最近公共祖先 解法相同 ***********************************/
+
+
+    /*给定一个二叉搜索树, 找到该树中两个指定节点的最近公共祖先。
+        百度百科中最近公共祖先的定义为：“对于有根树 T 的两个结点 p、q，最近公共祖先表示为一个结点 x，
+        满足 x 是 p、q 的祖先且 x 的深度尽可能大（一个节点也可以是它自己的祖先）。”*/
+
+    /*方法1：递归*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {TreeNode} p
+     * @param {TreeNode} q
+     * @return {TreeNode}
+     */
+    /*
+            核心思路：
+            1. 当 传入的祖先节点 同时大于/小于 p、q节点 更新祖先节点位置
+                a. root 同时小于 p、q 基于BST的特性可知 期望的祖先节点 应该在右子树 root = root.right
+                b. root 同时大于 p、q 基于BST的特性可知 期望的祖先节点 应该在左子树 root = root.left
+            2. 当遇到/第一次 祖先节点root 不同时大于或小于 p、q的节点 即为我我们期望的最近公共祖先节点
+        */
+    var lowestCommonAncestor = function(root, p, q) {
+        if (!root || root == p || root == q) return root;
+        if (p.val < root.val && q.val < root.val) {
+            return lowestCommonAncestor(root.left,p,q);
+        } else if (p.val > root.val && q.val > root.val){
+            return lowestCommonAncestor(root.right,p,q);
+        } else {
+            return root;
+        }
+    };
+
+
+    //运行结果：运行时间击败77.67%(104ms)，内存消耗击败94.70%(47.4mb)
+
+
+    /*方法2：迭代*/
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {TreeNode} p
+     * @param {TreeNode} q
+     * @return {TreeNode}
+     */
+    var lowestCommonAncestor = function(root, p, q) {
+        //因为是二叉搜索树，可以将两个节点放在一起遍历比较，可以省去挨个遍历储存路径需要的空间
+        while(true){
+            if (p.val < root.val && q.val < root.val) {
+                //如果当前节点的值大于 p 和 q 的值，说明 p 和 q应该在当前节点的左子树
+                //因此将当前节点移动到它的左子节点；
+                root = root.left;
+            } else if(p.val > root.val && q.val > root.val) {
+                //如果当前节点的值大于 p 和 q 的值，说明 p 和 q应该在当前节点的左子树
+                //因此将当前节点移动到它的左子节点；
+                root = root.right;
+            } else {
+                //如果当前节点的值不满足上述两条要求，那么说明当前节点就是「分岔点」
+                //此时，p 和 q 要么在当前节点的不同的子树中，要么其中一个就是当前节点。
+                break;
+            }
+        }
+        return root;
+    };
+    //运行结果：运行时间击败10.70%(128ms)，内存消耗击败97.58%(47.3mb)
+
+</script>
+</body>
+</html>

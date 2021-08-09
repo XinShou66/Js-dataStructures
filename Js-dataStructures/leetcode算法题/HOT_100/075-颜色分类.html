@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>075-颜色分类</title>
+</head>
+<body>
+<script>
+    /*给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，
+    使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+    此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。*/
+
+
+    /**1.冒泡排序
+        * 对未排序的各元素从头到尾依次比较相邻的两个元素大小关系
+            如果左边的队员高, 则两队员交换位置
+            向右移动一个位置, 比较下面两个队员
+            当走到最右端时, 最高的队员一定被放在了最右边
+            按照这个思路, 从最左端重新开始, 这次走到倒数第二个位置的队员即可.
+            依次类推, 就可以将数据排序完成
+        * */
+
+    /**
+     * @param {number[]} nums
+     * @return {void} Do not return anything, modify nums in-place instead.
+     */
+    var sortColors = function(nums) {
+        let n = nums.length;
+        for (let j = n - 1; j >= 0; j--) {
+            for (let i = 0; i < j; i++) {
+                if (nums[i] > nums[i+1]) {
+                    let temp = nums[i];
+                    nums[i] = nums[i+1];
+                    nums[i+1] = temp;
+                }
+            }
+        }
+    };
+
+    //运行结果：运行时间击败7.25%(120ms)，内存消耗击败100%(36.5mb)
+
+</script>
+</body>
+</html>

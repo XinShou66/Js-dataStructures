@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0215-数组中的第K个最大元素</title>
+</head>
+<body>
+<script>
+   /*在未排序的数组中找到第 k 个最大的元素。请注意，你需要找的是数组排序后的第 k 个最大的元素，而不是第 k 个不同的元素。
+   *说明:
+        你可以假设 k 总是有效的，且 1 ≤ k ≤ 数组的长度。
+   * */
+
+   /**方法1：库函数排序----面试时肯定不行*/
+
+   var findKthLargest = function(nums, k) {
+       nums.sort((a, b) => b - a);
+       return nums[k-1];
+   };
+
+   //运行结果：运行时间击败81.62%(88ms)，内存消耗击败44.00%(39.6mb)
+
+    /**方法2：快速排序 -- 实现*/
+
+   /**
+    * @param {number[]} nums
+    * @param {number} k
+    * @return {number}
+    */
+   var findKthLargest = function(nums, k) {
+       //1.调用快速排序
+       quick(0, nums.length-1)
+       //2.返回第K大元素
+       return nums[nums.length-k]
+
+       //快速排序
+       function quick(left, right) {
+           let index; //声明该变量用来将数组分区，分为较小值数组和较大值数组
+           if (nums.length > 1) {//数组长度大于1才有排序的必要
+               index = partition(left, right); //获取划分为两个数组的分界点
+               if (left < index - 1) {
+                   quick(left, index-1) //对左侧较主元小数组进行递归操作
+               }
+               if (right > index) {
+                   quick(index, right) //对右侧较主元大数组进行递归操作
+               }
+           }
+           return nums;
+       }
+
+       //划分过程
+       function partition(left, right) {
+           //将当前数组划分为左侧是小于主元的元素，右侧是大于主元的元素，然后返回左指针索引
+           const pivot = nums[Math.floor((left + right) / 2)];//选择主元（此处选择中间元素）
+           //定义两个指针
+           let i = left;
+           let j = right;
+
+           while (i <= j) {//只要两个指针没有相互交错，就执行划分操作
+               while(nums[i] < pivot) { //移动左指针，找到一个比主元大的元素
+                   i++;
+               }
+               while(nums[j] > pivot) { //移动右指针，找到一个比主元小的元素
+                   j--;
+               }
+               if (i <= j) {//左项比右项大，交换两个元素
+                   swap(i, j)
+                   i++;
+                   j--;
+               }
+           }
+           return i;//返回左指针的索引
+       }
+
+       function swap(m, n) {
+           let temp = nums[m];
+           nums[m] = nums[n];
+           nums[n] = temp;
+       }
+   };
+   //运行结果：运行时间击败71.19%(92ms)，内存消耗击败79.88%(39.1mb)
+
+
+</script>
+</body>
+</html>

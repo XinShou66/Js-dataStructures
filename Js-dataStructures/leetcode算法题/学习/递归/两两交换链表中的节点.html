@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>两两交换链表中的节点</title>
+</head>
+<body>
+<script>
+    /*给定一个链表，两两交换其中相邻的节点，并返回交换后的链表。
+    你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。*/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    var swapPairs = function(head) {
+        if (!head || !head.next) {
+            return head;
+        }
+        //下一个小子链表的头节点
+        let nextNewHead = swapPairs(head.next.next);
+        //交换前两个节点的位置
+        let temp = head.next;
+        temp.next = head;
+        //让原来的头节点指向下一个头节点（将小子链表进行连接）
+        head.next = nextNewHead;
+        //返回新的的头节点
+        return temp;
+
+    };
+
+    //运行结果：运行时间击败44.39%(88ms)，内存消耗击败16.28%(38.7mb)
+
+</script>
+</body>
+</html>

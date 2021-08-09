@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>环形链表Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个链表，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+    为了表示给定链表中的环，我们使用整数 pos 来表示链表尾连接到链表中的位置（索引从 0 开始）。
+    如果 pos 是 -1，则在该链表中没有环。注意，pos 仅仅是用于标识环的情况，并不会作为参数传递到函数中。
+    说明：
+        不允许修改给定的链表。
+    进阶：
+        你是否可以使用 O(1) 空间解决此题？*/
+
+    /********************************** 方法1：哈希Set() ---时间复杂度O(N)--空间复杂度O(N)****************************/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     */
+
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    var detectCycle = function(head) {
+        const visited = new Set();
+        while (head) {
+            if (visited.has(head)) {
+                return head;
+            }
+            visited.add(head);
+            head = head.next;
+        }
+        return null;
+
+    };
+
+    //运行结果：运行时间击败36.23%(104ms)，内存消耗击败18.91%(40.7mb)
+
+
+
+
+    /********************************** 方法2：快慢指针 ---时间复杂度O(N)--空间复杂度O(1)****************************/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     */
+
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    var detectCycle = function(head) {
+        if (!head || !head.next) return null;
+        let fast = head;
+        let slow = head;
+        let start = head;
+        while (fast && fast.next) {
+            fast = fast.next.next;
+            slow = slow.next;
+            if (slow == fast) {
+                while (slow != start) {
+                    start = start.next;
+                    slow = slow.next
+                }
+                return slow;
+            }
+        }
+        return null;
+    };
+
+    //运行结果：运行时间击败82.99%(92ms)，内存消耗击败94.39%(40.1mb)
+
+</script>
+</body>
+</html>

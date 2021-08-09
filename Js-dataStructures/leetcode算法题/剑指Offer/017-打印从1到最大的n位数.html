@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>打印从1到最大的n位数</title>
+</head>
+<body>
+<script>
+    /*输入数字 n，按顺序打印出从 1 到最大的 n 位十进制数。
+    比如输入 3，则打印出 1、2、3 一直到最大的 3 位数 999。
+    */
+
+    /**
+     * @param {number} n
+     * @return {number[]}
+     */
+    var printNumbers = function(n) {
+        let num = '';
+        let numArr = [];
+        for (let i = 1; i <= n; i++) {
+            num = num + '9';
+        }
+        printNum = Number(num)
+        for (let i = 1; i <= printNum; i++) {
+            numArr.push(i);
+        }
+        return numArr;
+    };
+    //运行结果：运行时间击败26.14%(140ms)，内存消耗击败38.01%(48.6mb)
+
+</script>
+</body>
+</html>

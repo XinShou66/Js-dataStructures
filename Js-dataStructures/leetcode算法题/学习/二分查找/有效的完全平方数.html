@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>有效的完全平方数</title>
+</head>
+<body>
+<script>
+    /*给定一个 正整数 num ，编写一个函数，如果 num 是一个完全平方数，则返回 true ，否则返回 false 。
+    进阶：不要 使用任何内置的库函数，如  sqrt 。*/
+
+
+    /*方法1：二分法*/
+    /**
+     * @param {number} num
+     * @return {boolean}
+     */
+    var isPerfectSquare = function(num) {
+        if (num < 2) {
+            return true;
+        }
+        let left = 0, right = parseInt(num / 2);
+        while (left <= right) {
+            let mid = Math.floor((left + right) / 2);
+            let powNum = mid * mid;
+            if (powNum == num) {
+                return true;
+            } else if(powNum < num) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return false;
+    };
+
+    //运行结果：运行时间击败78.56%(80ms)，内存消耗击败62.66%(37.7mb)
+
+
+    /*方法2：牛顿迭代法*/
+</script>
+</body>
+</html>

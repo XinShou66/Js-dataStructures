@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>同构字符串</title>
+</head>
+<body>
+<script>
+    /*给定两个字符串 s 和 t，判断它们是否是同构的。
+    如果 s 中的字符可以按某种映射关系替换得到 t ，那么这两个字符串是同构的。
+    每个出现的字符都应当映射到另一个字符，同时不改变字符的顺序。
+    不同字符不能映射到同一个字符上，相同字符只能映射到同一个字符上，字符可以映射到自己本身。*/
+    /*提示：
+        可以假设 s 和 t 长度相同。*/
+
+    /**
+     * @param {string} s
+     * @param {string} t
+     * @return {boolean}
+     */
+    var isIsomorphic = function(s, t) {
+        let sMap = new Map();//以s中的字符为健，以t中对应位置的字符为值
+        let tMap = new Map();//以t中的字符为健，以s中对应位置的字符为值
+        for (let i = 0; i < s.length; i++) {//从左至右遍历两个字符串的字符，不断更新两张哈希表
+            //即当前下标index 对应的字符s[index] 已经存在映射且不为 t[index] 或当前下标index 对应的字符 t[index] 已经存在映射且不为 s[index]
+            //说明两个字符串无法构成同构
+            if((sMap.has(s[i]) && sMap.get(s[i]) != t[i]) || (tMap.has(t[i]) && tMap.get(t[i]) != s[i])){
+                return false;
+            } else {
+                sMap.set(s[i], t[i]);
+                tMap.set(t[i], s[i]);
+            }
+        }
+        return true;
+    };
+
+    //运行结果：运行时间击败36.02%(108ms)，内存消耗击败36.47%(40.5mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>12</title>
+    <style>
+        div{
+            width: 100px;
+            height: 100px;
+            background: #bfa;
+        }
+    </style>
+</head>
+<body>
+<div id="cc">1111111</div>
+<script>
+    function jsonp({url,params, callback}) {//要声明一个回调函数，服务器将回调函数与要返回的数据拼接成字符串返回，供页面收到后执行
+        return new Promise((result, reject) => {
+            //1.创建一个script标签
+            let script = document.createElement('script');
+
+            //2.构建script的src
+            params = {...params, callback}; //ES9对象也支持扩展运算符
+            let arr = [];//声明数组用来储存参数的键值对
+            for (let key in params) {
+                arr.push(`${key}=${params[key]}`);
+            }
+            script.src = `${url}?${arr.join('&')}`;
+
+            //3.页面中添加script标签，会向对应的路径请求资源
+            document.appendChild(script);
+
+            //4.会请求到服务器返回的callback函数，调用执行，然后移除script标签
+            window[callback] = function(data) {//data为服务器返回的函数中的参数
+                resolve(data);//修改promise状态为成功，结果为data
+                document.body.removeChild(script);
+            }
+        })
+    }
+
+    //5.执行jsonp函数
+    jsonp({
+        url: 'http://localhost:3000/say',
+        params: {name: '李四',wd: '我爱你'},
+        callback:'show'
+    }).then(res => {//6.jsonp请求成功，打印请求到的结果。
+        console.log(res);
+    })
+
+/*
+    上面这段代码相当于向http://localhost:3000/say?name=李四&wd=我爱你&callback=show这个地址请求数据，
+    然后后台返回show('我不爱你')，最后会运行show()这个函数，打印出'我不爱你'
+* */
+</script>
+</body>
+
+</html>

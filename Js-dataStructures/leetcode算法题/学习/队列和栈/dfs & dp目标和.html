@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dfs目标和</title>
+</head>
+<body>
+<script>
+    /*给定一个非负整数数组，a1, a2, ..., an, 和一个目标数，S。
+    现在你有两个符号 + 和 -。对于数组中的任意一个整数，你都可以从 + 或 -中选择一个符号添加在前面。
+    返回可以使最终数组和为目标数 S 的所有添加符号的方法数。
+    提示：
+        数组非空，且长度不会超过 20 。
+        初始的数组的和不会超过 1000 。
+        保证返回的最终结果能被 32 位整数存下。
+    */
+
+
+    /******************************************* 方法1.动态规划dp *******************************************/
+
+
+
+    /******************************************* 方法2.递归与dfs *******************************************/
+    /**
+     * @param {number[]} nums
+     * @param {number} S
+     * @return {number}
+     */
+    var findTargetSumWays = function(nums, S) {
+        //定义用来记录方法数的变量
+        let count = 0;
+        function dfs(index, sum) {
+            if (nums.length > index) {//每一个元素都会与下一个元素进行加和减两种运算
+                dfs(index + 1, sum + nums[index]);
+                dfs(index + 1, sum - nums[index]);
+            } else {//超出数组长度，说明全部元素已经进行运算
+                if (sum === S) {
+                    count++
+                }
+            }
+        }
+        dfs(0,0)//调用方法，从下标为0的元素开始，sum为0
+        return count;
+    };
+
+    //运行结果：运行时间击败27.77%(2428ms)，内存消耗击败95.46%(37.8mb)
+
+</script>
+</body>
+</html>

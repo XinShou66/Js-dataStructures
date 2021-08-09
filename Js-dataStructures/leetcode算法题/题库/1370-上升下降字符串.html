@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>上升下降字符串</title>
+</head>
+<body>
+<script>
+    /*给你一个字符串 s ，请你根据下面的算法重新构造字符串：
+        从 s 中选出 最小 的字符，将它 接在 结果字符串的后面。
+        从 s 剩余字符中选出 最小 的字符，且该字符比上一个添加的字符大，将它 接在 结果字符串后面。
+        重复步骤 2 ，直到你没法从 s 中选择字符。
+        从 s 中选出 最大 的字符，将它 接在 结果字符串的后面。
+        从 s 剩余字符中选出 最大 的字符，且该字符比上一个添加的字符小，将它 接在 结果字符串后面。
+        重复步骤 5 ，直到你没法从 s 中选择字符。
+        重复步骤 1 到 6 ，直到 s 中所有字符都已经被选过。
+    在任何一步中，如果最小或者最大字符不止一个 ，你可以选择其中任意一个，并将其添加到结果字符串。
+    请你返回将 s 中字符重新排序后的 结果字符串 。*/
+
+    /**
+     * @param {string} s
+     * @return {string}
+     */
+    var sortString = function(s) {
+        //直接创建一个大小为 26 的桶
+        const num = new Array(26).fill(0);
+        //记录每种字符的数量
+        for (let ch of s) {
+            //.charCodeAt()返回字符串第一个字符的 Unicode 编码:
+            //a的Unicode码是97
+            num[ch.charCodeAt() - 'a'.charCodeAt()]++;
+        }
+
+        let res = '';
+        while (res.length < s.length) {
+            //先从未被选择的字符中提取出最长的上升字符串，将其加入答案
+            for (let i = 0; i < 26; i++) {// 顺序遍历，从小到大选
+                if (num[i]) {//如果对应位置不为0（有字符）
+                    //将 Unicode 编码转为一个字符:
+                    res += String.fromCharCode(i + 'a'.charCodeAt());
+                    num[i]--;
+                }
+            }
+
+            //然后从未被选择的字符中提取出最长的下降字符串，将其加入答案
+            for (let i = 25; i >= 0; i--) {// 倒序遍历，从大到小选
+                if (num[i]) {//如果对应位置不为0（有字符）
+                    //将 Unicode 编码转为一个字符:
+                    res += String.fromCharCode(i + 'a'.charCodeAt());
+                    num[i]--;
+                }
+            }
+        }
+
+        return res;
+
+    };
+
+
+    //运行结果：运行时间击败42.39%(116ms)，内存消耗击败52.68%(41.9mb)
+
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>删除链表的倒数第N个节点</title>
+</head>
+<body>
+<script>
+    /*给你一个链表，删除链表的倒数第 n 个结点，并且返回链表的头结点。
+        进阶：
+            你能尝试使用一趟扫描实现吗？*/
+
+    /**************************** 与剑指offer第22题，链表中倒数第K个节点，解法相似 ****************************/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @param {number} n
+     * @return {ListNode}
+     */
+    var removeNthFromEnd = function(head, n) {
+        //创建一个辅助节点在链表头部
+        let pre = new ListNode(0,head);
+        let fast = head;
+        let slow = pre;
+        for (let i = 0; i < n; i++) {//让fast与slow间隔n个节点
+            fast = fast.next;
+        }
+        while (fast) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        //此时，slow即为要删除的倒数第N个节点的前继
+        slow.next = slow.next.next;
+        //注意此时应返回辅助节点的下一个节点（原来的头节点）
+        return pre.next;
+    };
+
+    //运行结果：运行时间击败82.74%(84ms)，内存消耗击败80.89%(39.1mb)
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>克隆图</title>
+</head>
+<body>
+<script>
+    /*给你无向 连通 图中一个节点的引用，请你返回该图的 深拷贝（克隆）。
+      图中的每个节点都包含它的值 val（int） 和其邻居的列表（list[Node]）。
+
+        class Node {
+            public int val;
+            public List<Node> neighbors;
+        }
+        */
+
+
+    /********************************************* 方法1：dfs *******************************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, neighbors) {
+     *    this.val = val === undefined ? 0 : val;
+     *    this.neighbors = neighbors === undefined ? [] : neighbors;
+     * };
+     */
+
+    /**
+     * @param {Node} node
+     * @return {Node}
+     */
+    /*
+        1.使用一个哈希表存储所有已被访问和克隆的节点。哈希表中的 key 是原始图中的节点，value 是克隆图中的对应节点。
+        2.从给定节点开始遍历图。如果某个节点已经被访问过，则返回其克隆图中的对应节点。
+          如下图，我们给定无向边边 A - B，表示 A 能连接到 B，且 B 能连接到 A。如果不对访问过的节点做标记，则会陷入死循环中。
+        3.如果当前访问的节点不在哈希表中，则创建它的克隆节点并存储在哈希表中。
+          注意：在进入递归之前，必须先创建克隆节点并保存在哈希表中。
+          如果不保证这种顺序，可能会在递归中再次遇到同一个节点，再次遍历该节点时，陷入死循环。
+        4.递归调用每个节点的邻接点。每个节点递归调用的次数等于邻接点的数量，每一次调用返回其对应邻接点的克隆节点，
+          最终返回这些克隆邻接点的列表，将其放入对应克隆节点的邻接表中。这样就可以克隆给定的节点和其邻接点。
+
+
+*/
+    var cloneGraph = function(node) {
+        //使用一个哈希表存储所有已被访问和克隆的节点。哈希表中的 key 是原始图中的节点，value 是克隆图中的对应节点。
+        let visited = new Map();
+        return clone(node);
+
+        function clone(node) {
+            if (!node) return null;
+            // 如果该节点已经被访问过了，则直接从哈希表中取出对应的克隆节点返回
+            if (visited.has(node.val)) {
+                return visited.get(node.val);
+            }
+
+            // 克隆节点，注意到为了深拷贝我们不会克隆它的邻居的列表
+            let cloneNode = new Node(node.val,new Array());//array用来放它的邻居---对应neighbors
+            // 哈希表存储
+            visited.set(node.val,cloneNode);
+
+            // 遍历该节点的邻居并更新克隆节点的邻居列表
+            for (let neighbor of node.neighbors) {
+                const cloneNeighbor = clone(neighbor);
+                //将节点的邻居放进array数组
+                cloneNode.neighbors.push(cloneNeighbor);
+            }
+            return cloneNode;
+        }
+
+    };
+
+    //运行结果：运行时间击败93.19%(80ms)，内存消耗击败57.66%(39.1mb)
+
+
+    /****************************************** 方法2：bfs *******************************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, neighbors) {
+     *    this.val = val === undefined ? 0 : val;
+     *    this.neighbors = neighbors === undefined ? [] : neighbors;
+     * };
+     */
+
+    /**
+     * @param {Node} node
+     * @return {Node}
+     */
+    var cloneGraph = function(node) {
+        if (node == null) return node;
+        let queue = [];//存储等待处理的所有节点
+        let visited = new Map();//存储所有使用过的节点
+        // 初始化
+        queue.push(node);// 将题目给定的节点添加到队列
+        let cloneNode = new Node(node.val, new Array())
+        visited.set(node, cloneNode);// 克隆第一个节点并存储到哈希表中
+        // BFS
+        while (queue.length) {
+            let cur = queue.shift();// 取出队列的头节点
+            for (let neighbor of cur.neighbors) {// 遍历该节点的邻居
+                if (!visited.has(neighbor)) {// 如果没有被访问过，就克隆并存储在哈希表中
+                    let cloneNeighbor = new Node(neighbor.val, new Array())
+                    visited.set(neighbor, cloneNeighbor)
+                    queue.push(neighbor);// 将邻居节点加入队列中
+                }
+                // 更新当前节点的邻居列表
+                visited.get(cur).neighbors.push(visited.get(neighbor));
+            }
+        }
+
+        return visited.get(node);
+
+    };
+
+    //运行结果：运行时间击败71.28%(88ms)，内存消耗击败59.15%(39.1mb)
+
+</script>
+</body>
+</html>

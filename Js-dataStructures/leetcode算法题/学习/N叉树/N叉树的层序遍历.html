@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>N叉树的层序遍历</title>
+</head>
+<body>
+<script>
+    /*给定一个 N 叉树，返回其节点值的层序遍历。（即从左到右，逐层遍历）。
+    树的序列化输入是用层序遍历，每组子节点都由 null 值分隔（参见示例）。*/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val,children) {
+     *    this.val = val;
+     *    this.children = children;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {number[][]}
+     */
+    var levelOrder = function(root) {
+        let res = [];
+        if (!root) return res;
+        let queue = [];//存储等待处理的所有节点
+        // 初始化
+        queue.push(root);
+        //BFS
+        while (queue.length) {
+            let length = queue.length;
+            res.push([]);//创建每一层的储存数组
+            for (let i = 0; i < length; i++) {
+                let cur = queue.shift();
+                res[res.length - 1].push(cur.val);
+                //对节点的孩子进行处理
+                for (let i = 0; i < cur.children.length; i++) {
+                    queue.push(cur.children[i]);
+                }
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败87.35%(104ms)，内存消耗击败34.24%(42.4mb)
+
+
+</script>
+</body>
+</html>

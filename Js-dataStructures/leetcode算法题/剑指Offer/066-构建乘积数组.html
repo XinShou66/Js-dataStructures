@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>构建乘积数组</title>
+</head>
+<body>
+<script>
+    /*给定一个数组 A[0,1,…,n-1]，请构建一个数组 B[0,1,…,n-1]，
+    其中 B[i] 的值是数组 A 中除了下标 i 以外的元素的积,
+    即 B[i]=A[0]×A[1]×…×A[i-1]×A[i+1]×…×A[n-1]。不能使用除法。*/
+
+    /**
+     * @param {number[]} a
+     * @return {number[]}
+     */
+    var constructArr = function(a) {
+        if (!a.length) return [];
+        let tmp = 1;    //定义辅助变量，表示元素的成绩
+        let res = [1];  //定义要返回的数组，设置初始元素为1，进行相乘时对结果不会有影响
+        //左边的积
+        for (let i = 1; i < a.length; i++) {//从下标1开始，保证左边右边都有数
+            res[i] = res[i-1] * a[i-1];  //让该位置的数先等于左边数的积
+        }
+        //右边的积
+        for (let i = a.length - 2; i >= 0; i--) {//从下标倒数第二个开始，保证左边右边都有数
+            tmp *= a[i+1] ;  //右边数的积
+            res[i] *= tmp;    //该位置的值为：左边的积乘以右边的积
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败39.69%(152ms)，内存消耗击败84.65%(54mb)
+
+
+</script>
+</body>
+</html>
+
+
+
+

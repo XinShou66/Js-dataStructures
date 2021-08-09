@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0312-戳气球</title>
+</head>
+<body>
+<script>
+   /*有 n 个气球，编号为0 到 n - 1，每个气球上都标有一个数字，这些数字存在数组 nums 中。
+    现在要求你戳破所有的气球。戳破第 i 个气球，你可以获得 nums[i - 1] * nums[i] * nums[i + 1] 枚硬币。 
+    这里的 i - 1 和 i + 1 代表和 i 相邻的两个气球的序号。如果 i - 1或 i + 1 超出了数组的边界，那么就当它是一个数字为 1 的气球。
+    求所能获得硬币的最大数量。*/
+
+   /**
+    * @param {number[]} nums
+    * @return {number}
+    */
+   var maxCoins = function (nums) {
+       let n = nums.length;
+       //添加两侧的虚拟气球
+       let tempArr = [1, ...nums, 1];
+       //定义状态方程
+       //dp[i][j] = x 表示戳破气球 i 和气球 j 之间（开区间，不包括 i 和 j）的所有气球,获得的最大硬币数量
+       //为什么开区间？因为不能和已经计算过的产生联系，我们这样定义之后，利用两个虚拟气球，戳到最后两个气球的时候就完美的避开了所有状态的联系。
+       const dp = new Array(n+2).fill(0).map(() => new Array(n+2).fill(0));
+
+       // 最后一行开始遍历,从下往上?????
+       for (let i = n; i >= 0; i--) {
+           // 从左往右
+           for (let j = 0; j < n + 2; j++) {
+               //k是该区间中"最后"要戳破的气球，枚举选择最优的k
+               for (let k = i + 1; k < j; k++) {
+                   //戳破 k 获得最大数量的银币就是 nums[i] * nums[k] * nums[j] 再加上前面戳破的最大数量和后面的最大数量
+                   //因为 k 是最后一个被戳爆的，所以 (i,j) 区间中 k 两边的东西必然是先各自被戳爆了的
+                   let sum = tempArr[i] * tempArr[k] * tempArr[j] + dp[i][k] + dp[k][j];
+                   dp[i][j] = Math.max(dp[i][j], sum)
+               }
+           }
+       }
+       return dp[0][n+1];
+   }
+
+   //运行结果：运行时间击败75.15%(284ms)，内存消耗击败27.88%(41.3mb)
+
+</script>
+</body>
+</html>

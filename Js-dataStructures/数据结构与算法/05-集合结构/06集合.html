@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>集合</title>
+</head>
+<body>
+<script>
+    //封装集合类
+    function Set() {
+        //属性
+        this.items = {}
+
+        //方法
+        //一.has方法
+        Set.prototype.has = function (value) {
+            //可以使用对象的hasOwnProperty()来检查对象自身中是否含有该属性
+            return this.items.hasOwnProperty(value)
+        }
+
+        //二.add方法
+        Set.prototype.add = function (value) {
+            //判断集合中是否已经包含该元素
+            if (this.has(value)) {
+                return false
+            }
+            //将元素添加到集合中
+            this.items[value] = value//表示该属性键和值都为value
+            return true//表示添加成功
+        }
+
+        //三.remove方法
+        Set.prototype.remove = function (value) {
+            //1.判断集合中是否包含该元素
+            if (!this.has(value)) {
+                return false
+            }
+            //2.将元素从属性中删除
+            delete  this.items[value]
+            return true
+        }
+
+        //四.clear方法
+        Set.prototype.clear = function () {
+            this.items = {}
+        }
+
+        //五.size方法
+        Set.prototype.size = function () {
+            return Object.keys(this.items).length
+        }
+
+        //获取集合中所有的值
+        //六.values方法
+        Set.prototype.values = function () {
+            return Object.keys(this.items)
+        }
+
+        /* ****************集合间的操作***************** */
+        //1.并集
+        Set.prototype.union = function (otherSet) {
+            // this:集合对象A
+            // otherSet:集合对象B
+            var unionSet = new Set()
+            var values = this.values()
+            for (var i = 0; i < values.length; i++) {
+                var item = values[i]
+                unionSet.add(item)
+            }
+            values = otherSet.values()
+            for (var i = 0; i < values.length; i++) {
+                unionSet.add(values[i])
+            }
+            return unionSet
+        }
+
+        //2.交集
+        Set.prototype.intersection = function (otherSet) {
+            // this:集合对象A
+            // otherSet:集合对象B
+            var intersectionSet = new Set()
+            var values = this.values()
+            for (var i = 0; i < values.length; i++) {
+                var item = values[i]
+                if (otherSet.has(item)) {
+                    intersectionSet.add(item)
+                }
+            }
+            return intersectionSet
+        }
+
+        //3.差集
+        Set.prototype.difference = function (otherSet) {
+            // this:集合对象A
+            // otherSet:集合对象B
+            var differenceSet = new Set()
+            var values = this.values()
+            for (var i = 0; i < values.length; i++) {
+                var item = values[i]
+                if (!otherSet.has(item)) {
+                    differenceSet.add(item)
+                }
+            }
+            return differenceSet
+        }
+
+        //4.子集
+        Set.prototype.subset = function (otherSet) {
+            // this:集合对象A
+            // otherSet:集合对象B
+            var values = this.values()
+            for (var i = 0; i < values.length; i++) {
+                if (!otherSet.has(values[i])) {
+                    return false
+                }
+            }
+            return true
+        }
+
+    }
+
+    //测试
+    //1.创建Set类对象
+    var set = new Set()
+    //2.测试add方法
+    set.add('aaa')
+    set.add('bbb')
+    set.add('ccc')
+    set.add('ddd')
+    //3.测试values方法
+    console.log(set.values());
+    //4.测试remove方法
+    console.log(set.remove('aaa'));
+    console.log(set.values());
+
+    //5.测试has方法
+    console.log(set.has('bbb'));
+
+    //6.测试size方法和clear方法
+    console.log(set.size());
+    set.clear()
+    // 由于clear方法的实现原理为指向另外一个空对象，所以不影响原来的对象
+    console.log(set.size());
+    console.log(set.values())
+
+    //集合测试
+    var setA = new Set()
+    setA.add('a11')
+    setA.add('c33')
+    setA.add('b22')
+    var setB = new Set()
+    setB.add('a11')
+    setB.add('e55')
+    setB.add('b22')
+    console.log(setA.union(setB).values())
+    console.log(setA.intersection(setB).values())
+    console.log(setA.difference(setB).values())
+    console.log(setA.subset(setB))
+</script>
+</body>
+</html>

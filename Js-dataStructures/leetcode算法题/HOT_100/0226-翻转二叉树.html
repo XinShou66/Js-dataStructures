@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0226-翻转二叉树</title>
+</head>
+<body>
+<script>
+    /*翻转一棵二叉树。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {TreeNode}
+     */
+    var invertTree = function(root) {
+        if (root) {
+            [root.left, root.right] = [root.right, root.left]
+            invertTree(root.left);
+            invertTree(root.right);
+        }
+        return root;
+    };
+
+    //运行结果：运行时间击败221.89%(96ms)，内存消耗击败43.68%(39mb)
+
+</script>
+</body>
+</html>

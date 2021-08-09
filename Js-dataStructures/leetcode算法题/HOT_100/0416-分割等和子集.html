@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0416-分割等和子集</title>
+</head>
+<body>
+<script>
+    /*给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {boolean}
+     */
+    var canPartition = function(nums) {
+        let sum = 0;
+        for (let n of nums) {// 求数组和
+            sum += n;
+        }
+        if (sum % 2 != 0) {// 如果 sum 为奇数，直接返回 false
+            return false;
+        }
+        const memo = new Map();
+        const target = sum / 2; // 目标和
+        function dfs(curSum, i) {
+            if (i == nums.length || curSum > target) {// 递归的出口
+                return false;
+            }
+            if (curSum == target) { // 递归的出口
+                return true;
+            }
+            const key = curSum + '&' + i; // 描述一个问题的key
+            if (memo.has(key)) {//当遇到重复的子问题时，直接返回 map 中命中的缓存值，不用进行重复的递归计算
+                return memo.get(key);
+            }
+            //每次递归，都有两个选择：
+            //选nums[i]。基于选它，往下继续选（递归）：dfs(curSum + nums[i], i + 1)
+            //不选nums[i]。基于不选它，往下继续选（递归）：dfs(curSum, i + 1)
+            const res = dfs(curSum + nums[i], i + 1) || dfs(curSum, i + 1);
+            memo.set(key, res); // 计算的结果存入memo(true or false)
+            return res;
+        }
+
+        return dfs(0, 0) // 递归的入口，当前和为0，指针为0
+
+    };
+
+    //运行结果：运行时间击败56.10%(188ms)，内存消耗击败46.29%(56.2mb)
+
+</script>
+</body>
+</html>

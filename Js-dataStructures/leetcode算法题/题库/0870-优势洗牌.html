@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0870-优势洗牌</title>
+</head>
+<body>
+<script>
+    /***************** 田忌赛马问题 ***************/
+
+    /*给定两个大小相等的数组 A 和 B，A 相对于 B 的优势可以用满足 A[i] > B[i] 的索引 i 的数目来描述。
+    返回 A 的任意排列，使其相对于 B 的优势最大化。*/
+
+
+    /**
+     * @param {number[]} nums1
+     * @param {number[]} nums2
+     * @return {number[]}
+     */
+    var advantageCount = function(nums1, nums2) {
+        const res = [];
+        nums1.sort(function (a, b) {//A按大小升序排列
+            return a - b;
+        });
+        let queue = [];
+        for (let i = 0; i < nums2.length; i++) {
+            queue.push([i, nums2[i]]);
+        }
+        //存放nums2的数组按值降序排列
+        queue.sort(function (a, b) {
+            return b[1] - a[1];
+        });
+        let left  = 0, right = nums1.length - 1;
+        while(queue.length) {
+            let temp = queue.shift();
+            let index = temp[0], horse = temp[1];
+            if (horse < nums1[right]) {//如果可以比的过就自己上
+                res[index] = nums1[right];
+                right--;
+            } else {//如果比不过就用最小值混一下，养精蓄锐
+                res[index] = nums1[left];
+                left++;
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败88.75%(204ms)，内存消耗击败96.25%(44.8mb)
+
+</script>
+</body>
+</html>

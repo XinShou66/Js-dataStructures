@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>055-跳跃游戏</title>
+</head>
+<body>
+<script>
+    /*给定一个非负整数数组 nums ，你最初位于数组的 第一个下标 。
+    数组中的每个元素代表你在该位置可以跳跃的最大长度。
+    判断你是否能够到达最后一个下标。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {boolean}
+     */
+    var canJump = function(nums) {
+        let maxLength = 0;
+        for (let i = 0; i < nums.length; i++) {
+            if (i <= maxLength) {//要确保循环处理的元素在可到达的范围内
+                maxLength = Math.max(maxLength, i + nums[i]);
+                //如果最远可以到达的位置大于等于数组最后一个元素的位置，则返回true
+                if (maxLength >= nums.length - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    //运行结果：运行时间击败30.46%(104ms)，内存消耗击败10.79%(42mb)
+
+</script>
+</body>
+</html>

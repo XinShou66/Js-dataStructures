@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>丑数</title>
+</head>
+<body>
+<script>
+    /*我们把只包含质因子 2、3 和 5 的数称作丑数（Ugly Number）。
+    求按从小到大的顺序的第 n 个丑数。*/
+
+    /*动态规划*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var nthUglyNumber = function(n) {
+        //创建一个丑数数组序列
+        const dp = new Array(n);
+        dp[0] = 1;
+
+        //创建三个指针
+        let p2 = 0;  //指向下个数字等于当前数字*2的数
+        let p3 = 0;  //指向下个数字等于当前数字*3的数
+        let p5 = 0;  //指向下个数字等于当前数字*5的数
+
+        for (let i =1; i < n; i++) {
+            dp[i] = Math.min(dp[p2]*2,dp[p3]*3,dp[p5]*5);
+            //不断更新p2 p3 p5 的下标，一旦等于了向前挪一个，就会变成大于了，然后再次看这三个数的大小
+            if (dp[i] == dp[p2]*2) p2++;
+            if (dp[i] == dp[p3]*3) p3++;
+            if (dp[i] == dp[p5]*5) p5++;
+        }
+        return dp[n-1];
+
+    };
+
+
+    //运行结果：运行时间击败27%(108ms)，内存消耗击败94.05%(39.4mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0169-多数元素</title>
+</head>
+<body>
+<script>
+
+    /*方法1： 排序，找中间的数*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var majorityElement = function(nums) {
+        nums.sort((a, b) => a - b);
+        return nums[parseInt(nums.length/2)];
+
+    };
+    //运行结果：运行时间击败19.22%(108s)，内存消耗击败10.15%(42.2mb)
+
+
+
+
+    /*方法2：map 存储数字出现次数*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var majorityElement = function(nums) {
+        const n = nums.length;
+        let map = new Map();
+        for (let i = 0; i < nums.length; i++) {
+            if (map.has(nums[i])) {
+                map.set(nums[i], map.get(nums[i]) + 1);
+            } else {
+                map.set(nums[i], 1);
+            }
+
+            if (map.get(nums[i]) > parseInt(n/2)) {
+                return nums[i];
+            }
+        }
+
+    };
+
+    //运行结果：运行时间击败6.39%(128s)，内存消耗击败61.16%(40.7mb)
+
+</script>
+</body>
+</html>

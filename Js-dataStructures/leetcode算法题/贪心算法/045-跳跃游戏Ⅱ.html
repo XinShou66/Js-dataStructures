@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>045-跳跃游戏Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个非负整数数组，你最初位于数组的第一个位置。
+       数组中的每个元素代表你在该位置可以跳跃的最大长度。
+       你的目标是使用最少的跳跃次数到达数组的最后一个位置。
+       假设你总是可以到达数组的最后一个位置。*/
+
+    /*****这道题是典型的贪心算法，通过局部最优解得到全局最优解。
+    以下两种方法都是使用贪心算法实现，只是贪心的策略不同。*****/
+
+    /************** 方法1：从后往前 ************/
+    //从最后一个位置往前找可以到达最后一个位置的距离最远的元素，
+    //然后接着往前找可以到达该元素的与该元素距离最远的元素，直到找到数组开始位置
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var jump = function(nums) {
+        let steps = 0;
+        let position = nums.length - 1;
+        while(position > 0) {
+            for (let i = 0; i < position; i++) {
+                if (i + nums[i] >= position) {
+                    position = i;
+                    steps++;
+                    break;
+                }
+            }
+        }
+
+        return steps;
+    };
+
+    //运行结果：运行时间击败16.20%(100ms)，内存消耗击败6.33%(39.6mb)
+
+
+    /************** 方法2：从前往后 ************/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var jump = function(nums) {
+        let maxPosition = 0;
+        let steps = 0;
+        let end = 0;
+        //不访问最后一个元素，这是因为在访问最后一个元素之前，我们的边界一定大于等于最后一个位置，否则就无法跳到最后一个位置了。
+        // 如果访问最后一个元素，在边界正好为最后一个位置的情况下，我们会增加一次「不必要的跳跃次数」，因此我们不必访问最后一个元素。
+        for (let i = 0; i < nums.length - 1; i++) {
+            maxPosition = Math.max(maxPosition, i + nums[i]);
+            if (i == end) {//当遍历到可抵达区间的右端
+                end = maxPosition; //更新新的可抵达区间
+                steps++;
+            }
+
+            //优化部分，可选
+            if (end >= nums.length - 1) { // 一旦新的可抵达区间触碰到nums数组的边界，则直接break，不用对区间的点遍历了
+                break;
+            }
+
+        }
+
+        return steps;
+    };
+
+    //运行结果：运行时间击败65.58%(84ms)，内存消耗击败7.31%(39.6mb)
+
+</script>
+</body>
+</html>

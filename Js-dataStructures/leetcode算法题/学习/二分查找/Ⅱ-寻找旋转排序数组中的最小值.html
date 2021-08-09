@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ⅱ-寻找旋转排序数组中的最小值</title>
+</head>
+<body>
+<script>
+    /*已知一个长度为 n 的数组，预先按照升序排列，经由 1 到 n 次 旋转 后，得到输入数组。例如，原数组 nums = [0,1,2,4,5,6,7] 在变化后可能得到：
+        若旋转 4 次，则可以得到 [4,5,6,7,0,1,2]
+        若旋转 7 次，则可以得到 [0,1,2,4,5,6,7]
+        注意，数组 [a[0], a[1], a[2], ..., a[n-1]] 旋转一次 的结果为数组 [a[n-1], a[0], a[1], a[2], ..., a[n-2]] 。
+        给你一个元素值 互不相同 的数组 nums ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 最小元素 。*/
+
+
+    /****************************** 与剑指offer 011-旋转数组中的最小值 解法相似，不同的是此题说了不会有重复元素*************************************/
+
+    /*假设按照升序排序的数组在预先未知的某个点上进行了旋转。
+        例如，数组 [0,1,2,4,5,6,7] 可能变为 [4,5,6,7,0,1,2] 。
+        请找出其中最小的元素。*/
+
+    /*方法1：二分法*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findMin = function(nums) {
+        let left = 0, right = nums.length - 1;
+        while (left < right) {
+            let mid = Math.floor((left + right)/2);
+            if (nums[mid] > nums[right]) {
+                left = mid + 1
+            } else {
+                right = mid;
+            }
+        }
+        return nums[left];
+    };
+
+
+    //运行结果：运行时间击败82.08%(80ms)，内存消耗击败94.11%(37.7mb)
+
+
+
+    /*方法2：双指针*/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findMin = function(nums) {
+        let slow = 0, fast = 1;
+        while (fast < nums.length) {
+            if (nums[slow] < nums[fast]) {
+                fast++
+            } else {
+                return nums[fast];
+            }
+        }
+        return nums[slow];
+    };
+    //运行结果：运行时间击败12.19%(100ms)，内存消耗击败64.16%(37.9mb)
+
+
+    /*方法3：暴力法*/
+
+    /**
+     * @param {number[]} numbers
+     * @return {number}
+     */
+    var minArray = function(numbers) {
+        for (var i = 1;i < numbers.length;i++) {//要从第二个元素开始
+            if (numbers[i] < numbers[i-1]) {
+                return numbers[i];
+            }
+        }
+        return numbers[0];//要考虑到0个元素放到数组末尾
+    };
+
+    //运行结果：运行时间击败7.90%(108ms)，内存消耗击败41.52%(39.1mb)
+
+</script>
+</body>
+</html>

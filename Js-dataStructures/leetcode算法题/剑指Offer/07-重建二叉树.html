@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>重建二叉树</title>
+</head>
+<body>
+<script>
+    /*
+    * 输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。
+    * 假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+    * */
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {number[]} preorder
+     * @param {number[]} inorder
+     * @return {TreeNode}
+     */
+    //递归方法
+    var buildTree = function(preorder, inorder) {
+        if (inorder.length == 0 || preorder.length == 0) {
+            return null;
+        }
+        var root = preorder[0];
+        var node = new TreeNode(root);
+        var index = inorder.indexOf(root);
+        //中序遍历根节点左侧为左子树，根节点右侧为右子树，根节点下标index（表示左子树有index个节点）
+        //左子树先序遍历从1开始~index+1（一共index个节点），右子树先序遍历从index+1往后
+        node.left = buildTree(preorder.slice(1,index + 1),inorder.slice(0,index));
+        node.right = buildTree(preorder.slice(index + 1),inorder.slice(index + 1));
+        return node;
+    };
+
+    //运行结果：运行时间击败20.54%(212ms)，内存消耗击败35.65%(110.5mb)
+
+    /*优化版本*/
+    /*但是用 slice 制造新的数组需要额外的空间和时间
+        记录下头尾之后，可以节省空间和时间*/
+    var buildTree = function (preorder, inorder, a, b, c, d) {
+
+        if (typeof a !== "number") {
+            a = 0
+            b = preorder.length - 1
+            c = 0
+            d = inorder.length - 1
+        }
+
+        if (a > b) return null
+        var node = new TreeNode(preorder[a])
+        var index = inorder.indexOf(preorder[a])
+        node.left = buildTree(preorder, inorder, a + 1, a + index - c, c, index - 1)
+        node.right = buildTree(preorder, inorder, a + index - c + 1, b, index + 1, d)
+        return node
+    };
+</script>
+</body>
+</html>

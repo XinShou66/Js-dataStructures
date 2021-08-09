@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>对角线遍历</title>
+</head>
+<body>
+<script>
+  /*给定一个含有 M x N 个元素的矩阵（M 行，N 列），
+  请以对角线遍历的顺序返回这个矩阵中的所有元素，对角线遍历如下图所示。
+  示例：
+        输入:
+        [
+         [ 1, 2, 3 ],
+         [ 4, 5, 6 ],
+         [ 7, 8, 9 ]
+        ]
+
+        输出:  [1,2,4,7,5,3,6,8,9]
+  */
+
+  /**
+   * @param {number[][]} matrix
+   * @return {number[]}
+   */
+  var findDiagonalOrder = function(matrix) {
+      if (!matrix.length || !matrix) return [];//如果是空数组直接返回一个空数组
+      let m = matrix.length;
+      let n = matrix[0].length;
+      let res = [];
+      let flag = 0;//flag是标志位，0代表右上，1代表左下
+      //row、column是当前遍历点的行列坐标，row为行，column为列
+      let row = 0
+      let column = 0;
+      for (let i = 0; i < m*n;i++) {
+          res[i] = matrix[row][column];//每一次遍历先保存该点的数值
+          if (row == m - 1 && column == n - 1) {//遍历到了最后一个点，就退出循环
+              break;
+          }
+          if (flag == 0) {//情况1.方向是右上
+              if (column == n - 1) {//当前遍历点在右边界上
+                  row++;//下一个肯定在下一行相同列
+                  flag = 1;
+
+              } else if(row == 0){//当前点在上边界且不在右边界上
+                  column++;//下一个肯定在下一列相同行
+                  flag = 1;
+              } else {//当前点不在边界上
+                  row--; //右上方向，所以row--;column++;
+                  column++;
+              }
+          } else {//情况2.方向是左下
+              if(row == m - 1) {//当前点在下边界上
+                  column++;//下一个肯定在下一列相同行
+                  flag = 0;
+              } else if(column == 0){//当前点在左边界上且不在下边界上
+                  row++;
+                  flag = 0;
+              } else {//当前点不在边界上
+                  row++;
+                  column--;
+              }
+          }
+      }
+      return res;//循环结束，所有数字已经按对角线的顺序放进数组，返回即可
+  };
+
+  //运行结果：运行时间击败92.53%(112ms)，内存消耗击败57.68%(43.6mb)
+
+</script>
+</body>
+</html>

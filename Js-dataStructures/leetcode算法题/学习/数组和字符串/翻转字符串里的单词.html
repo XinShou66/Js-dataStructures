@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>翻转字符串里的单词</title>
+</head>
+<body>
+<script>
+    /*给定一个字符串，逐个翻转字符串中的每个单词。
+        说明：
+        无空格字符构成一个 单词 。
+        输入字符串可以在前面或者后面包含多余的空格，但是反转后的字符不能包括。
+        如果两个单词间有多余的空格，将反转后单词间的空格减少到只含一个。*/
+
+    /**
+     * @param {string} s
+     * @return {string}
+     */
+    var reverseWords = function(s) {
+        // 1.去除字符串首尾的空格
+        // 2.将字符串以空格为界拆分成数组
+        // 3.数组元素翻转
+        // 4.将数组元素转换成字符串，并以空格位间隔
+        // split可以传一个正则为参数
+        // \s+ 表示至少一个(+)空格(\s)
+        return s.trim().split(/\s+/).reverse().join(' ');
+    };
+
+    //运行结果：运行时间击败93.86%(76ms)，内存消耗击败54.42%(39.2mb)
+
+</script>
+</body>
+</html>

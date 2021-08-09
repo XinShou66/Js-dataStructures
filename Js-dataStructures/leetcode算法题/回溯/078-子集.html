@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>078-子集</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums ，数组中的元素 互不相同 。返回该数组所有可能的子集（幂集）。
+        解集 不能 包含重复的子集。你可以按 任意顺序 返回解集。*/
+
+
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var subsets = function(nums) {
+        const res = [];
+        backTrack([], 0);
+        return res;
+
+        function backTrack(arr, index) {
+            // 没有显式的递归终止
+            res.push([...arr]);
+            for (let i = index; i < nums.length; i++) {
+                arr.push(nums[i]);
+                backTrack(arr, i + 1);
+                arr.pop();// 组合问题，状态在递归完成后要重置
+            }
+        }
+    };
+
+    //运行结果：运行时间击败37.94%(96ms)，内存消耗击败25.29%(39.9mb)
+
+</script>
+</body>
+</html>

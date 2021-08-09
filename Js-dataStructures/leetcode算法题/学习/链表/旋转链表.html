@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>旋转链表</title>
+</head>
+<body>
+<script>
+    /*给你一个链表的头节点 head ，旋转链表，将链表每个节点向右移动 k 个位置。*/
+
+    /***************思路：
+                        将链表闭合为环，从指定位置断开*********************/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @param {number} k
+     * @return {ListNode}
+     */
+    var rotateRight = function(head, k) {
+        if (k === 0 || !head || !head.next) {
+            return head;
+        }
+        let length = 1;
+        let cur = head;
+        while (cur.next) {//计算链表的长度
+            cur = cur.next;
+            length++;
+        }
+        let cut = length - k % length;//要断开的节点位置（此位置节点的后一个节点为新链表的头节点）
+        if (cut === length) {//如果要断开的位置等于链表的长度，则直接返回头节点即可
+            return head;
+        }
+        //将尾节点指向头节点，将链表闭合为环
+        cur.next = head;
+        while (cut) {//找到新链表头节点的前一个节点（即cut位置对应的节点）
+            cur = cur.next;
+            cut--;
+        }
+        //此时cur为cut位置对应的节点
+        const newHead = cur.next;
+        cur.next = null;
+        return newHead;
+
+    };
+
+    //运行结果：运行时间击败98.95%(80ms)，内存消耗击败85.96%(39.3mb)
+
+</script>
+</body>
+</html>

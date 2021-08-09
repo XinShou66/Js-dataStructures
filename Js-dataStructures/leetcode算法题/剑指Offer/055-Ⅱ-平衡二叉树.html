@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>平衡二叉树</title>
+</head>
+<body>
+<script>
+    /*输入一棵二叉树的根节点，判断该树是不是平衡二叉树。
+    如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isBalanced = function(root) {
+        if (!root) return true;
+        let left = dfs(root.left);  //获取左树的深度
+        let right = dfs(root.right);  //获取右树的深度
+        if (Math.abs(left - right) > 1) return false;   //如果左右子树的深度相差超过1，那么不是平衡的
+        //判断左子节点的子树和右子节点的子树，有一个不平衡则整体不平衡
+        return isBalanced(root.left) && isBalanced(root.right);
+    };
+    /** 获取树的深度 */
+    function dfs(root) {
+        if (!root) return 0;
+        //二叉树的最大深度等于左子树与右子树的最大深度加一
+        return Math.max(dfs(root.left),dfs(root.right)) + 1;
+
+    };
+
+    //运行结果：运行时间击败91.87%(92ms)，内存消耗击败95%(41.8mb)
+
+</script>
+</body>
+</html>

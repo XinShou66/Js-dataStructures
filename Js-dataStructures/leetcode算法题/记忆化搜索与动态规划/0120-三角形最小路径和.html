@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0120-三角形最小路径和</title>
+</head>
+<body>
+<script>
+    /*给定一个三角形 triangle ，找出自顶向下的最小路径和。
+    每一步只能移动到下一行中相邻的结点上。相邻的结点 在这里指的是 下标 与 上一层结点下标 相同或者等于 上一层结点下标 + 1 的两个结点。
+    也就是说，如果正位于当前行的下标 i ，那么下一步可以移动到下一行的下标 i 或 i + 1 。*/
+
+    /********************方法1：动态规划 *******************/
+    /**
+     * @param {number[][]} triangle
+     * @return {number}
+     */
+    var minimumTotal = function(triangle) {
+        let row = triangle.length;
+        //初始化 dp 数组
+        const dp = new Array(row);
+        for (let i = 0; i < row; i++) {
+            dp[i] = new Array(triangle[i].length);
+        }
+
+        for (let i = row - 1; i >= 0; i--) {// 自底而上遍历
+            for (let j = 0; j < triangle[i].length; j++) {
+                if (i == row - 1) { //dp的最底层，元素与给定三角形最底层的元素一样
+                    dp[i][j] = triangle[i][j];
+                } else {// 状态转移方程，上一层由它下面一层的较小数与原数组当前位置的元素的和决定
+                    dp[i][j] = Math.min(dp[i+1][j], dp[i+1][j+1]) + triangle[i][j];
+                }
+            }
+        }
+
+        return dp[0][0];
+    };
+
+    //运行结果：运行时间击败61.97%(88ms)，内存消耗击败49.30%(39.2mb)
+
+    /*******************方法2：动态规划 + 空间优化 *******************/
+
+    /**
+     * @param {number[][]} triangle
+     * @return {number}
+     */
+    var minimumTotal = function(triangle) {
+        let row = triangle.length;
+
+        for (let i = row - 2; i >= 0; i--) {// 自底而上遍历
+            for (let j = 0; j < triangle[i].length; j++) {
+                // 状态转移方程，上一层由它下面一层的较小数与原数组当前位置的元素的和决定
+                triangle[i][j] += Math.min(triangle[i+1][j], triangle[i+1][j+1]);
+            }
+        }
+
+        return triangle[0][0];
+    };
+
+    //运行结果：运行时间击败96.83%(76ms)，内存消耗击败95.07%(38mb)
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>两个排序数组的中位数</title>
+</head>
+<body>
+<script>
+    /*给定两个大小分别为 m 和 n 的正序（从小到大）数组 nums1 和 nums2。请你找出并返回这两个正序数组的 中位数 。*/
+    /*进阶：
+        你能设计一个时间复杂度为 O(log (m+n)) 的算法解决此问题吗？*/
+
+    /*******************方法1：暴力法（合并数组并排序） *******************/
+    /**
+     * @param {number[]} nums1
+     * @param {number[]} nums2
+     * @return {number}
+     */
+    var findMedianSortedArrays = function(nums1, nums2) {
+        let nums = nums1.concat(nums2);
+        nums.sort((a, b) => a - b);
+        let length = nums.length;
+        if (length > 0 && length % 2 == 0) {
+            return (nums[length / 2 - 1] + nums[length / 2]) / 2;
+        } else {
+            return nums[(length - 1) / 2];
+        }
+    };
+
+    //运行结果：运行时间击败87.48%(132ms)，内存消耗击败56.95%(43.4mb)
+
+
+    /*******************方法2：二分查找分段 *******************/
+
+    /**
+     * @param {number[]} nums1
+     * @param {number[]} nums2
+     * @return {number}
+     */
+    var findMedianSortedArrays = function(nums1, nums2) {
+        if (nums1.length > nums2.length) {//确保nums1是长度较短的数组
+            return findMedianSortedArrays(nums2, nums1);
+        }
+
+        let m = nums1.length;   //前一部分（短数组）的长度
+        let n = nums2.length;   //后一部分（长数组）的长度
+        let left = 0, right = m;   //前一部分（短数组）的左右区间
+
+        let beforeMax = 0;  //前一部分的最大值
+        let afterMin = 0;   //后一部分的最小值
+
+        while (left <= right) {
+            let i = Math.floor((left + right) / 2);  //前一部分（短数组）的中点
+            let j = Math.floor((m + n + 1) / 2) - i; //后一部分（长数组）的中点
+            /*
+                   left_A            |          right_A
+            A[0], A[1], ..., A[i-1]  |  A[i], A[i+1], ..., A[m-1]
+            */
+            //将两个数组都分为两部分，左边为较小的部分，右边为较大的部分，分别找到较小部分的最大值，较大部分的最小值
+            //前一部分（短数组）的两部分
+            let maxLeftA = i === 0 ? -Infinity : nums1[i - 1];
+            let minRightA = i === m ? Infinity : nums1[i];
+            //后一部分（长数组）的两部分
+            let maxLeftB = j === 0 ? -Infinity : nums2[j - 1];
+            let minRightB = j === n ? Infinity : nums2[j];
+
+            if (maxLeftA <= minRightB) {//如果较短数组的较小部分的最大值小于等于较长数组的较大部分的最小值
+                beforeMax = Math.max(maxLeftA, maxLeftB);
+                afterMin = Math.min(minRightA, minRightB);
+                left = i + 1;
+            } else {
+                right = i - 1;
+            }
+        }
+
+        return (m + n) % 2 == 0 ? (beforeMax + afterMin) / 2.0 : beforeMax;
+    };
+
+    //运行结果：运行时间击败69.26%(140ms)，内存消耗击败90.15%(41.9mb)
+
+</script>
+</body>
+</html>

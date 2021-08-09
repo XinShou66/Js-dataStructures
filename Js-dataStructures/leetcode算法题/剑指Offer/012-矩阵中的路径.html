@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>矩阵中的路径</title>
+</head>
+<body>
+<script>
+    /*
+    *请设计一个函数，用来判断在一个矩阵中是否存在一条包含某字符串所有字符的路径。
+    * 路径可以从矩阵中的任意一格开始，每一步可以在矩阵中向左、右、上、下移动一格。
+    * 如果一条路径经过了矩阵的某一格，那么该路径不能再次进入该格子。
+    * 例如，在下面的3×4的矩阵中包含一条字符串“bfce”的路径（路径中的字母用加粗标出）。
+        [["a","b","c","e"],
+        ["s","f","c","s"],
+        ["a","d","e","e"]]
+    * 但矩阵中不包含字符串“abfb”的路径，因为字符串的第一个字符b占据了矩阵中的第一行第二个格子之后，路径不能再次进入这个格子。
+    * */
+
+    /**
+     * @param {character[][]} board
+     * @param {string} word
+     * @return {boolean}
+     */
+
+    //dfs
+    var exist = function(board, word) {
+        var row = board.length; //计算矩阵的行数
+        var col = board[0].length; //计算矩阵的列数
+        for (var i = 0; i < row ; i++) {
+            for (var j = 0; j < col ; j++) {//循环执行调用，从查第一个目标字符开始，如果从该字符开始返回false,则不返回true,从其它字符开始查找
+                if (dfs(i,j,board,word,0,row,col)) return true;
+            }
+        }
+        return false;
+
+    };
+
+    /**
+     * i 行索引
+     * j 列索引
+     * index 目标字符在word中的索引
+     */
+    function dfs(i,j,board,word,index,row,col) {
+        if (i < 0 || i >= row || j < 0 || j >= col || board[i][j] !== word[index]) return false; //判断是否在边界内以及目标字符是否存在
+        if (index == word.length - 1) return true;//当相等时说明已经超找到最后一个目标字符，表示所有字符都存在
+        var temp = board[i][j];//定义变量保存格子的数据
+        board[i][j] = '-';//将走过的格子标记
+        var res = dfs(i - 1,j,board,word,index + 1,row,col) || dfs(i + 1,j,board,word,index + 1,row,col) || dfs(i,j - 1,board,word,index + 1,row,col) || dfs(i,j + 1,board,word,index + 1,row,col);//在上一个目标字符的上下左右寻找下一个目标字符
+        board[i][j] = temp;//查找完毕后，将标记过的格子恢复
+        return res;
+    };
+
+
+    //运行结果：运行时间击败37.26%(124ms)，内存消耗击败53.95%(41.4mb)
+
+</script>
+</body>
+</html>

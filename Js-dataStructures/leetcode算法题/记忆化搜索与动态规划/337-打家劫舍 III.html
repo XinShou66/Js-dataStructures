@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>337-打家劫舍 III</title>
+</head>
+<body>
+<script>
+    /*在上次打劫完一条街道之后和一圈房屋后，小偷又发现了一个新的可行窃的地区。
+    这个地区只有一个入口，我们称之为“根”。 除了“根”之外，每栋房子有且只有一个“父“房子与之相连。
+    一番侦察之后，聪明的小偷意识到“这个地方的所有房屋的排列类似于一棵二叉树”。
+    如果两个直接相连的房子在同一天晚上被打劫，房屋将自动报警。
+    计算在不触动警报的情况下，小偷一晚能够盗取的最高金额。*/
+
+    /******* 方法1：递归、超时，可以用来提供思路，为记忆化递归做准备 *******/
+    var rob = function(root) {
+        if (root === null) {
+            return 0;
+        }
+        //打劫包括根节点的收益，保底是root.val
+        let robIncludeRoot = root.val;
+        if (root.left) {
+            robIncludeRoot += rob(root.left.left) + rob(root.left.right);
+        }
+        if (root.right) {
+            robIncludeRoot += rob(root.right.left) + rob(root.right.right);
+        }
+        //打劫不包括根节点的收益
+        let robExcludeRoot = rob(root.left) + rob(root.right);
+        //二者取其大
+        return Math.max(robIncludeRoot, robExcludeRoot);
+    };
+
+    /*********** 方法2：记忆化递归 ***********/
+    var rob = function(root) {
+        const memo = new Map();
+
+        function helper(root) {
+            if (root === null) {
+                return 0;
+            }
+            if (memo.has(root)) return memo.get(root);
+            //打劫包括根节点的收益，保底是root.val
+            let robIncludeRoot = root.val;
+            if (root.left) {
+                robIncludeRoot += helper(root.left.left) + helper(root.left.right);
+            }
+            if (root.right) {
+                robIncludeRoot += helper(root.right.left) + helper(root.right.right);
+            }
+            //打劫不包括根节点的收益
+            let robExcludeRoot = helper(root.left) + helper(root.right);
+            //二者取其大
+            const res = Math.max(robIncludeRoot, robExcludeRoot);
+            memo.set(root, res);
+            return res;
+        }
+
+        return helper(root);
+    };
+
+    //运行结果：运行时间击败22.95%(120ms)，内存消耗击败36.24%(42.9mb)
+
+    /*********** 方法3：动态规划 ***********/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {number}
+     */
+    var rob = function(root) {
+        const res = dfs(root);
+        return Math.max(res[0], res[1]);
+
+        function dfs(node) {
+            if (node === null) {
+                return [0, 0];
+            }
+            const left = dfs(node.left);
+            const right = dfs(node.right);
+            const robIncludeRoot  = node.val + left[1] + right[1];
+            const robExcludeRoot  = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+
+            return [robIncludeRoot, robExcludeRoot];
+        }
+    };
+
+    //运行结果：运行时间击败73.15%(100ms)，内存消耗击败68.46%(42.4mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>037-解数独</title>
+</head>
+<body>
+<script>
+    /*编写一个程序，通过填充空格来解决数独问题。
+    数独的解法需 遵循如下规则：
+        数字 1-9 在每一行只能出现一次。
+        数字 1-9 在每一列只能出现一次。
+        数字 1-9 在每一个以粗实线分隔的 3x3 宫内只能出现一次。（请参考示例图）
+        数独部分空格内已填入了数字，空白格用 '.' 表示。*/
+
+    /*提示：
+        board.length == 9
+        board[i].length == 9
+        board[i][j] 是一位数字或者 '.'
+        题目数据 保证 输入数独仅有一个解*/
+
+    /**
+     * @param {character[][]} board
+     * @return {void} Do not return anything, modify board in-place instead.
+     */
+    var solveSudoku = function(board) {
+        const rows = new Array(9);    // 存放每一行对应的可选数集
+        const cols = new Array(9);    // 存放每一列对应的可选数集
+        const blocks = new Array(9);  // 存放每一框对应的可选数集
+        const options = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        for (let i = 0; i < 9; i++) {//每一行、列、框可选的数集的初始化
+            rows[i] = new Set(options);
+            cols[i] = new Set(options);
+            blocks[i] = new Set(options);
+        }
+
+        //根据坐标获得所在的小框的索引
+        function getBlockIndex(i, j) {
+            return parseInt(i/3)*3 + parseInt(j/3);
+        }
+
+        // 根据现有的已填的数字，更新set们
+        for (let i = 0; i < 9; i++) {
+            for (let j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    //说明之前出现过该数字，所在行、列、框的数集中需要删去
+                    rows[i].delete(board[i][j]);
+                    cols[j].delete(board[i][j]);
+                    blocks[getBlockIndex(i, j)].delete(board[i][j]);
+                }
+            }
+        }
+
+        //填数的函数
+        function fillNum(i, j) {
+            if (j == 9) {// 列越界，就填下一行
+                i++;
+                j = 0;//重置列
+                if (i == 9) return true;// 都填完了 返回true
+            }
+
+            // 如果不是空白格，递归填下一格
+            if (board[i][j] != '.') return fillNum(i, j+1);
+
+            // 获取所在小框的索引
+            const blockIndex = getBlockIndex(i, j);
+
+            // 枚举出所有选择：1-9
+            for (let num = 1; num <= 9; num++) {
+                const s = String(num);//记录的集合中是字符，所以此处也要转换
+                // 当前选择必须在三个set中都存在，如果有一个不存在，就说明发生了冲突，跳过该选择
+                if (!rows[i].has(s) || !cols[j].has(s) || !blocks[blockIndex].has(s)) {
+                    continue;
+                }
+                board[i][j] = s; // 作出选择,填写数字
+                // 更新set们，删掉这个可填选项
+                rows[i].delete(s);
+                cols[j].delete(s);
+                blocks[blockIndex].delete(s);
+
+                // 1.如果基于当前选择，填下一个，最后可解出数独，直接返回真
+                if (fillNum(i, j + 1)) {
+                    return true;
+                }
+                // 2.基于当前选择，填下一个，怎么填都不行(说明填的数不合适)，回溯，恢复为空白格
+                board[i][j] = '.';
+                rows[i].add(s);
+                cols[j].add(s);
+                blocks[blockIndex].add(s);
+            }
+            // 尝试了1-9，每个都往下递归，都不能做完，返回false
+            return false;
+        }
+
+        fillNum(0, 0); // 填数字的起点
+        return board;
+    };
+
+    //运行结果：运行时间击败68.32%(128ms)，内存消耗击败32.31%(43.5mb)
+
+</script>
+</body>
+</html>

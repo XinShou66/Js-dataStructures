@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>移除链表元素</title>
+</head>
+<body>
+<script>
+    /*给你一个链表的头节点 head 和一个整数 val ，
+    请你删除链表中所有满足 Node.val == val 的节点，并返回 新的头节点 。*/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @param {number} val
+     * @return {ListNode}
+     */
+    var removeElements = function(head, val) {
+        const top = new ListNode(0, head);
+        let pre = top;//前继
+        let cur = head;//当前节点
+        while (cur) {
+            if (cur.val == val) {//如果当前节点需要删除，则将前继指向后继
+                pre.next = cur.next;
+            } else {//不需要删除则前继后移
+                pre = cur;
+            }
+            //当前节点后移
+            cur = cur.next;
+        }
+        return top.next
+    };
+
+    //运行结果：运行时间击败52.95%(108ms)，内存消耗击败86.54%(42.2mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现Trie(前缀树)</title>
+</head>
+<body>
+<script>
+    /*Trie（发音类似 "try"）或者说 前缀树(字典树) 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。
+        请你实现 Trie 类：
+            Trie() 初始化前缀树对象。
+            void insert(String word) 向前缀树中插入字符串 word 。
+            boolean search(String word) 如果字符串 word 在前缀树中，返回 true（即，在检索之前已经插入）；否则，返回 false 。
+            boolean startsWith(String prefix) 如果之前已经插入的字符串 word 的前缀之一为 prefix ，返回 true ；否则，返回 false*/
+
+    /**
+     * Initialize your data structure here.
+     */
+    var Trie = function() {
+        //每个节点放一个hash表用于存储子节点
+        //根节点的孩子,根节点为空
+        this.children = {};//this.root = {}
+    };
+
+    /**
+     * Inserts a word into the trie.
+     * @param {string} word
+     * @return {void}
+     */
+    Trie.prototype.insert = function(word) {
+        //每个节点放一个hash表用于存储子节点
+        let node = this.children;
+
+        for (let v of word) {
+            //子节点不存在。创建一个新的子节点，记录在children 数组的对应位置上，然后沿着指针移动到子节点，继续搜索下一个字符。
+            if (!node[v]) {
+                node[v] = {};
+            }
+            //子节点存在。沿着指针移动到子节点，继续处理下一个字符。
+            node = node[v];
+        }
+        //字符串所有字符处理完毕,将当前节点标记为字符串的结尾
+        node.isEnd = true;
+    };
+    //查找前缀
+    Trie.prototype.searchPrefix = function(prefix) {
+        let node = this.children;
+        for (let v of prefix) {
+            //子节点不存在。说明字典树中不包含该前缀。
+            if (!node[v]) {
+                return false;
+            }
+            //子节点存在。沿着指针移动到子节点，继续搜索下一个字符。
+            node = node[v];
+        }
+        return node;
+    }
+
+    /**
+     * Returns if the word is in the trie.
+     * @param {string} word
+     * @return {boolean}
+     */
+    Trie.prototype.search = function(word) {
+        let node = this.searchPrefix(word);
+        return node !== undefined && node.isEnd !== undefined;
+    };
+
+    /**
+     * Returns if there is any word in the trie that starts with the given prefix.
+     * @param {string} prefix
+     * @return {boolean}
+     */
+    Trie.prototype.startsWith = function(prefix) {
+        return this.searchPrefix(prefix);
+    };
+
+    /**
+     * Your Trie object will be instantiated and called as such:
+     * var obj = new Trie()
+     * obj.insert(word)
+     * var param_2 = obj.search(word)
+     * var param_3 = obj.startsWith(prefix)
+     */
+
+    //运行结果：运行时间击败30.93%(288ms)，内存消耗击败43%(52.8mb)
+
+
+</script>
+</body>
+</html>

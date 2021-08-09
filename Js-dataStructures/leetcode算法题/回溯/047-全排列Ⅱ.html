@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>047-全排列Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个可包含重复数字的序列 nums ，按任意顺序 返回所有不重复的全排列。*/
+
+    /*方法1：*/
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var permuteUnique = function(nums) {
+        let res = [];
+        nums.sort();
+        backTrack(0);
+        return res;
+
+        function backTrack(index) {
+            if (index  === nums.length) {
+                res.push([...nums]);
+                return;
+            }
+
+            const map = new Map();
+            for (let i = index; i < nums.length; i++) {
+                if (!map.get(nums[i])) {
+                    map.set(nums[i], true);
+                    swap(index, i); //交换两个数
+                    backTrack(index + 1);
+                    swap(index, i); //撤销交换
+                }
+            }
+        }
+
+        function swap(i, j) {
+            if (i === j) {
+                return;
+            }
+            let temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    };
+
+    //运行结果：运行时间击败61.38%(112ms)，内存消耗击败43.10%(41.8mb)
+
+
+    /*方法2：*/
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var permuteUnique = function(nums) {
+        let res = [];
+        let used = new Array(nums.length);
+        nums.sort();
+        backTrack([]);
+        return res;
+
+        function backTrack(arr) {
+            if (arr.length === nums.length) {// 个数选够了
+                res.push(arr.slice()); // 拷贝一份arr，加入解集res
+                return; // 结束当前递归分支
+            }
+            for (let i = 0; i < nums.length; i++) {
+                if (used[i]) { // 这个数使用过了，跳过。
+                    continue;
+                }
+                if (i - 1 >= 0 && nums[i - 1] == nums[i] && !used[i - 1]) {// 避免产生重复的排列
+                    continue;
+                }
+                arr.push(nums[i]);
+                used[i] = true; // 记录路径上做过的选择
+                backTrack(arr); // explore，基于它继续选，递归
+
+                arr.pop(); // 上一句的递归结束，回溯，将最后选的数pop出来
+                used[i] = false;  // 也要撤销一下对它的记录
+            }
+        }
+    };
+
+    //运行结果：运行时间击败61.38%(112ms)，内存消耗击败93.73%(40.3mb)
+
+</script>
+</body>
+</html>

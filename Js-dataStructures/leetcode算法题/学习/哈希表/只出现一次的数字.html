@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>只出现一次的数字</title>
+</head>
+<body>
+<script>
+    /*给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。
+        说明：
+            你的算法应该具有线性时间复杂度。 你可以不使用额外空间来实现吗？*/
+
+    /*********************** 为了满足题意使用异或运算 ***********************/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    //任何数与0异或运算的值是本身，自己与自己异或运算的值为0
+    var singleNumber = function(nums) {
+        let res = 0;
+        for (let num of nums) {
+            res ^= num;
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败88.02%(84ms)，内存消耗击败37.76%(40.7mb)
+
+</script>
+</body>
+</html>

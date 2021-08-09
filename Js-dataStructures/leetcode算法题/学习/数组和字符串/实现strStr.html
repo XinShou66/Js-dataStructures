@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>实现strStr</title>
+</head>
+<body>
+<script>
+    /*实现 strStr() 函数。
+    给定一个 haystack 字符串和一个 needle 字符串，在 haystack 字符串中找出 needle 字符串出现的第一个位置 (从0开始)。
+    如果不存在，则返回  -1。
+    */
+
+    /**
+     * @param {string} haystack
+     * @param {string} needle
+     * @return {number}
+     */
+    var strStr = function(haystack, needle) {
+        let hLength = haystack.length;
+        let nLength = needle.length;
+        if (!nLength) return 0;
+        if (!hLength) return -1;
+        let arr = [];
+        for (let i = 0; i <= hLength - nLength; i++) {
+            arr.push(haystack.substr(i,nLength))
+        }
+        for (let i = 0; i < arr.length; i++) {
+            if(arr[i] == needle) return i;
+        }
+        return -1;
+    };
+
+    //运行结果：运行时间击败19.64%(112ms)，内存消耗击败42.60%(38.8mb)
+
+</script>
+</body>
+</html>

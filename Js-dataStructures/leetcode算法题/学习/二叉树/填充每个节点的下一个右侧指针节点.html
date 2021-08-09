@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>填充每个节点的下一个右侧指针节点</title>
+</head>
+<body>
+<script>
+    /*给定一个 完美二叉树 ，其所有叶子节点都在同一层，每个父节点都有两个子节点。二叉树定义如下：
+        struct Node {
+          int val;
+          Node *left;
+          Node *right;
+          Node *next;
+        }
+        填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+        初始状态下，所有 next 指针都被设置为 NULL。*/
+    /*进阶：
+        你只能使用常量级额外空间。
+        使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。*/
+
+    /**********************************方法1：基于 bfs 的层次遍历 **********************************/
+    /*层次遍历基于广度优先搜索，它与广度优先搜索的不同之处在于，广度优先搜索每次只会取出一个节点来拓展，
+    而层次遍历会每次将队列中的所有元素都拿出来拓展，这样能保证每次从队列中拿出来遍历的元素都是属于同一层的，
+    因此我们可以在遍历的过程中修改每个节点的 \text{next}next 指针，同时拓展下一层的新队列。*/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, left, right, next) {
+     *    this.val = val === undefined ? null : val;
+     *    this.left = left === undefined ? null : left;
+     *    this.right = right === undefined ? null : right;
+     *    this.next = next === undefined ? null : next;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {Node}
+     */
+    var connect = function(root) {
+        if (root === null) {
+            return root;
+        }
+        // 初始化队列同时将第一层节点加入队列中，即根节点
+        const queue = [root];
+        while (queue.length) {
+            // 记录当前队列大小
+            let length = queue.length;
+            // 遍历这一层的所有节点
+            for (let i = 0; i < length; i++) {
+                //将当前元素出队列
+                let cur = queue.shift();
+                //将每一层的元素都指向右侧的元素，即队列的第一个元素
+                if (i < length - 1) {
+                    cur.next = queue[0];
+                }
+                // 拓展下一层节点
+                if (cur.left) {
+                    queue.push(cur.left);
+                }
+                if (cur.right) {
+                    queue.push(cur.right);
+                }
+
+            }
+
+        }
+        //返回根节点
+        return root;
+    };
+
+    //运行结果：运行时间击败50.69%(116ms)，内存消耗击败83.16%(44.2mb)
+
+
+
+    /********************************** 方法2：使用已建立的next指针 **********************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, left, right, next) {
+     *    this.val = val === undefined ? null : val;
+     *    this.left = left === undefined ? null : left;
+     *    this.right = right === undefined ? null : right;
+     *    this.next = next === undefined ? null : next;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {Node}
+     */
+    var connect = function(root) {
+        if (root === null) {
+            return root;
+        }
+        let leftmost = root;
+        while (leftmost.left) {
+            // 遍历这一层节点组织成的链表，为下一层的节点更新 next 指针，根节点为0层
+            let head = leftmost;
+
+            while (head) {
+                //情况1(连接同一个父节点的左右两个子节点)
+                head.left.next = head.right;
+                //情况2(连接同一层的不同两个父节点的子节点)
+                if (head.next) {//连接同一层的父节点a的右子节点与父节点b的左子节点
+                    head.right.next = head.next.left;
+                }
+                // 指针向后移动,对该节点右侧的节点进行处理
+                head = head.next;
+
+            }
+
+            // 去下一层的最左的节点
+            leftmost = leftmost.left;
+        }
+        return root;
+    };
+
+    //运行结果：运行时间击败66.15%(112ms)，内存消耗击败42.04%(44.4mb)
+
+</script>
+</body>
+</html>

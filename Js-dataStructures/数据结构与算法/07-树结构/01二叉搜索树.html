@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树</title>
+</head>
+<body>
+<script>
+    //封装二叉搜索树
+    function BinarySearchTree() {
+
+        function Node(key) {
+            this.key = key
+            this.left = null
+            this.right = null
+        }
+
+        //属性
+        this.root = null
+
+        //方法
+        /*1.insert方法：对外暴露的方法*/
+        BinarySearchTree.prototype.insert = function (key) {
+            //1.根据key创建节点
+            let newNode = new Node(key)
+            //2.判断根节点是否存在
+            if (this.root == null) {
+                this.root = newNode
+            } else {//根节点存在时,调用插入节点的方法
+                this.insertNode(this.root,newNode)
+            }
+        }
+        BinarySearchTree.prototype.insertNode = function (node,newNode) {
+            //当newNode.key < node.key向左查找
+            /*----------------------分支1:向左查找--------------------------*/
+            if (newNode.key < node.key) {
+                //情况1：node无左子节点，直接插入
+                /*----------------------分支1.1--------------------------*/
+                if (node.left == null) {
+                    node.left = newNode
+                }else{
+                    //情况2：node有左子节点，递归调用insertNode(),直到遇到无左子节点成功插入newNode后，不再符合该情况，也就不再调用insertNode()，递归停止。
+                    /*----------------------分支1.2--------------------------*/
+                    this.insertNode(node.left,newNode)
+                }
+                //当newNode.key >= node.key向右查找
+                /*-----------------------分支2:向右查找--------------------------*/
+            }else{
+                //情况1：node无右子节点，直接插入
+                /*-----------------------分支2.1--------------------------*/
+                if (node.right == null) {
+                    node.right = newNode
+                }else{
+                    //情况2：node有右子节点，依然递归调用insertNode(),直到遇到无右子节点成功插入newNode为止
+                    /*-----------------------分支2.2--------------------------*/
+                    this.insertNode(node.right,newNode)
+                }
+            }
+        }
+
+        /*遍历方法*/
+        /*2.1 preOrderTraverse先序遍历*/
+        //掺入一个callbackFunction函数方便之后对得到的key进行处理
+        BinarySearchTree.prototype.preOrderTraverse = function (callbackFunction) {
+            this.preOrderTraverseNode(this.root,callbackFunction)
+        }
+        //封装内部方法，对某个节点进行遍历
+        BinarySearchTree.prototype.preOrderTraverseNode = function (node,callbackFunction) {
+            if (node != null) {
+                //1.处理经过的节点
+                callbackFunction(node.key)
+                //2.遍历左子树中的节点
+                this.preOrderTraverseNode(node.left,callbackFunction)
+                //3.遍历右子树中的节点
+                this.preOrderTraverseNode(node.right,callbackFunction)
+            }
+        }
+
+        /*2.2 inOrderTraverse中序遍历*/
+        //掺入一个callbackFunction函数方便之后对得到的key进行处理
+        BinarySearchTree.prototype.inOrderTraverse = function (callbackFunction) {
+            this.inOrderTraverseNode(this.root,callbackFunction)
+        }
+        //封装内部方法，对某个节点进行遍历
+        BinarySearchTree.prototype.inOrderTraverseNode = function (node,callbackFunction) {
+            if (node != null) {
+                //1.遍历左子树中的节点
+                this.inOrderTraverseNode(node.left,callbackFunction)
+                //2.处理经过的节点
+                callbackFunction(node.key)
+                //3.遍历右子树中的节点
+                this.inOrderTraverseNode(node.right,callbackFunction)
+            }
+        }
+
+        /*2.3 postOrderTraverse后序遍历*/
+        //掺入一个callbackFunction函数方便之后对得到的key进行处理
+        BinarySearchTree.prototype.postOrderTraverse = function (callbackFunction) {
+            this.postOrderTraverseNode(this.root,callbackFunction)
+        }
+        //封装内部方法，对某个节点进行遍历
+        BinarySearchTree.prototype.postOrderTraverseNode = function (node,callbackFunction) {
+            if (node != null) {
+                //1.遍历左子树中的节点
+                this.postOrderTraverseNode(node.left,callbackFunction)
+                //2.遍历右子树中的节点
+                this.postOrderTraverseNode(node.right,callbackFunction)
+                //3.处理经过的节点
+                callbackFunction(node.key)
+            }
+        }
+
+        /*3.查找数据方法*/
+        /*3.1 min查找最小值*/
+        BinarySearchTree.prototype.min = function () {
+            //1.获取根节点
+            let node = this.root
+            //2.定义key保存节点值
+            let key = null
+            //3.依次向左不断查找，直到节点为null
+            while (node != null) {
+                key = node.key
+                node = node.left
+            }
+            return key
+        }
+
+        /*3.2 max查找最大值*/
+        BinarySearchTree.prototype.max = function () {
+            //1.获取根节点
+            let node = this.root
+            //2.定义key保存节点值
+            let key = null
+            //3.依次向左不断查找，直到节点为null
+            while (node != null) {
+                key = node.key
+                node = node.right
+            }
+            return key
+        }
+
+        /*3.3 search查找特定值*/
+        BinarySearchTree.prototype.search = function (key) {
+            //1.获取根节点
+            let node = this.root
+            //2.循环搜索key
+            while (node != null) {
+                if (key < node.key) {//小于根(父)节点就往左边找
+                    node = node.left
+                }else if (key > node.key){//大于根(父)节点就往右边找
+                    node = node.right
+                }else{
+                    return true
+                }
+            }
+            return false
+        }
+
+        /*4. remove删除数据*/
+        BinarySearchTree.prototype.remove = function (key) {
+         /*1.先查找要删除的节点，若没有找到则返回false*/
+            //1.1.定义变量
+            let current = this.root
+            let parent = null
+            let isLeftChild = true
+            //1.2.开始寻找删除的节点
+            while (current.key != key) {
+                parent = current
+
+                if (key < current.key) { // 小于则往左查找
+                    isLeftChild = true
+                    current = current.left
+                }else{ // 大于则往右查找
+                    isLeftChild = false
+                    current = current.right
+                }
+                //找到最后依然没有找到相等的节点
+                if (current == null) {
+                    return false
+                }
+            }
+        /*2. 结束while循环后：current.key = key,此时对找到的节点分三种情况进行删除操作*/
+            //情况1：删除的是叶子节点
+            if (current.left == null && current.right == null) {
+                if (current == this.root) {
+                    this.root = null
+                }else if (isLeftChild){
+                    parent.left = null
+                }else{
+                    parent.right = null
+                }
+            }
+            //情况2：删除的节点有一个子节点
+            //2.1当current存在左子节点时
+            else if (current.right == null){
+                if (current == this.root) {
+                    this.root = current.left
+                }else if (isLeftChild){
+                    parent.left = current.left
+                }else{
+                    parent.right = current.left
+                }
+            }
+            //2.2当current存在右子节点时
+            else if (current.left == null){
+                if (current == this.root) {
+                    this.root = current.right
+                }else if (isLeftChild){
+                    parent.left = current.right
+                }else{
+                    parent.right = current.right
+                }
+            }
+
+            //情况3：删除的节点有两个子节点（以后继为例）
+            else{
+                //1.根据要删除的节点获取后继节点
+                let successor = this.getSuccessor(current)
+                //2.判断是否根节点
+                if (current == this.root) {
+                    this.root = successor
+                }else if (isLeftChild){
+                    parent.left = successor
+                }else{
+                    parent.right = successor
+                }
+                //3.将后继的左子节点改为被删除节点的左子节点
+                successor.left = current.left
+
+            }
+        }
+        //封装查找后继的方法
+        BinarySearchTree.prototype.getSuccessor = function (delNode) {
+            let successor = delNode
+            let current = delNode.right
+            let successorParent = delNode
+            //2.循环查找current的右子树节点
+            while (current != null) {
+                successorParent = successor
+                successor = current
+                current = current.left
+            }
+            //3.判断寻找到的后继节点是否直接就是删除节点的right节点
+            if (successor != delNode.right) {
+                successorParent.left = successor.right
+                successor.right = delNode.right
+            }
+            return successor
+
+        }
+
+    }
+
+
+
+    //方法测试
+    let bst = new BinarySearchTree()
+    //1.insert
+    bst.insert(11);
+    bst.insert(7);
+    bst.insert(15);
+    bst.insert(5);
+    bst.insert(9);
+    console.log(bst);//自上到下顺序可看为11 7 5 9 15
+    //2.preOrderTraverse
+    bst.preOrderTraverse(function (key) {
+        console.log(key)//11 7 5 9 15
+    })
+    console.log('--------------------')
+    //3.inOrderTraverse
+    bst.inOrderTraverse(function (key) {
+        console.log(key)//5 7 9 11 15
+    })
+    console.log('--------------------')
+    //4.postOrderTraverse
+    bst.postOrderTraverse(function (key) {
+        console.log(key)//5 9 7 15 11
+    })
+    console.log('--------------------')
+    //5.min
+    console.log('min:'+bst.min())//5
+    //6.max
+    console.log('max:'+bst.max())//15
+    //7.search
+    console.log(bst.search(24));//false
+    console.log(bst.search(5));//true
+    //8.remove
+    bst.insert(3);
+    bst.insert(8);
+    bst.insert(10);
+    bst.insert(13);
+    bst.insert(12);
+    bst.insert(14);
+    bst.insert(20);
+    bst.insert(18);
+    bst.insert(25);
+    bst.insert(19);
+    //删除没有子节点的节点
+    bst.remove(3)
+    bst.remove(8)
+    bst.remove(10)
+
+    //删除有一个子节点的节点
+    bst.remove(5)
+    bst.remove(18)
+
+    //删除有两个子节点的节点
+    bst.remove(9)
+    bst.remove(7)
+    bst.remove(15)
+    console.log('--------------------')
+    bst.inOrderTraverse(function (key) {
+        console.log(key)//11 12 13 14 19 20 25
+    })
+</script>
+</body>
+</html>

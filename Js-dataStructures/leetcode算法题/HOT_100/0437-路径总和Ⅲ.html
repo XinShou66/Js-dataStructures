@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0437-路径总和Ⅲ</title>
+</head>
+<body>
+<script>
+   /*给定一个二叉树，它的每个结点都存放着一个整数值。
+    找出路径和等于给定数值的路径总数。
+    路径不需要从根节点开始，也不需要在叶子节点结束，但是路径方向必须是向下的（只能从父节点到子节点）。
+    二叉树不超过1000个节点，且节点数值范围是 [-1000000,1000000] 的整数。*/
+
+   /*方法1：递归*/
+   /**
+    * Definition for a binary tree node.
+    * function TreeNode(val, left, right) {
+    *     this.val = (val===undefined ? 0 : val)
+    *     this.left = (left===undefined ? null : left)
+    *     this.right = (right===undefined ? null : right)
+    * }
+    */
+   /**
+    * @param {TreeNode} root
+    * @param {number} targetSum
+    * @return {number}
+    */
+   var pathSum = function(root, targetSum) {
+       if (!root) return 0;
+       let rootCount = leafFind(root, targetSum); //从根节点开始有多少满足条件的路径数
+       let leftCount = pathSum(root.left, targetSum);   //遍历左子树求符合条件的路径数
+       let rightCount = pathSum(root.right, targetSum); //遍历右子树求符合条件的路径数
+       return rootCount + leftCount + rightCount; //得出总路径数
+   };
+
+   function leafFind(node, sum) {// 求从单个节点开始满足条件的路径数，node为当前节点，sum为规定的路径权值和
+       if (!node) return 0;
+       let temp = node.val === sum ? 1 : 0; // 当前节点权值刚好等于sum则算为1，否则为0
+       let leftC = leafFind(node.left, sum - node.val); //剩下的权值要子树来凑，先看左子树能凑出来几条路径
+       let rightC = leafFind(node.right, sum - node.val); //再看右子树能凑出来几条路径
+       return temp + leftC + rightC; // 返回符合条件的路径数
+   }
+
+   //运行结果：运行时间击败58.08%(132ms)，内存消耗击败96.90%(41.7mb)
+
+
+   /*方法2：前缀和*/
+
+   var pathSum = function(root, targetSum) {
+       const map = new Map();//key是前缀和， value是该前缀和的节点数量
+       let res = 0;
+       dfs(root, 0); //开始时，前缀和为0
+       return res;
+
+       function dfs(root, preSum) {
+           if (!root) {
+               return 0;
+           }
+           if (map.has(preSum)) {
+               map.set(preSum, map.get(preSum) + 1);
+           } else {
+               map.set(preSum, 1);
+           }
+           //当前路径上的和
+           let target = preSum + root.val;
+           //看看root到当前节点这条路上是否存在节点前缀和加targetSumt为target的路径
+           res += (map.get(target - targetSum) || 0);
+           // 继续找
+           dfs(root.left, target);
+           dfs(root.right, target);
+           // 回溯 撤销
+           //回到本层，恢复状态，去除当前节点的前缀和数量
+           map.set(preSum, map.get(preSum) - 1);
+       }
+   }
+
+   //运行结果：运行时间击败95.11%(96ms)，内存消耗击败33.77%(42.4mb)
+
+</script>
+</body>
+</html>

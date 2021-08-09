@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>队列的最大值</title>
+</head>
+<body>
+<script>
+    /*请定义一个队列并实现函数 max_value 得到队列里的最大值，
+    要求函数max_value、push_back 和 pop_front 的均摊时间复杂度都是O(1)。
+    若队列为空，pop_front 和 max_value 需要返回 -1*/
+
+    /*借助辅助队列*/
+
+
+    var MaxQueue = function() {
+        this.queue1 = [];
+        this.queue2 = [];//创建用来计算最大值的单调辅助队列，以此来提升算法效率
+    };
+
+    /**
+     * @return {number}
+     */
+    MaxQueue.prototype.max_value = function() {
+        if (!this.queue2.length) return -1;
+        return this.queue2[0];
+    };
+
+    /**
+     * @param {number} value
+     * @return {void}
+     */
+    MaxQueue.prototype.push_back = function(value) {
+        this.queue1.push(value);
+        while (this.queue2.length && this.queue2[this.queue2.length - 1] < value) {
+            //保持辅助队列单调递减（队首元素最大）
+            this.queue2.pop()
+        }
+        this.queue2.push(value);
+    };
+
+    /**
+     * @return {number}
+     */
+    MaxQueue.prototype.pop_front = function() {
+        if (!this.queue1.length) return -1;
+        const value = this.queue1.shift();//该方法会将元素删除并返回
+        if (this.queue2[0] === value) {
+            this.queue2.shift();
+        }
+        return value;
+    };
+
+    /**
+     * Your MaxQueue object will be instantiated and called as such:
+     * var obj = new MaxQueue()
+     * var param_1 = obj.max_value()
+     * obj.push_back(value)
+     * var param_3 = obj.pop_front()
+     */
+
+
+    //运行结果：运行时间击败6.80%(316ms)，内存消耗击败65.20%(47.7mb)
+
+
+
+
+/******************************************速度慢的暴力法*******************************************************/
+
+
+    var MaxQueue = function() {
+        this.items = [];
+    };
+
+    /**
+     * @return {number}
+     */
+    MaxQueue.prototype.max_value = function() {
+        if (this.items.length === 0) return -1;
+        let arr = this.items.slice(0);//将原数组全部截取赋值给辅助数组，操作辅助数组不会改变原数组
+        arr.sort((a,b) => b - a);
+        return arr[0];
+    };
+
+    /**
+     * @param {number} value
+     * @return {void}
+     */
+    MaxQueue.prototype.push_back = function(value) {
+        return this.items.push(value);
+    };
+
+    /**
+     * @return {number}
+     */
+    MaxQueue.prototype.pop_front = function() {
+        if (this.items.length === 0) return -1;
+        return this.items.shift();
+    };
+
+    /**
+     * Your MaxQueue object will be instantiated and called as such:
+     * var obj = new MaxQueue()
+     * var param_1 = obj.max_value()
+     * obj.push_back(value)
+     * var param_3 = obj.pop_front()
+     */
+
+    //运行结果：运行时间击败5.00%(432ms)，内存消耗击败5.20%(56.2mb)
+
+
+    /******************************************快一点的不知道符不符合的方法********************************************/
+
+// 建立一个队列数组 maxVal用于存储最大值
+    var MaxQueue = function() {
+        this.queue = []
+        this.maxVal = -Infinity
+    };
+    // 数组不存在即队列为空返回-1 否则返回最大值maxVal
+    MaxQueue.prototype.max_value = function() {
+        if(!this.queue.length) return -1
+        return this.maxVal
+    };
+    //入队push 比较入队的值与maxVal 大则更新maxVal
+    MaxQueue.prototype.push_back = function(value) {
+        this.queue.push(value)
+        if(value>this.maxVal) this.maxVal = value
+    };
+    // 出队shift 返回数组第一个删除元素 如果删除数为最大值则需比较剩余数组中的最大值并更新
+    MaxQueue.prototype.pop_front = function() {
+        if(!this.queue.length) return -1
+        let val = this.queue.shift()
+        if(val === this.maxVal) this.maxVal = Math.max(...this.queue)
+        return val
+    };
+
+
+
+    //运行结果：运行时间击败68.40%(244ms)，内存消耗击败81.80%(47.6mb)
+</script>
+</body>
+</html>

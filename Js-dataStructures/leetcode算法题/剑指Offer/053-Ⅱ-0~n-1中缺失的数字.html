@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0~n-1中缺失的数字</title>
+</head>
+<body>
+<script>
+    /*一个长度为n-1的递增排序数组中的所有数字都是唯一的，
+    并且每个数字都在范围0～n-1之内。
+    在范围0～n-1内的n个数字中有且只有一个数字不在该数组中，请找出这个数字。
+    */
+
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var missingNumber = function(nums) {
+        if (nums[0] != 0) return 0; //要考虑缺少第一个数字0的情况
+        for (let i = 0; i < nums.length; i++) {
+            if(nums[i] + 1 != nums[i+1]) return nums[i] + 1;
+        }
+    };
+
+    //运行结果：运行时间击败60.69%(88ms)，内存消耗击败15.48%(40.3mb)
+
+
+    /************************************快一点的二分查找******************************************/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var missingNumber = function(nums) {
+        //将数组以缺少的数字为中心分成两个数组，缺少的为右边数组的第一个
+        let i = 0;   //左边数组的最后一个
+        let j = nums.length - 1;    //右边数组的第一个
+        while (i <= j) { //当i大于j时的数就为缺少的数
+            let m = parseInt((i+j)/2);
+            if(nums[m] == m) {  //若 nums[m] = mnums[m]=m ，则 “右子数组的首位元素” 一定在闭区间 [m + 1, j] 中，因此执行 i = m + 1
+                i = m + 1;
+            } else {    //若 nums[m] 不等于 m，则 “左子数组的末位元素” 一定在闭区间 [i, m - 1] 中，因此执行 j = m - 1
+                j = m - 1;
+            }
+        }
+        return i;
+    };
+
+    //运行结果：运行时间击败96.61%(76ms)，内存消耗击败98.75%(39.5mb)
+
+
+</script>
+</body>
+</html>

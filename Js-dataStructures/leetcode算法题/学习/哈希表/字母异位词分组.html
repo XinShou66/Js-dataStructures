@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>字母异位词分组</title>
+</head>
+<body>
+<script>
+    /*给定一个字符串数组，将字母异位词组合在一起。字母异位词指字母相同，但排列不同的字符串。*/
+    /*说明：
+        所有输入均为小写字母。
+        不考虑答案输出的顺序。*/
+
+    /**
+     * @param {string[]} strs
+     * @return {string[][]}
+     */
+    var groupAnagrams = function(strs) {
+        let res = [];
+        let map = new Map()
+        for (let i = 0; i < strs.length; i++) {
+            let temp = strs[i]; //排序前的字符
+            let strArr = temp.split('');
+            //字母正序排列(两种方法)
+            //let tempSort = strArr.sort((a, b) => a - b).join(''); //排序后的字符------>速度较慢
+            let tempSort = strArr.sort().join(''); //排序后的字符
+            if (!map.has(tempSort)) {
+                map.set(tempSort, [temp]);
+            } else {
+                let arr = map.get(tempSort)
+                arr.push(temp);
+                map.set(tempSort, arr)
+            }
+        }
+        map.forEach((value, key) => {//第一个元素为value
+            res.push(value);
+        })
+        return res;
+    };
+
+    //运行结果：运行时间击败71.22%(144ms)，内存消耗击败88.61%(47.3mb)
+
+</script>
+</body>
+</html>

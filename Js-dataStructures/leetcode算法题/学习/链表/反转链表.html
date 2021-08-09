@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>反转链表</title>
+</head>
+<body>
+<script>
+   /*反转一个单链表。*/
+   /**************************** 与剑指offer第24题，翻转链表，解法相同 ****************************/
+   /*************************** 与递归中 的反转链表一样 ******************************/
+
+   /*方法1：迭代*/
+
+   /**
+    * Definition for singly-linked list.
+    * function ListNode(val, next) {
+    *     this.val = (val===undefined ? 0 : val)
+    *     this.next = (next===undefined ? null : next)
+    * }
+    */
+   /**
+    * @param {ListNode} head
+    * @return {ListNode}
+    */
+   var reverseList = function(head) {
+       let prev = null;//当前节点的前继
+       let cur = head;//当前节点
+       while (cur) {
+           let curNext = cur.next;//保存当前节点的后一个节点
+           cur.next = prev;//改变后一个节点的指向，让它指向当前节点的前继
+           prev = cur; //前继后移,让前继指向当前节点
+           cur = curNext;  //当前节点指向 之前保存的后一个节点
+       }
+       //此时cur为null,prev为头节点
+       return prev;
+   };
+
+   //运行结果：运行时间击败69.33%(88ms)，内存消耗击败66.81%(39.6mb)
+
+
+   /*方法2.递归*/
+
+   /**
+    * Definition for singly-linked list.
+    * function ListNode(val, next) {
+    *     this.val = (val===undefined ? 0 : val)
+    *     this.next = (next===undefined ? null : next)
+    * }
+    */
+   /**
+    * @param {ListNode} head
+    * @return {ListNode}
+    */
+   var reverseList = function(head) {
+       //将问题分为1.头节点 和 2.头节点之后链表的反转问题
+       if (!head || !head.next) {
+           return head;
+       }
+       const newHead = reverseList(head.next);//每次会返回小反转的头节点
+       head.next.next = head;
+       head.next = null;
+       return newHead;
+   };
+
+   //运行结果：运行时间击败69.33%(88ms)，内存消耗击败21.29%(40mb)
+
+</script>
+</body>
+</html>

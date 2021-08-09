@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从上到下打印二叉树 Ⅲ</title>
+</head>
+<body>
+<script>
+    /*请实现一个函数按照之字形顺序打印二叉树，
+    即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，
+    第三行再按照从左到右的顺序打印，其他行以此类推。*/
+
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {number[][]}
+     */
+    var levelOrder = function(root) {
+        if (!root) return [];
+        let queue = [root];
+        let res = [];  // 存放遍历结果
+        let level = 0; // 代表当前层数
+        while (queue.length) {
+            res[level] = []; // 第level层的遍历结果
+            let levelNum = queue.length;
+            while (levelNum) {
+                let node = queue.shift();
+                if (level % 2 == 0) {//奇数行从左到右
+                    res[level].push(node.val);
+                } else {//偶数行从右到左
+                    res[level].unshift(node.val);
+                }
+
+                if (node.left)  queue.push(node.left);
+                if (node.right)  queue.push(node.right);
+                levelNum--;
+            }
+            level++;
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败98.93%(76ms)，内存消耗击败75.42%(39.5mb)
+
+</script>
+</body>
+</html>

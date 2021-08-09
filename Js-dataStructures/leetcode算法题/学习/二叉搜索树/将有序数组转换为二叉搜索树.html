@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>将有序数组转换为二叉搜索树</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums ，其中元素已经按 升序 排列，请你将其转换为一棵 高度平衡 二叉搜索树。
+    高度平衡 二叉树是一棵满足「每个节点的左右两个子树的高度差的绝对值不超过 1 」的二叉树。*/
+
+    /****************************** 方法1：中序遍历，总是选择中间位置左边的数字作为根节点 *****************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {number[]} nums
+     * @return {TreeNode}
+     */
+    var sortedArrayToBST = function(nums) {
+        return helper(nums, 0, nums.length - 1);
+
+        function helper(nums, left , right) {
+            if (left > right) {
+                return null;
+            }
+            // 总是选择中间位置左边的数字作为根节点
+            let mid = parseInt((left + right) / 2);
+            let root = new TreeNode(nums[mid]);
+            root.left = helper(nums, left, mid - 1);
+            root.right = helper(nums, mid + 1, right);
+            return root;
+        }
+    };
+
+    //运行结果：运行时间击败17.27%(116ms)，内存消耗击败63.80%(40.5mb)
+
+
+
+    /****************************** 方法2：中序遍历，总是选择中间位置右边的数字作为根节点 *****************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {number[]} nums
+     * @return {TreeNode}
+     */
+    var sortedArrayToBST = function(nums) {
+        return helper(nums, 0, nums.length - 1);
+
+        function helper(nums, left , right) {
+            if (left > right) {
+                return null;
+            }
+            // 总是选择中间位置左边的数字作为根节点
+            let mid = parseInt((left + right + 1) / 2);
+            let root = new TreeNode(nums[mid]);
+            root.left = helper(nums, left, mid - 1);
+            root.right = helper(nums, mid + 1, right);
+            return root;
+        }
+    };
+
+    //运行结果：运行时间击败31.98%(108ms)，内存消耗击败61.41%(40.6mb)
+
+
+    /****************************** 方法3：中序遍历，选择任意一个中间位置数字作为根节点 *****************************/
+    //将mid的算式随机加上0或1
+
+</script>
+</body>
+</html>

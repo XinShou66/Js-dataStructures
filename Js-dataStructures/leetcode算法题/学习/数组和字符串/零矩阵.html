@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>零矩阵</title>
+</head>
+<body>
+<script>
+    /*编写一种算法，若M × N矩阵中某个元素为0，则将其所在的行与列清零。*/
+
+
+    /*每次找到等于零的那一个把对应的行和列都置零即可，但是会出现一个问题就是到最后所有的元素都变成零了；
+    因此，既然打算将整行和整列清零，因此并不需要标记录它是cell[2][4]（行2，列4），
+    只需要知道行2有个元素为0，列4有个元素为0.不管怎样，整行和整列都要清零，又何必要记录零元素的确切位置？
+    */
+
+
+    /**
+     * @param {number[][]} matrix
+     * @return {void} Do not return anything, modify matrix in-place instead.
+     */
+    var setZeroes = function(matrix) {
+        let row = [];
+        let column = [];
+        for(let i = 0; i < matrix.length; i++){
+            for(let j = 0; j < matrix[0].length; j++){
+                if (matrix[i][j] == 0) {
+                    row[i] = true;
+                    column[j] = true;
+                }
+            }
+        }
+        for(let i = 0; i < matrix.length; i++){
+            for(let j = 0; j < matrix[0].length; j++){
+                if (row[i] || column[j]) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    };
+
+    //运行结果：运行时间击败45.58%(116ms)，内存消耗击败77.90%(40mb)
+
+</script>
+</body>
+</html>

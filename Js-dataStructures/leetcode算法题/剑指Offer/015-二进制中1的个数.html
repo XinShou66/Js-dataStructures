@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二进制中1的个数</title>
+</head>
+<body>
+<script>
+    /*请实现一个函数，输入一个整数（以二进制串形式），
+    输出该数二进制表示中 1 的个数。
+    例如，把 9 表示成二进制是 1001，有 2 位是 1。因此，
+    如果输入 9，则该函数输出 2。
+*/
+
+
+    /**
+     * @param {number} n - a positive integer
+     * @return {number}
+     */
+    /*方法一：数字转为字符串挨个比对*/
+
+    var hammingWeight = function(n) {
+        let strN = n.toString(2);//toString()方法默认是将数字转为10进制数表示的字符串
+        let num = 0;
+        for (let i = 0; i < strN.length; i++) {
+            if (parseInt(strN[i]) === 1) {
+                num++;
+            }
+        }
+        return num;
+    };
+    //运行结果：运行时间击败17.59%(108ms)，内存消耗击败6.60%(39.6mb)
+
+
+    /*方法二：位运算*/
+    var hammingWeight = function(n) {
+        let num = 0;
+        while (n) {
+            n = n & (n-1)
+            num ++;
+        }
+        return num;
+    };
+    //运行结果：运行时间击败97.41%(80ms)，内存消耗击败8.83%(39.6mb)
+
+</script>
+</body>
+</html>

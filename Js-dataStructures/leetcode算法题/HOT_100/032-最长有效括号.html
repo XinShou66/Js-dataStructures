@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>032-最长有效括号</title>
+</head>
+<body>
+<script>
+    /*给你一个只包含 '(' 和 ')' 的字符串，找出最长有效（格式正确且连续）括号子串的长度。*/
+
+    /*方法1：两边遍历，不用额外的空间*/
+    /**
+     * @param {string} s
+     * @return {number}
+     */
+    var longestValidParentheses = function(s) {
+        let left = 0;
+        let right = 0;
+        let res = 0;
+        for (let i = 0; i < s.length; i++) {
+            //从左向右遍历，统计左右括号的数量
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                res = Math.max(res, 2*right);
+            } else if(right > left){
+                //当右括号多于左括号时，之前的字符都扔掉不考虑，重新从下一个字符开始计算,但是会漏掉左括号数量始终大于右括号的情况
+                left = 0;
+                right = 0;
+            }
+        }
+        //重新从右向左遍历，统计左右括号的数量，解决左括号数量始终大于右括号数量的情况
+        left = right = 0;
+        for (let i = s.length - 1; i >= 0; i--) {
+            if (s.charAt(i) == '(') {
+                left++;
+            } else {
+                right++;
+            }
+            if (left == right) {
+                res = Math.max(res, 2*left);
+            } else if(left > right) {
+                //当左括号多于右括号时，之前的字符都扔掉不考虑，而右括号多余左括号的情况之前已经考虑过了
+                left = right = 0;
+            }
+        }
+
+        return res;
+    };
+    //运行结果：运行时间击败24.66%(112ms)，内存消耗击败99.27%(39mb)
+
+
+
+    /*方法2： 栈*/
+    /**
+     * @param {string} s
+     * @return {number}
+     */
+    var longestValidParentheses = function(s) {
+        let res = 0;
+        let stack = [];
+        //始终保持栈底元素为当前已经遍历过的元素中「最后一个没有被匹配的右括号的下标」
+        // 向栈中预置一个-1，将计算长度的方式转化成“）”的下标减去出栈后栈顶元素的下标
+        stack.push(-1);
+        for (let i = 0; i < s.length; i++) {
+            if (s.charAt(i) == '(') {
+                stack.push(i);
+            } else {
+                // 遍历到右括号，栈顶的左括号被匹配，出栈
+                stack.pop();
+                // 如栈空，则注入新的i作为预置下标
+                if (!stack.length) {
+                    //始终保持栈底元素为当前已经遍历过的元素中「最后一个没有被匹配的右括号的下标」
+                    stack.push(i);// 放入右括号参照物
+                } else {
+                    res = Math.max(res, i - stack[stack.length - 1]);
+                }
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败36.49%(104ms)，内存消耗击败72.25%(39.7mb)
+
+
+</script>
+</body>
+</html>

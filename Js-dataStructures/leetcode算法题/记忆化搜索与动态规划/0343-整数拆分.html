@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0343-整数拆分</title>
+</head>
+<body>
+<script>
+    /*给定一个正整数 n，将其拆分为至少两个正整数的和，并使这些整数的乘积最大化。 返回你可以获得的最大乘积。*/
+    /*说明: 你可以假设 n 不小于 2 且不大于 58。*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var integerBreak = function(n) {
+        //dp[2] = 1,所以可以初始都赋值为1
+        const dp = new Array(n+1).fill(1);
+        for (let i = 3; i <= n; i++) {//i为正整数n,n最小为2,但是已经在基本赋值里边了，所以从3开始
+            for (let j = 1; j < i; j++) {//j为正整数i分解出来的第一个正整数
+                //情况一：分解为j、i-j,i-j不再继续分解
+                //情况二：分解为j、i-j,i-j继续分解
+                //正整数i分解后对应的最大成绩和
+                dp[i] = Math.max(dp[i], Math.max(j * (i-j), j * dp[i-j]));
+            }
+
+        }
+
+        return dp[n];
+
+    };
+
+    //运行结果：运行时间击败97.57%(72ms)，内存消耗击败95.74%(37.4mb)
+
+</script>
+</body>
+</html>

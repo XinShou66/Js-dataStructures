@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树的中序遍历</title>
+</head>
+<body>
+<script>
+    /*给定一个二叉树的根节点 root ，返回它的 中序 遍历。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {number[]}
+     */
+    var inorderTraversal = function(root) {
+        let res = [];
+        function inorder(node) {
+            if (node) {
+                inorder(node.left)
+                res.push(node.val);
+                inorder(node.right)
+            }
+        }
+        inorder(root);
+        return res;
+    };
+
+    //运行结果：运行时间击败25.52%(92ms)，内存消耗击败54.95%(37.9mb)
+
+</script>
+</body>
+</html>

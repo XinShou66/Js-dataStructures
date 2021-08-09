@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>把数组排成最小的数</title>
+</head>
+<body>
+<script>
+    /*输入一个非负整数数组，把数组里所有数字拼接起来排成一个数，打印能拼接出的所有数字中最小的一个。*/
+
+
+    /**
+     * @param {number[]} nums
+     * @return {string}
+     */
+    var minNumber = function(nums) {
+        //将两个数字按两种顺序拼接成新数字比较大小，小的在前
+        nums.sort((a,b) => `${a}${b}` - `${b}${a}`);
+        return nums.join('');
+    };
+
+
+    //运行结果：运行时间击败73.52%(88ms)，内存消耗击败80.17%(39.4mb)
+
+
+</script>
+</body>
+</html>

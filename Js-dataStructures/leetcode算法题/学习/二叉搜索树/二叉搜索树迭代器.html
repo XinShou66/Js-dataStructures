@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树迭代器</title>
+</head>
+<body>
+<script>
+    /********************************** 方法1：扁平化 ****************************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     */
+    var BSTIterator = function(root) {
+        this.arr = [];
+        this.inorderTraversal(root, this.arr)
+    };
+
+    /**
+     * @return {number}
+     */
+    BSTIterator.prototype.next = function() {
+        return this.arr.shift();
+
+    };
+
+    /**
+     * @return {boolean}
+     */
+    BSTIterator.prototype.hasNext = function() {
+        return this.arr.length;
+    };
+
+    /**
+     * Your BSTIterator object will be instantiated and called as such:
+     * var obj = new BSTIterator(root)
+     * var param_1 = obj.next()
+     * var param_2 = obj.hasNext()
+     */
+    BSTIterator.prototype.inorderTraversal = function(root, arr) {
+        if (root) {
+            this.inorderTraversal(root.left, arr);
+            arr.push(root.val);
+            this.inorderTraversal(root.right, arr);
+        }
+    }
+
+    //运行结果：运行时间击败5.75%(460ms)，内存消耗击败91.37%(49.3mb)
+
+    /********************************** 方法1：迭代 ****************************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     */
+    var BSTIterator = function(root) {
+        this.cur = root;
+        this.stack = [];
+    };
+
+    /**
+     * @return {number}
+     */
+    BSTIterator.prototype.next = function() {
+        while (this.cur) {//中序遍历 左-根-右，根据栈的后进先出，所以根和左先进栈
+            this.stack.push(this.cur);
+            this.cur = this.cur.left;
+        }
+        //对左、根进行处理
+        this.cur = this.stack.pop();
+        let res = this.cur.val;
+        //处理右侧，下此调用时，将右侧节点进栈
+        this.cur = this.cur.right;
+        return res;
+
+    };
+
+    /**
+     * @return {boolean}
+     */
+    BSTIterator.prototype.hasNext = function() {
+        //倒数第二次操作，this.cur指向null,但栈中还有一个数
+        return this.cur !== null || this.stack.length;
+    };
+
+    /**
+     * Your BSTIterator object will be instantiated and called as such:
+     * var obj = new BSTIterator(root)
+     * var param_1 = obj.next()
+     * var param_2 = obj.hasNext()
+     */
+
+    //运行结果：运行时间击败28.27%(168ms)，内存消耗击败52.87%(49.8mb)
+</script>
+</body>
+</html>

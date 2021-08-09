@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>062-不同路径</title>
+</head>
+<body>
+<script>
+    /*一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+    机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish” ）。
+    问总共有多少条不同的路径？*/
+
+    /*方法1：动态规划*/
+
+    /**
+     * @param {number} m
+     * @param {number} n
+     * @return {number}
+     */
+    var uniquePaths = function(m, n) {
+        const f = new Array(m).fill(0).map(() => new Array(n).fill(0));
+        //左边界是无法从其它位置右移过来，只有从其它位置下移过来一种方法
+        for (let i = 0; i < m; i++) {
+            f[i][0] = 1;
+        }
+        //上边界无法从其它位置下移过来，只有从其它位置右移过来一种方法
+        for (let j = 0; j < n; j++) {
+            f[0][j] = 1;
+        }
+        for (let i = 1; i < m; i++) {
+            for (let j = 1; j < n; j++) {
+                //如果要走到(i,j)--->向下走的话从（i-1,j）来，----->向右走的话从(i, j-1)来
+                //所以等于两条路线的方法和
+                f[i][j] = f[i-1][j] + f[i][j-1];
+            }
+        }
+        return f[m-1][n-1];
+    };
+
+    //运行结果：运行时间击败32.41%(92ms)，内存消耗击败46.98%(37.9mb)
+
+
+    /*方法2：组合数学*/
+    // (m+n-2)(m+n-3)...n / (m-1)! = (m+n-2)! / (m-1)!(n-1)!
+
+    /**
+     * @param {number} m
+     * @param {number} n
+     * @return {number}
+     */
+    var uniquePaths = function(m, n) {
+        let res = 1;
+        for (let x = n, y = 1; y < m; x++, y++) {
+            res = Math.floor(res * x / y);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败5.38%(112ms)，内存消耗击败98.44%(37.4mb)
+
+</script>
+</body>
+</html>

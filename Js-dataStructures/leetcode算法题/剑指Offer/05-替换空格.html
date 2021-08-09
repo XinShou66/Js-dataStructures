@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>替换空格</title>
+</head>
+<body>
+<script>
+    /*
+    *把字符串 s 中的每个空格替换成"%20"
+    * */
+
+    /*方法1： 正则*/
+    /**
+     * @param {string} s
+     * @return {string}
+     */
+    var replaceSpace = function(s) {
+        var result = s.replace(/\s/g,'%20');
+        return result;
+    };
+
+
+    replaceSpace('12  ghh')
+    //运行结果：运行时间击败70.59%(80ms)，内存消耗击败52.07%(37.6mb)
+
+
+    /*方法2：库函数*/
+    /**
+     * @param {string} s
+     * @return {string}
+     */
+    var replaceSpace = function(s) {
+        let res = s.split(' ');
+        res = res.join("%20");
+        return res;
+    };
+    //运行结果：运行时间击败87.61%(76ms)，内存消耗击败75.73%(37.6mb)
+
+
+
+</script>
+</body>
+</html>

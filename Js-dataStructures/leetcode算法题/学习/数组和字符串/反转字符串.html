@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>反转字符串</title>
+</head>
+<body>
+<script>
+    /************************* 与递归中的反转字符串一样 ********************************/
+
+
+    /*编写一个函数，其作用是将输入的字符串反转过来。输入字符串以字符数组 char[] 的形式给出。
+    不要给另外的数组分配额外的空间，你必须原地修改输入数组、使用 O(1) 的额外空间解决这一问题。
+    你可以假设数组中的所有字符都是 ASCII 码表中的可打印字符。
+    */
+
+    /*方法1: 递归*/
+    /**
+     * @param {character[]} s
+     * @return {void} Do not return anything, modify s in-place instead.
+     */
+    var reverseString = function(s) {
+        helper(0, s.length - 1);
+        return s;//???可要可不要
+
+        function helper(left, right) {
+            if (left >= right) {
+                return;
+            }
+
+            let temp = s[left];
+            s[left] = s[right];
+            s[right] = temp;
+
+            helper(left + 1, right - 1);
+        }
+    };
+    //运行结果：运行时间击败35.29%(132ms)，内存消耗击败5.64%(46.5mb)
+
+
+    /*方法2: 双指针*/
+    /**
+     * @param {character[]} s
+     * @return {void} Do not return anything, modify s in-place instead.
+     */
+    var reverseString = function(s) {
+        let i = 0, j = s.length - 1;
+        while (i <= j) {
+            let temp = s[i]
+            s[i] = s[j];
+            s[j] = temp;
+            i++;
+            j--;
+        }
+        return s;
+    };
+
+    //运行结果：运行时间击败11.91%(148ms)，内存消耗击败38.50%(45.1mb)
+
+</script>
+</body>
+</html>

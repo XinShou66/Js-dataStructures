@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>085-最大矩形</title>
+</head>
+<body>
+<script>
+    /*给定一个仅包含 0 和 1 、大小为 rows x cols 的二维二进制矩阵，找出只包含 1 的最大矩形，并返回其面积。*/
+
+    /**
+     * @param {character[][]} matrix
+     * @return {number}
+     */
+    var maximalRectangle = function(matrix) {
+        const m = matrix.length;
+        if (m === 0) {
+            return 0;
+        }
+        const n = matrix[0].length;
+        //该位置元素左边及其自己是1的连续长度
+        const left = new Array(m).fill(0).map(() => new Array(n).fill(0));
+
+        for (let i = 0; i < m; i++) {
+            for (let j = 0; j < n; j++) {
+                if (matrix[i][j] === '1') {
+                    //排除左边界
+                    left[i][j] = (j === 0 ? 0 : left[i][j-1]) + 1;
+                }
+            }
+        }
+
+        let res = 0;
+        for (let i = 0; i < m; i++) {
+            for (let j = 0; j < n; j++) {
+                //计算以元素是1的位置为矩形右下角的矩形面积
+                if (matrix[i][j] === '0') {
+                    continue;
+                }
+                let width = left[i][j];
+                let area = width;
+                //对比以该位置元素与该位置之上元素为右下角的矩形的面积
+                for (let k = i - 1; k >= 0; k--) {
+                    //以该位置宽度与该位置之上的宽度中的较小值为准，这样才能组成矩形
+                    width = Math.min(width, left[k][j]);
+                    //面积为宽*高
+                    area = Math.max(area, (i-k+1) * width);
+                }
+                //更新结果
+                res = Math.max(res, area);
+            }
+        }
+        return res;
+    };
+
+
+    //运行结果：运行时间击败16.82%(196ms)，内存消耗击败73.40%(40.7mb)
+
+</script>
+</body>
+</html>

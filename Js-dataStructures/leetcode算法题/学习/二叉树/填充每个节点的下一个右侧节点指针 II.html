@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>填充每个节点的下一个右侧节点指针 II</title>
+</head>
+<body>
+<script>
+    /*给定一个二叉树
+        struct Node {
+          int val;
+          Node *left;
+          Node *right;
+          Node *next;
+        }
+        填充它的每个 next 指针，让这个指针指向其下一个右侧节点。如果找不到下一个右侧节点，则将 next 指针设置为 NULL。
+        初始状态下，所有 next 指针都被设置为 NULL*/
+
+    /*进阶：
+        你只能使用常量级额外空间。
+        使用递归解题也符合要求，本题中递归程序占用的栈空间不算做额外的空间复杂度。*/
+
+    /**** 与上一题的区别是此题不是完美二叉树 ****/
+
+    /***************************** 方法1：bfs 层序遍历 *****************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, left, right, next) {
+     *    this.val = val === undefined ? null : val;
+     *    this.left = left === undefined ? null : left;
+     *    this.right = right === undefined ? null : right;
+     *    this.next = next === undefined ? null : next;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {Node}
+     */
+    var connect = function(root) {
+        if (!root) return root;
+        const queue = [root];
+        while (queue.length) {
+            let length = queue.length;
+            for (let i = 0; i < length; i++) {
+                let cur = queue.shift();
+                if (i < length - 1) {
+                    cur.next = queue[0];
+                }
+                //上一层处理完，拓展下一层节点
+                if (cur.left) {
+                    queue.push(cur.left);
+                }
+                if (cur.right) {
+                    queue.push(cur.right);
+                }
+            }
+        }
+        return root;
+    };
+
+    //运行结果：运行时间击败5.15%(140ms)，内存消耗击败70.19%(42.5mb)
+
+    /***************************** 方法2：递归  *****************************/
+
+    /**
+     * // Definition for a Node.
+     * function Node(val, left, right, next) {
+     *    this.val = val === undefined ? null : val;
+     *    this.left = left === undefined ? null : left;
+     *    this.right = right === undefined ? null : right;
+     *    this.next = next === undefined ? null : next;
+     * };
+     */
+
+    /**
+     * @param {Node} root
+     * @return {Node}
+     */
+    var connect = function(root) {
+        if (!root) return null;
+        if (root.left) {
+            if (root.right) {
+                root.left.next = root.right;
+            } else {
+                root.left.next = helper(root);
+            }
+        }
+        if (root.right) {
+            root.right.next = helper(root);
+        }
+        // 递归顺序，必须先右后左
+        // 确保每一层从左向右扫描时能够扫描到
+        connect(root.right);
+        connect(root.left);
+
+        return root;
+    };
+
+    // 寻找可以root下可以连接的下一个节点
+    function helper(root) {
+        // root下已经没有可以连接的子节点，将root设置为root.next
+        //根据根节点的next来决定左侧节点的指向
+        root = root.next;
+        while (root) {
+            if (root.left) return root.left;
+            if (root.right) return root.right;
+            //继续向右处理
+            root = root.next;
+        }
+        return null;
+    }
+
+    //运行结果：运行时间击败41.46%(116ms)，内存消耗击败40.92%(42.8mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据流中的第K大元素</title>
+</head>
+<body>
+<script>
+    /*设计一个找到数据流中第 k 大元素的类（class）。注意是排序后的第 k 大元素，不是第 k 个不同的元素。
+    请实现 KthLargest 类：
+        KthLargest(int k, int[] nums) 使用整数 k 和整数流 nums 初始化对象。
+        int add(int val) 将 val 插入数据流 nums 后，返回当前数据流中第 k 大的元素。*/
+
+    /*思路：
+        这道题数组是变化的，会有数加进来，但我们始终关心前 k 大的数，所以维护一个最小堆来保存前 k 大的数字。
+        维护一个 heap 数组，长度为 k。
+            当 heap 数组长度不够 k 时，新数从数组末尾推入，执行“上浮”，交换到它合适的位置。
+            当 heap 数组长度够 k 时，如果新数字比栈顶大，用它替换堆顶，执行“下沉”，交换到合适的位置。
+        最后 heap 数组存的是前 k 大的数字，堆顶是第 k 大的数字，是最小堆里最小的元素。*/
+
+
+    /**
+     * @param {number} k
+     * @param {number[]} nums
+     */
+    var KthLargest = function(k, nums) {
+        this.minHeap = new MinHeap(k, nums);
+        for (let i = 0; i < nums.length; i++) {
+            this.minHeap.add(nums[i])
+        }
+    };
+
+    /**
+     * @param {number} val
+     * @return {number}
+     */
+    KthLargest.prototype.add = function(val) {
+        this.minHeap.add(val);
+        //heap数组存的是前k大的数字，堆顶是第K大的数字，是最小堆里的最小元素
+        return this.minHeap.heap[0];
+    };
+
+    /**
+     * Your KthLargest object will be instantiated and called as such:
+     * var obj = new KthLargest(k, nums)
+     * var param_1 = obj.add(val)
+     */
+    /*构建最小堆*/
+    class MinHeap {
+        constructor(k, nums) {
+            this.heap = [];
+            this.k = k;
+        }
+        getLeftIndex(index){//获取左侧子节点的位置
+            return 2 * index + 1;
+        }
+
+        getRightIndex(index){//获取右侧子节点的位置
+            return 2 * index + 2;
+        }
+
+        getParentIndex(index){//获取父节点的位置
+            if(index === 0) {
+                return undefined;
+            }
+            return Math.floor((index - 1)/2);
+        }
+        //添加元素
+        add(num) {
+            //当 heap 数组长度不够 k 时，新数从数组末尾推入，执行“上浮”，交换到它合适的位置。
+            if (this.heap.length < this.k) {
+                this.heap.push(num);
+                this.up(this.heap.length - 1);
+            } else if(num > this.heap[0]) {
+                //当 heap 数组长度够 k 时，如果新数字比栈顶大，用它替换堆顶，执行“下沉”，交换到合适的位置。
+                this.heap[0] = num;
+                this.down(0);
+            }
+        }
+        //上浮操作
+        up(index) {
+            let parent = this.getParentIndex(index);
+            while (index > 0 && this.heap[parent] > this.heap[index]) {
+                //如果插入的值小于它的父节点（最小堆中），那么将这个元素和父节点交换
+                [this.heap[parent], this.heap[index]] =  [this.heap[index], this.heap[parent]];
+                index = parent;
+                //重复这个过程直到堆的根节点也经过了交换节点和父节点位置的操作
+                parent = this.getParentIndex(index);
+            }
+        }
+        //下沉操作
+        down(index) {
+            let left = this.getLeftIndex(index);
+            const size = this.heap.length;
+            while (left < size) {
+                const right = this.getRightIndex(index);
+                if (right < size && this.heap[left] > this.heap[right]) {
+                    left = right;
+                }
+                if (this.heap[index] < this.heap[left]) {
+                    break;
+                }
+                [this.heap[left], this.heap[index]] = [this.heap[index], this.heap[left]];
+                index = left;
+                left = this.getLeftIndex(index);
+            }
+        }
+    }
+
+    //运行结果：运行时间击败55.28%(180ms)，内存消耗击败21.82%(47.6mb)
+
+</script>
+</body>
+</html>

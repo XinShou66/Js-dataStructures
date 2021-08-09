@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树的序列化与反序列化</title>
+</head>
+<body>
+<script>
+    /************************ 与剑指offer 037-序列化二叉树 解法相同 ***********************/
+
+    /*序列化是将一个数据结构或者对象转换为连续的比特位的操作，进而可以将转换后的数据存储在一个文件或者内存中，
+    同时也可以通过网络传输到另一个计算机环境，采取相反方式重构得到原数据。
+
+    请设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，
+    你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。
+
+    提示: 输入输出格式与 LeetCode 目前使用的方式一致，详情请参阅 LeetCode 序列化二叉树的格式。
+    你并非必须采取这种方式，你也可以采用其他的方法解决这个问题。*/
+
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+
+    /**
+     * Encodes a tree to a single string.
+     *
+     * @param {TreeNode} root
+     * @return {string}
+     */
+
+    /*递归遍历一棵树，只需关注当前节点就好，它的子树的遍历交给递归完成：
+   “serialize函数，请帮我分别序列化我的左右子树，我等你的返回结果。”
+   选择前序遍历，是因为 根|左|右 的打印顺序，在反序列化时更容易定位出根节点的值。
+   遇到 null 节点也要翻译成对应符号，反序列化时才知道这里对应 null。*/
+
+    var serialize = function(root) {
+        if (root == null) {// 遍历到 null 节点
+            return 'X';
+        }
+        let left = serialize(root.left);// 左子树的序列化结果
+        let right = serialize(root.right);// 右子树的序列化结果
+        return root.val + ',' + left + ',' + right; // 按  根,左,右  拼接字符串
+    };
+
+    /**
+     * Decodes your encoded data to tree.
+     *
+     * @param {string} data
+     * @return {TreeNode}
+     */
+    /* 定义函数 buildTree 构建树，接收由序列化字符串转成的 list 数组。
+  依次弹出 list 的首项，构建当前子树的根节点，顺着 list 数组，就会先构建根节点、构建左子树、构建右子树。
+  弹出的字符为 'X'，则返回 null 节点。
+  弹出的字符是数值，则创建节点root，并递归构建root的左右子树，最后返回root。*/
+
+    var deserialize = function(data) {
+        let treeList = data.split(',');// split成数组
+        return buildTree(treeList);// 构建树的入口
+
+        function buildTree(treeList) {
+            let rootVal = treeList.shift();// 弹出首项，获取它的“数据”
+            if (rootVal == 'X') return null;// 是X，返回null节点
+            let root = new TreeNode(rootVal);// 不是X，则创建节点
+            //因为上边是根左右拼接的，所以要按先左后右的顺序递归构建子树
+            root.left = buildTree(treeList);// 递归构建左子树
+            root.right = buildTree(treeList);// 递归构建右子树
+
+            return root; // 返回当前构建好的root
+        }
+    };
+
+    /**
+     * Your functions will be called as such:
+     * deserialize(serialize(root));
+     */
+
+
+    //运行结果：运行时间击败62.18%(180ms)，内存消耗击败67.93%(48.5mb)
+
+</script>
+</body>
+</html>

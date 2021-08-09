@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0148-排序链表</title>
+</head>
+<body>
+<script>
+    /*给你链表的头结点 head ，请将其按 升序 排列并返回 排序后的链表 。
+    进阶：
+        你可以在 O(n log n) 时间复杂度和常数级空间复杂度下，对链表进行排序吗？*/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @return {ListNode}
+     */
+    var sortList = function(head) {
+        /*
+        思路：归并排序
+        将链表二分（二分到不能二分，只有一个节点，是有序的），逐级合并两个有序链表
+        */
+        if (!head || !head.next) {
+            return head;
+        }
+        let slow = head, fast = head;
+        let preSlow = null;
+        while (fast && fast.next) {
+            preSlow = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        //循环结束，slow在中间的位置
+        //对两个链表继续递归拆分
+        preSlow.next = null;//断开两个链表
+        const l = sortList(head);
+        const r = sortList(slow);
+        //逐级将两个有序链表合并
+        return merge(l, r);
+
+    };
+
+    function merge(l1, l2) {
+        const prevHead = new ListNode(-1);
+        let prev = prevHead;
+        while (l1 && l2) {
+            if (l1.val < l2.val) {
+                prev.next = l1;
+                l1 = l1.next;
+            } else {
+                prev.next = l2;
+                l2 = l2.next;
+            }
+            prev = prev.next;
+        }
+        prev.next = l1 == null ? l2 : l1;
+        return prevHead.next;
+    }
+
+    //运行结果：运行时间击败66.71%(168ms)，内存消耗击败66.08%(53.1mb)
+
+</script>
+</body>
+</html>

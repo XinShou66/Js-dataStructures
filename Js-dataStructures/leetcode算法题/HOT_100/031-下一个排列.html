@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>031-下一个排列</title>
+</head>
+<body>
+<script>
+   /*实现获取 下一个排列 的函数，算法需要将给定数字序列重新排列成字典序中下一个更大的排列。
+    如果不存在下一个更大的排列，则将数字重新排列成最小的排列（即升序排列）。
+    必须 原地 修改，只允许使用额外常数空间。*/
+
+   /**
+    * @param {number[]} nums
+    * @return {void} Do not return anything, modify nums in-place instead.
+    */
+   var nextPermutation = function(nums) {
+       //1. 从右向左寻找第一个比右侧邻居小的数
+       let i = nums.length - 2;
+       while (i >= 0 && nums[i] >= nums[i+1]) {
+           i--;
+       }
+       if (i >= 0) {//i要在数组范围内
+           //2. 从右向左寻找第一个比nums[i]大的数
+           let j = nums.length -1;
+           while (j >= 0 && nums[j] <= nums[i]) {
+               j--;
+           }
+           //3. 将下标i和下标j对应的数交换
+           [nums[i], nums[j]] = [nums[j], nums[i]];// 两数交换，实现变大
+       }
+
+       //4. i 右边的数(肯定是递减的)，将其进行翻转(变成递增的)，使得变大的幅度小一些
+       //如果 i = -1，说明是递减排列，如 3 2 1，没有下一排列，直接翻转为最小排列：1 2 3
+       let left = i + 1;
+       let right = nums.length - 1;
+       while (left < right) {
+           [nums[left], nums[right]] = [nums[right], nums[left]];
+           left++;
+           right--;
+       }
+
+   };
+
+   //运行结果：运行时间击败22.93%(108ms)，内存消耗击败18.85%(39.7mb)
+
+</script>
+</body>
+</html>

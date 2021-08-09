@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>字符串的排列</title>
+</head>
+<body>
+<script>
+    /*输入一个字符串，打印出该字符串中字符的所有排列。
+    你可以以任意顺序返回这个字符串数组，但里面不能有重复元素。*/
+
+    /**
+     * @param {string} s
+     * @return {string[]}
+     */
+    /*此方法明白，但性能不是很好*/
+    var permutation = function(s) {
+        const resArr = []
+        const bfs = (s, res = '') => {
+            if (s.length === 0) {
+                resArr.push(res)
+                return
+            }
+            for (let i = 0; i < s.length; ++i) {
+                bfs(s.replace(s[i], ""), res + s[i])
+            }
+        }
+        bfs(s)
+        return [...new Set(resArr)]
+    };
+    //运行结果：运行时间击败22.59%(240ms)，内存消耗击败9.77%(51.3mb)
+
+
+
+    /*此方法不太明白*/
+    var permutation = function(s) {
+        let res = new Set(); //没有重复元素的数组
+        let visited = []; //对应着s中的元素是否访问过
+        function dfs(path) {
+            if (path.length === s.length) return res.add(path);
+            for (let i = 0; i < s.length; i++) {
+                //每轮递归都遍历整个字符串，将visited[i] = false的加入当前字符串path，并设置visited[i] = true。
+                if (visited[i]) continue;    //continue是跳过当次循环中剩下的语句，执行下一次循环
+                visited[i] = true;//标记现在被用了
+                dfs(path + s[i]);
+                visited[i] = false;//回溯
+            }
+        }
+        dfs('')
+        return [...res];
+    };
+
+    //运行结果：运行时间击败55.84%(164ms)，内存消耗击败55.71%(46.5mb)
+
+
+
+
+</script>
+</body>
+</html>

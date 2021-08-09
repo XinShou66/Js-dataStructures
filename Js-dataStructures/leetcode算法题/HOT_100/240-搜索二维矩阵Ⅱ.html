@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>240-搜索二维矩阵Ⅱ</title>
+</head>
+<body>
+<script>
+    /*编写一个高效的算法来搜索 m x n 矩阵 matrix 中的一个目标值 target 。
+    该矩阵具有以下特性：
+        每行的元素从左到右升序排列。
+        每列的元素从上到下升序排列。*/
+
+    /*方法1：从右上角往左或下搜索*/
+    /**
+     * @param {number[][]} matrix
+     * @param {number} target
+     * @return {boolean}
+     */
+    var searchMatrix = function(matrix, target) {
+        if (matrix.length == 0) {
+            return false;
+        }
+        let left = matrix[0].length - 1, down = 0;
+        while (left >= 0 && down < matrix.length) {
+            if (target < matrix[down][left]) {//如果target小，则左移
+                left--;
+            } else if(target > matrix[down][left]) {//如果target大，则下移
+                down++;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    };
+    //运行结果：运行时间击败40.89%(548ms)，内存消耗击败72.58%(40.9mb)
+
+    /*方法2：从左下角往上或右搜索*/
+    //原理相同
+</script>
+</body>
+</html>

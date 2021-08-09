@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组中数字出现的次数Ⅱ</title>
+</head>
+<body>
+<script>
+    /*在一个数组 nums 中除一个数字只出现一次之外，其他数字都出现了三次。请找出那个只出现一次的数字。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var singleNumber = function(nums) {
+        let res = 0;    //定义只出现一次的数字
+        for (let bit = 0; bit < 32; bit++) {
+            let mask = 1 << bit;  //定义掩码（32位中只有1位是1————>bit）
+            let count = 0;
+            for (let num of nums) { //将掩码与数组中的每个数进行与运算
+//如果掩码中是1的位和数组中的该位进行与运算，结果是1，则将count++，即可得到数组中所有数该位上1的总个数
+                if (mask & num) count++;
+            }
+            //将该位上1的个数与3进行模运算，为1，则说明只出现一次的数字的这一位(bit)上也是1
+            //将其与掩码进行或运算
+            if (count%3) res = res | mask;
+        }
+        //每一位都比较计算后即可得到只出现一次的数
+        return res;
+    };
+
+    //运行结果：运行时间击败49.13%(116ms)，内存消耗击败65.61%(41.5mb)
+
+
+
+
+    // 解法二
+    /***************************************************不太明白**************************************************************/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var singleNumber = function(nums) {
+        let ones = 0, twos = 0
+        for (const num of nums) {
+            ones = ones ^ num & ~twos
+            twos = twos ^ num & ~ones
+        }
+        return ones
+    };
+    //运行结果：运行时间击败80.35%(100ms)，内存消耗击败84.94%(41.2mb)
+
+</script>
+</body>
+</html>

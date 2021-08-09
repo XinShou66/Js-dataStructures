@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0309-最佳买卖股票时机含冷冻期</title>
+</head>
+<body>
+<script>
+  /*给定一个整数数组，其中第 i 个元素代表了第 i 天的股票价格 。​
+    设计一个算法计算出最大利润。在满足以下约束条件下，你可以尽可能地完成更多的交易（多次买卖一支股票）:
+    你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
+    卖出股票后，你无法在第二天买入股票 (即冷冻期为 1 天)。*/
+
+  /*方法1：动态规划*/
+  /**
+   * @param {number[]} prices
+   * @return {number}
+   */
+  var maxProfit = function(prices) {
+      const n = prices.length;
+      if (n==0) {
+          return 0;
+      }
+      // 第i天持有股票的最大收益
+      /*有两种可能：
+          昨天就持有股票，今天休息。
+          前天卖了股票，昨天休息，今天买了股票。*/
+      let hold = new Array(n);
+
+
+      // 第i天不持有股票的最大收益
+      /*有两种可能：今天休息、或卖了股票
+          昨天也没有持有，今天休息。
+          昨天持有股票，今天卖了股票。*/
+      let unhold = new Array(n);
+
+      hold[0] = -prices[0]; // 第0天 买了股票的收益
+      unhold[0] = 0;        // 第0天 没有买股票的收益
+      for (let i = 1; i < n; i++) {
+          if (i == 1) {//第1天持有着股票，可能是昨天买的，今天休息，也可能是昨天休息，今天买的
+              hold[i] = Math.max(hold[i-1], -prices[1]);
+          } else {
+              hold[i] = Math.max(hold[i-1], unhold[i-2] - prices[i]);
+          }
+          unhold[i] = Math.max(unhold[i-1], hold[i-1] + prices[i]);
+      }
+      return unhold[n-1];
+  };
+  //运行结果：运行时间击败87.22%(84ms)，内存消耗击败75.65%(39.2mb)
+
+
+  /*方法2：状态机*/
+  /**
+   * @param {number[]} prices
+   * @return {number}
+   */
+  var maxProfit = function(prices) {
+      //各个状态下的初始利润
+      let rest = 0; //休息
+      let sold = 0; //出售
+      //还没买入
+      let hold = -Infinity; //持有
+      for (let price of prices) {
+          let preSold = sold;
+          let preHold = hold;
+          /*有两种可能：
+          昨天就持有股票，今天休息。
+          前天卖了股票，昨天休息，今天买了股票。*/
+          hold = Math.max(preHold, rest - price);
+
+          sold = preHold + price;//昨天持有股票，今天卖了股票
+
+          rest = Math.max(rest, preSold);//昨天也在休息 or 昨天卖了
+      }
+      return Math.max(rest, sold);
+  };
+  //运行结果：运行时间击败94.65%(80ms)，内存消耗击败59.42%(39.5mb)
+
+
+</script>
+</body>
+</html>

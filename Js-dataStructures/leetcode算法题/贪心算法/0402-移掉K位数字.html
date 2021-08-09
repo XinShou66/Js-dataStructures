@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0402-移掉K位数字</title>
+</head>
+<body>
+<script>
+    /*给定一个以字符串表示的非负整数 num，移除这个数中的 k 位数字，使得剩下的数字最小。
+    注意:
+        num 的长度小于 10002 且 ≥ k。
+        num 不会包含任何前导零。*/
+
+    /******
+    从左至右扫描，当前扫描的数还不确定要不要删，入栈暂存，保留对它的记忆。
+    123531这样「高位递增」的数，肯定不会想删高位，高位肯定想尽量小，会尽量删低位。
+    432135这样「高位递减」的数，会想干掉高位，直接让高位变小，效果很好。
+    所以，如果当前遍历的数比栈顶大，符合递增，就是满意的，入栈。
+    如果当前遍历的数比栈顶小，立马删掉栈顶的数，不管后面有没有更大的，为什么？
+    因为栈顶的数在高位，删掉它，小的顶上，高位变小，变小的幅度大于低位变小。
+
+    加一个判断：栈为空且当前字符为 "0" 时，不入栈。取反，就是入栈的条件：
+    这避免了 0 在栈底垫底。
+    并且，遍历结束时，如果还没删够 k 个字符，开一个循环继续出栈，删低位。
+    最后如果栈变空了，什么也不剩，则返回 "0"。
+    否则，将栈中剩下的字符，转成字符串返回。*****/
+
+    /**
+     * @param {string} num
+     * @param {number} k
+     * @return {string}
+     */
+    var removeKdigits = function(num, k) {
+        const stack = [];
+        for (let i = 0; i < num.length; i++) {
+            let temp = num[i];
+            while (k > 0 && stack.length && stack[stack.length - 1] > temp) {
+                stack.pop();
+                k--;
+            }
+
+            if (temp != '0' || stack.length) {//栈为空且当前字符为 "0" 时，不入栈。
+                stack.push(temp);
+            }
+
+        }
+
+        while (k > 0) {
+            stack.pop();
+            k--;
+        }
+
+        return stack.length == 0 ? '0' : stack.join('');
+
+    };
+
+    //运行结果：运行时间击败98.95%(80ms)，内存消耗击败63.78%(39.8mb)
+
+
+
+
+</script>
+</body>
+</html>

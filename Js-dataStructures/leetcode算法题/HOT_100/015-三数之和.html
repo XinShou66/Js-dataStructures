@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>015-三数之和</title>
+</head>
+<body>
+<script>
+    /*
+    1.首先对数组进行排序，排序后固定一个数 nums[i]，
+    2.再使用左右指针指向 nums[i]后面的两端，数字分别为 nums[L] 和 nums[R]，
+    3.计算三个数的和 sum 判断是否满足为 0，满足则添加进结果集
+        3.1 如果 nums[i]大于 0，则三数之和必然无法等于 0，结束循环
+        3.2 如果 nums[i] == nums[i-1]，则说明该数字重复，会导致结果重复，所以应该跳过
+        3.3 当 sum == 0 时，nums[L] == nums[L+1] 则会导致结果重复，应该跳过，L++
+        3.4 当 sum == 0 时，nums[R] == nums[R−1] 则会导致结果重复，应该跳过，R--
+    * */
+
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var threeSum = function(nums) {
+        const res = [];
+        const n = nums.length;
+        if (!nums || n < 3) {
+            return res;
+        }
+
+        nums.sort((a, b) => a - b);
+
+        for (let i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) {//如果 nums[i]大于 0，则三数之和必然无法等于 0，结束循环
+                break;
+            }
+            if (i > 0 && nums[i] === nums[i-1]) {//如果 nums[i] == nums[i-1]，则说明该数字重复，会导致结果重复，所以应该跳过，去重
+                continue;
+            }
+            let L = i + 1, R = n - 1;
+            while (L < R) {
+                const sum = nums[i] + nums[L] + nums[R];
+                if (sum === 0) {
+                    res.push([nums[i], nums[L], nums[R]]);
+                    //当 sum == 0 时，nums[L] == nums[L+1] 则会导致结果重复，应该跳过，去重
+                    while (L < R && nums[L] === nums[L+1]) L++;
+                    //当 sum == 0 时，nums[R] == nums[R−1] 则会导致结果重复，应该跳过，去重
+                    while (L < R && nums[R] === nums[R-1]) R--;
+                    //同时将L,R 移到下一位置，寻找新的解
+                    L++;
+                    R--;
+                } else if(sum < 0) {
+                    L++;
+                } else if(sum > 0) {
+                    R--;
+                }
+            }
+
+        }
+
+        return res;
+    };
+
+    //运行结果：运行时间击败95.85%(152ms)，内存消耗击败29.49%(48.1mb)
+
+</script>
+</body>
+</html>

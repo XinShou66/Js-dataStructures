@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>053-最大子序和</title>
+</head>
+<body>
+<script>
+    /*给定一个整数数组 nums ，找到一个具有最大和的连续子数组（子数组最少包含一个元素），返回其最大和。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var maxSubArray = function(nums) {
+        //f(i)为以下标i为结尾数组的元素和，计算以数组每个元素为结尾的短数组的最大元素和，求出其中的最大值
+        let tempSum = 0, maxSum = nums[0];
+        nums.forEach((num) => {
+            //动态规划公式：f(i)=max{f(i−1)+nums[i],nums[i]}
+            tempSum = Math.max(tempSum + num, num);
+            maxSum = Math.max(maxSum, tempSum);
+        });
+        return maxSum;
+    };
+
+    //运行结果：运行时间击败74.85%(88ms)，内存消耗击败81.86%(39.2mb)
+
+</script>
+</body>
+</html>

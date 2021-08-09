@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>斐波那契数列</title>
+</head>
+<body>
+<script>
+    /*
+    * 写一个函数，输入 n ，求斐波那契（Fibonacci）数列的第 n 项。斐波那契数列的定义如下：
+        F(0) = 0,   F(1) = 1
+        F(N) = F(N - 1) + F(N - 2), 其中 N > 1.
+    斐波那契数列由 0 和 1 开始，之后的斐波那契数就是由之前的两数相加而得出。
+    答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+    * */
+
+    /*方法1：迭代*/
+    /****************注意要对计算的数据取模*****************/
+
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var fib = function(n) {
+        if (n < 1) return 0;
+        if (n <= 2) return 1;
+        var fib0 = 0;
+        var fib1 = 1;
+        for (var i = 2;i <= n;i++) { // n >= 2
+            var fibn = (fib1 + fib0) % 1000000007; //f(n) = f(n-1) + f(n-2)
+            fib0 = fib1;
+            fib1 = fibn;
+        }
+        return fibn;
+    };
+
+
+    //运行结果：运行时间击败87.33%(76ms)，内存消耗击败46.63%(37.7mb)
+
+    /*方法2：尾递归优化*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var fib = function(n) {
+        return fibImpl(0, 1, n);
+    };
+
+    function fibImpl(a, b, n) {
+        if (n == 0) {
+            return a;
+        }
+        return fibImpl(b, (a + b)%1000000007 , n - 1); // a + b ----> F(N - 1) + F(N - 2)
+    }
+
+    //运行结果：运行时间击败99.18%(68ms)，内存消耗击败85.27%(37.6mb)
+
+
+
+
+    /************************ 剑指中会超时 **********************/
+    /*方法2: 记忆化递归*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var fib = function(n) {
+        let map = new Map();
+        if (map.has(n)) {
+            return map.get(n);
+        }
+        let res;
+        if (n < 2) {
+            res = n;
+        } else {
+            res = fib(n - 1) + fib(n - 2);
+        }
+        map.set(n, res);
+        return res;
+    };
+    //运行结果：运行时间击败5.49%(400ms)，内存消耗击败5.08%(43.2mb)
+
+
+    /************************ 剑指中会超时 **********************/
+    /*方法3：递归*/
+    var fib = function(n) {
+        if (n < 2) {
+            return n;
+        } else {
+            return fib(n - 1) + fib(n - 2);
+        }
+    };
+    //运行结果：运行时间击败26.25%(108ms)，内存消耗击败36.41%(37.7mb)
+
+</script>
+</body>
+</html>

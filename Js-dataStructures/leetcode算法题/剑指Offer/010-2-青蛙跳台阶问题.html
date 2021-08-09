@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>青蛙跳台阶问题</title>
+</head>
+<body>
+<script>
+    /*
+    * 一只青蛙一次可以跳上1级台阶，也可以跳上2级台阶。
+    * 求该青蛙跳上一个 n 级的台阶总共有多少种跳法。
+    * 答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+    * */
+
+    /**********该问题可以近似看为为求斐波那契数列（取模）问题，注意：0台阶和1台阶有一种跳法，fib0=1,fib1=1*************/
+
+    /*方法1：迭代*/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numWays = function(n) {
+        if (n == 0) return 1;
+        if (n == 1) return 1;
+        var fib0 = 1;
+        var fib1 = 1;
+        for (var i = 2;i <= n;i++) { // n >= 2
+            var fibn = (fib1 + fib0) % 1000000007;//f(n) = f(n-1) + f(n-2)
+            fib0 = fib1;
+            fib1 = fibn;
+        }
+        return fibn;
+    };
+
+    //运行结果：运行时间击败95.37%(72ms)，内存消耗击败41.31%(37.7mb)
+
+    /*方法2：尾递归优化，递归会超时*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numWays = function(n) {
+        if (n == 0) {
+            return 1;
+        }
+        return helper(1, 2, n);
+    };
+    function helper(a, b, n) {
+        if (n == 1) {//要从1开始
+            return a;
+        } else {
+            return helper( b, (a+b)% 1000000007, n - 1)
+        }
+    }
+
+    //运行结果：运行时间击败39.36%(88ms)，内存消耗击败64.20%(37.7mb)
+
+
+</script>
+</body>
+</html>

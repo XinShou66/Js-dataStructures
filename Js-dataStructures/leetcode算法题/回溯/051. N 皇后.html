@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>051-N皇后</title>
+</head>
+<body>
+<script>
+    /*n 皇后问题 研究的是如何将 n 个皇后放置在 n×n 的棋盘上，并且使皇后彼此之间不能相互攻击。
+    给你一个整数 n ，返回所有不同的 n 皇后问题 的解决方案。
+    每一种解法包含一个不同的 n 皇后问题 的棋子放置方案，该方案中 'Q' 和 '.' 分别代表了皇后和空位。*/
+
+    /***提示：
+        1 <= n <= 9
+        皇后彼此不能相互攻击，也就是说：任何两个皇后都不能处于同一条横行、纵行或斜线上。
+     ***/
+
+
+    /**
+     * @param {number} n
+     * @return {string[][]}
+     */
+    var solveNQueens = function(n) {
+        //创建一个初始化棋盘，每个位置都是'.'
+        const board = new Array(n);
+        for (let i = 0; i < n; i++) {
+            board[i] = new Array(n).fill('.');
+        }
+        const res = [];
+        //回溯调用
+        backTrack(0);
+        //返回结果
+        return res;
+
+        function backTrack(row) {// 放置当前行的皇后
+            if (row == n) { // 递归的出口，超出了最后一行
+                const stringBoard = [...board] // 拷贝一份board
+                for (let i = 0; i < n; i++) {
+                    stringBoard[i] = stringBoard[i].join(''); // 将每一行拼成字符串
+                }
+                res.push(stringBoard);// 推入res数组
+                return;
+            }
+            //col列
+            for (let col = 0; col < n; col++) { // 枚举出所有选择
+                if (isValid(row, col)) {
+                    // 作出选择，放置皇后
+                    board[row][col] = 'Q';
+                    backTrack(row + 1); // 继续选择，往下递归
+                    // 撤销当前选择
+                    board[row][col] = '.';
+                }
+            }
+
+        }
+
+        //判断该位置是不是有效的位置
+        function isValid(row, col) {
+            for (let i = 0; i < row; i++) { // 该行之前的行（排除同行的情况）
+                for (let j = 0; j < n; j++) { // 所有的列
+                    //如果发现了之前的位置中有皇后，并且这个皇后和当前位置的自己同列、同对角线
+                    //i + j为从右到左对角线， i - j为从左到右对角线
+                    if (board[i][j] == 'Q' && (j == col || i + j === row + col || i - j === row - col)) {
+                        return false;// 不是合法的选择
+                    }
+                }
+            }
+            return true;
+        }
+    };
+
+    //运行结果：运行时间击败97.64%(88ms)，内存消耗击败97.46%(39.7mb)
+
+</script>
+</body>
+</html>

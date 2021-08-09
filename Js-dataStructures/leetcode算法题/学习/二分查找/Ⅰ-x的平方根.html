@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ⅰ-x的平方根</title>
+</head>
+<body>
+<script>
+    /*实现 int sqrt(int x) 函数。
+    计算并返回 x 的平方根，其中 x 是非负整数。
+    由于返回类型是整数，结果只保留整数的部分，小数部分将被舍去。*/
+
+    /****************************** 方法1：二分法 ******************************/
+    /**
+     * @param {number} x
+     * @return {number}
+     */
+    var mySqrt = function(x) {
+        let left = 0;
+        let right = x;
+        let res = 0;
+        while (left <= right) {
+            let mid = parseInt((left + right) / 2);
+            if (mid * mid <= x) {
+                res = mid;
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return res;
+    };
+    //运行结果：运行时间击败84.71%(96ms)，内存消耗击败38.78%(39.4mb)
+
+    /****************************** 方法2：对数法 ******************************/
+
+    /**
+     * @param {number} x
+     * @return {number}
+     */
+    var mySqrt = function(x) {
+        if (x == 0) return 0;
+        //Math.exp() 函数返回 e的x次方
+        //Math.log() 函数返回一个数的自然对数
+        let res = parseInt(Math.exp(0.5 * Math.log(x)));
+        return (res + 1) * (res + 1) <= x ? res + 1 : res;
+    };
+
+    //运行结果：运行时间击败29.07%(116ms)，内存消耗击败96.02%(39mb)
+
+</script>
+</body>
+</html>

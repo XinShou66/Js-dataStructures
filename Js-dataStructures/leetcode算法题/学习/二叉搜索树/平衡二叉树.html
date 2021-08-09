@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>平衡二叉树</title>
+</head>
+<body>
+<script>
+    /*给定一个二叉树，判断它是否是高度平衡的二叉树。
+        本题中，一棵高度平衡二叉树定义为：
+        一个二叉树每个节点 的左右两个子树的高度差的绝对值不超过 1 。*/
+
+
+    /********************************** 方法1：自顶向下 *********************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isBalanced = function(root) {
+        if (root == null) {
+            return true;
+        } else {
+            return Math.abs(depth(root.left) - depth(root.right)) <= 1 && isBalanced(root.left) && isBalanced(root.right);
+        }
+
+        function depth(root) {
+            if (root == null) {
+                return 0;
+            } else {
+                return Math.max(depth(root.left), depth(root.right)) + 1;
+            }
+        }
+    };
+
+    //运行结果：运行时间击败92.76%(92ms)，内存消耗击败10.39%(43.3mb)
+
+
+    /********************************** 方法2：自底向上（剪枝） *********************************/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {boolean}
+     */
+    var isBalanced = function(root) {
+        return depth(root) >= 0;
+
+        function depth(root) {
+            if (root == null) return 0;
+            let leftDepth = depth(root.left);
+            let rightDepth = depth(root.right);
+            //剪枝，不满足的子树设为-1,剪去
+            if (leftDepth == -1 || rightDepth == -1 || Math.abs(leftDepth - rightDepth) > 1) {
+                return -1;
+            } else {
+                return Math.max(leftDepth, rightDepth) + 1;
+            }
+        }
+    };
+
+    //运行结果：运行时间击败92.76%(92ms)，内存消耗击败24.87%(42.5mb)
+
+
+</script>
+</body>
+</html>

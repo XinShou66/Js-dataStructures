@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>排序算法封装</title>
+</head>
+<body>
+<script>
+    // 封装ArrayList列表类
+    function ArrayList() {
+        this.array = []
+
+        /*相关方法封装*/
+        //封装将数据插入到数组中方法
+        ArrayList.prototype.insert = function (item) {
+            this.array.push(item)
+        }
+        //toString方法
+        ArrayList.prototype.toString = function () {
+            return this.array.join('-')
+        }
+        //交换两个位置的数据
+        ArrayList.prototype.swap = function (m,n) {
+            let temp = this.array[m]
+            this.array[m] = this.array[n]
+            this.array[n] = temp
+
+        }
+
+        /*排序算法封装*/
+        /*1.冒泡排序
+        * 对未排序的各元素从头到尾依次比较相邻的两个元素大小关系
+            如果左边的队员高, 则两队员交换位置
+            向右移动一个位置, 比较下面两个队员
+            当走到最右端时, 最高的队员一定被放在了最右边
+            按照这个思路, 从最左端重新开始, 这次走到倒数第二个位置的队员即可.
+            依次类推, 就可以将数据排序完成
+        * */
+        ArrayList.prototype.bubbleSort = function () {
+            let length = this.array.length
+
+            for (let j = length-1;j >=0 ;j--) {
+                for (let i = 0; i < j;i++) {
+                    if (this.array[i] > this.array[i+1]) {
+                        let temp = this.array[i]
+                        this.array[i] = this.array[i+1]
+                        this.array[i+1] = temp
+                        //或
+                        //this.swap(i,i+1)
+                    }
+                }
+            }
+        }
+
+        /*2.选择排序
+        *选定第一个索引位置，然后和后面元素依次比较
+        如果后面的队员, 小于第一个索引位置的队员, 则交换位置
+        经过一轮的比较后, 可以确定第一个位置是最小的
+        然后使用同样的方法把剩下的元素逐个比较即可
+        可以看出选择排序，第一轮会选出最小值，第二轮会选出第二小的值，直到最后
+        * */
+        ArrayList.prototype.selectSort = function () {
+            // 1.获取数组的长度
+            let length = this.array.length
+            // 2.外层循环: 从0位置开始取出数据, 直到length-2位置
+            for (let i = 0; i < length-1; i++) {
+                // 3.内层循环: 从i+1位置开始, 和后面的内容比较
+                let min = i;
+                for (let j = min + 1; j < length; j++) {
+                    // 4.如果i位置的数据大于j位置的数据, 那么记录最小的位置
+                    if (this.array[min] > this.array[j]) {
+                        min = j;
+                    }
+                }
+                // 5.交换min和i位置的数据
+                this.swap(min,i)
+            }
+        }
+
+        /*3.插入排序
+          从第一个元素开始，该元素可以认为已经被排序
+          取出下一个元素，在已经排序的元素序列中从后向前扫描
+          如果该元素（已排序）大于新元素，将该元素移到下一位置
+          重复上一个步骤，直到找到已排序的元素小于或者等于新元素的位置
+          将新元素插入到该位置后, 重复上面的步骤.
+        * */
+        ArrayList.prototype.insertSort = function () {
+            // 1.获取数组的长度
+            let length = this.array.length
+            //2.外层循环:从第二个数据开始，向左边的已经局部有序数据进行插入
+            for (let i = 1; i < length; i++) {
+                //3.内层循环：获取i位置的元素，使用while循环(重点)与左边的局部有序数据依次进行比较
+                let j = i;
+                let temp = this.array[i];
+                // 4.内层循环: 内层循环不确定循环的次数, 最好使用while循环
+                while (j > 0 && this.array[j-1] > temp) {
+                    this.array[j] = this.array[j-1]//大的数据右移
+                    j--
+                }
+                //5.while循环结束后，index = j左边的数据变为局部有序且array[j]最大。此时将array[j]重置为排序前的数据array[i]，方便下一次for循环
+                this.array[j] = temp
+            }
+        }
+
+        /*4.希尔排序*/
+        ArrayList.prototype.shellSort = function () {
+            //1.获取数组的长度
+            let length = this.array.length
+            //2.初始化增量
+            let gap = Math.floor(length/2)
+            //3.第一层循环：while循环(使gap不断减小)
+            while (gap >= 1) {
+                //4.第二层循环：以gap为增量，进行分组，对分组进行插入排序
+                //重点为：将index = gap作为选中的第一个数据
+                for (let i = gap; i < length; i++) {
+                    let j = i
+                    let temp = this.array[i]
+                    //5.第三层循环:寻找正确的插入位置
+                    while (this.array[j-gap] > temp && j > gap -1) {
+                        this.array[j] = this.array[j-gap]
+                        j -= gap
+                    }
+                    //6.将j位置的元素设置为temp
+                    this.array[j] = temp
+                }
+                gap = Math.floor(gap / 2)
+            }
+        }
+
+        /*5.快速排序*/
+        // 选择枢纽
+        ArrayList.prototype.findPivot = function (left,right) {
+            // 1.求出中间的位置
+            let center = Math.floor((left + right) / 2)
+
+            // 2.判断并且进行交换
+            if (this.array[left] > this.array[center]) {
+                this.swap(left, center)
+            }
+            if (this.array[left] > this.array[right]) {
+                this.swap(left, right)
+            }
+            if (this.array[center] > this.array[right]) {
+                this.swap(center, right)
+            }
+            // 3.巧妙的操作: 将center移动到right - 1的位置.
+            this.swap(center,right-1)
+            // 4.返回pivot中位数
+            return this.array[right-1]
+
+        }
+
+        // 快速排序实现
+        ArrayList.prototype.quickSort = function () {
+            this.quickSortRec(0, this.array.length - 1)
+        }
+
+        ArrayList.prototype.quickSortRec = function (left, right) {
+            // 0.递归结束条件
+            if (left >= right) return
+
+            // 1.获取枢纽
+            let pivot = this.findPivot(left, right)
+            //console.log(pivot)
+            // 2.开始进行交换
+            // 2.1.记录左边开始位置和右边开始位置
+            let i = left
+            let j = right - 1
+            // 2.2.循环查找位置
+            while (i < j) {
+                while (this.array[++i] < pivot) {}
+                while (this.array[--j] > pivot) {}
+                //得到arr[i]>pivot,arr[j]<pivot
+                if (i < j) {
+                    // 2.3.交换两个数值
+                    this.swap(i, j)
+                } else {
+                    // 2.4.当i<j的时候(一定不会=, 看下面解释中的序号3), 停止循环因为两边已经找到了相同的位置
+                    break
+                }
+            }
+
+            // 3.将枢纽放在正确的位置
+            this.swap(i, right - 1)
+
+            // 4.递归调用左边
+            this.quickSortRec(left, i - 1)
+            this.quickSortRec(i + 1, right)
+        }
+
+
+
+    }
+
+    //排序算法测试
+    let list = new ArrayList()
+
+    //插入元素
+    list.insert(66)
+    list.insert(88)
+    list.insert(12)
+    list.insert(87)
+    list.insert(100)
+    list.insert(5)
+    list.insert(566)
+    list.insert(23)
+
+    //验证冒泡排序
+    list.bubbleSort()
+    console.log(list.toString());// 5-12-23-66-87-88-100-566
+    // 测试选择排序
+    list.selectSort()
+    console.log(list.toString()) // 5-12-23-66-87-88-100-566
+    //验证插入排序
+    list.insertSort()
+    console.log(list.toString());// 5-12-23-66-87-88-100-566
+    //验证希尔排序
+    list.insert(29)
+    list.shellSort()
+    console.log(list.toString())//5-12-23-29-66-87-88-100-566
+    // 测试中位数选取
+    let pivot = list.findPivot(0, 7) // left:6 right:5 center:2
+    console.log(pivot) // pivot:29
+    // 测试快速排序
+    list.insert(76)
+    list.quickSort()
+    console.log(list.toString())//5-12-23-29-66-76-87-88-100-566
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>质数的判断</title>
+</head>
+<body>
+<script>
+    //方法一：低效率的挨个遍历
+    function isPrime1(num) {
+        if (num <= 1) {
+            return false
+        }
+        for (var i = 0; i < num; i++) {
+            if (num % i == 0) {
+                return false
+            }
+        }
+        return true
+    }
+
+    //方法二：高效率的只需遍历2~num的平方根
+    function isPrime2(num) {
+        if (num < 1) {
+            return false
+        }
+        //1.获取num的平方根:Math.sqrt(num)
+        var newNum = Math.sqrt(num)
+        //2.循环判断
+        for (var i = 0; i < newNum; i++) {
+            if (newNum % i == 0) {
+                return false
+            }
+        }
+        return true
+    }
+</script>
+</body>
+</html>

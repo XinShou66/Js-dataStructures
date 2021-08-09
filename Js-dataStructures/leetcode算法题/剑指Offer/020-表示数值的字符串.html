@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>表示数值的字符串</title>
+</head>
+<body>
+<script>
+    /*请实现一个函数用来判断字符串是否表示数值（包括整数和小数）。
+    例如，字符串"+100"、"5e2"、"-123"、"3.1416"、"-1E-16"、"0123"都表示数值，
+    但"12e"、"1a3.14"、"1.2.3"、"+-5"及"12e+5.4"都不是。
+    */
+
+    /**
+     * @param {string} s
+     * @return {boolean}
+     */
+    var isNumber = function(s) {
+        if (!s) return false;
+        let hasNum = false;
+        let hasDot = false;
+        let hasE = false;
+        let isEe = function(t) {
+            return t==='e' || t === 'E';
+        }
+        let isSymbol = t=> t === '+' || t === '-';
+        s = s.trim();
+        for (let i = 0; i < s.length; i++) {
+            let t = s[i];
+            if (t === ' ') { // 1.空格
+                return false;
+            } else if( t >= 0 && t <= 9){ // 2.数字
+                hasNum = true;
+            } else if(t === '.'){ // 3.小数点
+                if (hasDot || hasE) return false;
+                hasDot = true;
+            } else if (isEe(t)){ // 4. e 或 E
+                if(!hasNum || hasE) return false;
+                hasE = true;
+                hasNum = false; //防止e或E后没有数字了
+            }else if(isSymbol(t)){ // 5. + 或 -
+                if(i > 0 && !isEe(s[i-1])) return false; //字符串中间有加减号，且后一位不是e或E
+            } else { //6. 其它的字符
+                return false;
+            }
+        }
+        return hasNum;
+    };
+    //运行结果：运行时间击败68.87%(112ms)，内存消耗击败74.75%(39.9mb)
+
+
+</script>
+</body>
+</html>

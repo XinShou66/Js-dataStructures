@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>封装哈希表及其方法</title>
+</head>
+<body>
+<script>
+function HashTable() {
+    this.storage = []
+    this.count = 0//当前存储的元素个数
+    //装填因子：loadFactor > 0.75时需要扩容；loadFactor < 0.25时需要减少容量
+    //loadFactor = count/limit
+    this.limit = 7//初始长度
+
+
+    /*1.封装哈希函数*/
+    HashTable.prototype.hashFunc = function (str,size) {
+        //1.定义hashCode变量
+        var hashCode = 0
+
+        //2.霍纳法则，计算hashCode的值
+        //cats -> Unicode编码
+        for (var i = 0 ; i < str.length ; i++) {
+            // str.charCodeAt(i)//获取某个字符对应的unicode编码
+            hashCode = 37*hashCode + str.charCodeAt(i)
+        }
+        //3.取余操作
+        var index = hashCode % size
+        return index
+    }
+
+    /*2.添加或修改put*/
+    HashTable.prototype.put = function (key,value) {
+        //1.根据key获取对应的index
+        var index = this.hashFunc(key,this.limit)
+        //2.根据index取出对应的bucket
+        var bucket = this.storage[index]
+        //3.判断该bucket是否为null
+        if (bucket==null) {
+            bucket = []
+            this.storage[index] = bucket
+        }
+        //4.判断是否是修改数据
+        for (var i = 0; i < bucket.length; i++) {
+            var tuple = bucket[i]
+            if (tuple[0] === key) {
+                tuple[1] = value
+                return//不用返回值
+            }
+        }
+        //5.进行添加操作
+        bucket.push([key,value])
+        this.count += 1
+
+        //6.判断是否需要扩容操作
+        //6.1直接扩2倍
+        /*if(this.count > this.limit * 0.75){
+            this.resize(this.limit * 2)
+        }*/
+        //6.2扩容为一个质数
+        if (this.count > this.limit * 0.75) {
+            var newSize = this.limit * 2
+            var newPrime = this.getPrime(newSize)
+            //调用扩容方法
+            this.resize(newPrime)
+        }
+    }
+
+    /*3.获取get方法*/
+    HashTable.prototype.get = function (key) {
+        //1.根据key获取对应的index
+        var index = this.hashFunc(key,this.limit)
+        //2.根据index获取对应的bucket
+        var bucket = this.storage[index]
+        //3.判断bucket是否等于null
+        if (bucket==null) {
+            return null
+        }
+        //4.有bucket，那么就进行线性查找
+        for (var i = 0; i < bucket.length; i++) {
+            var tuple = bucket[i]
+            if (tuple[0]===key) {//tuple[0]存储key，tuple[1]存储value
+                return tuple[1]
+            }
+        }
+        //5.依然没有找到，那么返回null
+        return null
+    }
+
+    /*4.删除remove方法*/
+    HashTable.prototype.remove = function (key) {
+        //1.根据key获取对应的index
+        var index = this.hashFunc(key,this.limit)
+        //2.根据index获取对应的bucket
+        var bucket = this.storage[index]
+        //3.判断bucket是否为null
+        if (bucket==null) {
+            return null
+        }
+        //4.有bucket,那么就进行线性查找并删除
+        for (var i = 0; i < bucket.length; i++) {
+            var tuple = bucket[i]
+            if (tuple[0]==key) {
+                bucket.splice(i,1)
+                this.count--
+                return tuple[1]
+
+                // 缩小数组的容量
+                //直接缩小2倍
+                /*if (this.limit > 8 && this.count < this.limit * 0.25) {
+                    this.resize(Math.floor(this.limit / 2))
+                }*/
+                //缩小为一个质数
+                if (this.limit > 7 && this.count < this.limit * 0.25) {
+                    //Math.floor()向下取整
+                    var newSize = Math.floor(this.limit / 2)
+                    var newPrime = this.getPrime(newSize)
+                    //调用扩容方法
+                    this.resize(newPrime)
+                }
+            }
+        }
+        //5.依然没有找到，返回null
+        return null
+    }
+
+    /*5.isEmpty方法*/
+    HashTable.prototype.isEmpty = function () {
+       return this.count == 0
+    }
+
+    /*6.size方法*/
+    HashTable.prototype.size = function () {
+        return this.count
+    }
+
+    /*7.哈希表扩容与压缩*/
+    HashTable.prototype.resize = function (newLimit) {
+        //1.保存旧的storage数组内容
+        var oldStorage = this.storage
+        //2.重置所有的属性
+        this.storage = []
+        this.count = 0
+        this.limit = newLimit
+        //3.遍历oldStorage中所有的bucket
+        for (let i = 0; i < oldStorage.length ; i++) {
+            //3.1.取出对应的bucket
+            var bucket = oldStorage[i]
+            //3.2.判断bucket是否为null
+            if (bucket==null) {
+                continue
+            }
+            //3.3.bucket中有数据，就取出数据重新插入
+            for (let j = 0; j < bucket.length; j++) {
+                var tuple = bucket[j]
+                this.put(tuple[0],tuple[1])//插入数据的key和value
+            }
+        }
+    }
+
+    /*8.判断传入的是否是质数*/
+    HashTable.prototype.isPrime = function (num) {
+        if (num < 1) {
+            return false
+        }
+        //1.获取num的平方根:Math.sqrt(num)
+        var newNum = Math.sqrt(num)
+        //2.循环判断
+        //注意是从2开始
+        for (var i = 2; i <= newNum; i++) {
+            //注意要判断的数是num
+            if (num % i == 0) {
+                return false
+            }
+        }
+        return true
+    }
+
+    /*9.获取质数的方法*/
+    HashTable.prototype.getPrime =function (num) {
+        //7*2=14,+1=15,+1=16,+1=17(质数)
+        while (!this.isPrime(num)) {
+            num++
+        }
+        return num
+    }
+
+}
+
+
+
+/*测试*/
+    //put测试
+    var ht = new HashTable()
+    ht.put('name','lala')
+    ht.put('age',11)
+    ht.put('class','aa')
+    console.log(ht)
+    ht.put('class','bb')
+    console.log(ht)
+    //get测试
+    console.log(ht.get('class'))
+    //3.remove测试
+    console.log( ht.remove('age'));
+    //4.测试isEmpty()
+    console.log(ht.isEmpty());
+    //5.测试isEmpty()
+    console.log(ht.size());
+    //6.扩容测试
+    ht.put('class1','Tom')
+    ht.put('class2','Mary')
+    ht.put('class3','Gogo')
+    ht.put('class4','Tony')
+    ht.put('class5','5')
+    ht.put('class6','6')
+    ht.put('class7','7')
+    ht.put('class8','8')
+    ht.put('class9','9')
+    ht.put('class10','10')
+    console.log(ht.size());//12
+    console.log(ht.limit);//17
+    //质数判断测试
+    console.log(ht.isPrime(28))//false
+</script>
+</body>
+</html>

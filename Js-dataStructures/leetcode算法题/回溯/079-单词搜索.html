@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>079-单词搜索</title>
+</head>
+<body>
+<script>
+    /*给定一个 m x n 二维字符网格 board 和一个字符串单词 word 。
+    如果 word 存在于网格中，返回 true ；否则，返回 false 。
+    单词必须按照字母顺序，通过相邻的单元格内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。
+    同一个单元格内的字母不允许被重复使用。*/
+
+    /**
+     * @param {character[][]} board
+     * @param {string} word
+     * @return {boolean}
+     */
+    var exist = function(board, word) {
+        const row = board.length;
+        const column = board[0].length;
+        const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]]//对相邻的上下左右的元素进行处理
+        //建立克隆数组，每个位置为false,代表没有访问过
+        const visited = new Array(row);
+        for (let i = 0; i < visited.length; i++) {
+            visited[i] = new Array(column).fill(false);
+        }
+
+        for (let i = 0; i < row; i++) {
+            for (let j = 0; j < column; j++) {
+                const flag = check(i, j, word, 0);
+                if (flag) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+        function check(i, j, s, index) {
+            if (board[i][j] != s.charAt(index)) {
+                return false;
+            } else if(index == s.length - 1) {
+                return true;
+            }
+            //做处理
+            visited[i][j] = true;
+            let res = false;
+            for (let [x, y] of directions) {
+                let newI = i + x;
+                let newJ = j + y;
+                if (newI >= 0 && newI < row && newJ >= 0 && newJ < column) {
+                    if (!visited[newI][newJ]) {
+                        const flag = check(newI, newJ, s, index + 1);
+                        if (flag) {
+                            res = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            //取消处理
+            visited[i][j] = false;
+            return res;
+        }
+
+
+    };
+
+    //运行结果：运行时间击败32.74%(344ms)，内存消耗击败78.33%(39.6mb)
+
+</script>
+</body>
+</html>

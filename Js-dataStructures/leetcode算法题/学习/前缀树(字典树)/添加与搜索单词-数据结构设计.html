@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加与搜索单词-数据结构设计</title>
+</head>
+<body>
+<script>
+    /*请你设计一个数据结构，支持 添加新单词 和 查找字符串是否与任何先前添加的字符串匹配 。
+    实现词典类 WordDictionary ：
+        WordDictionary() 初始化词典对象
+        void addWord(word) 将 word 添加到数据结构中，之后可以对它进行匹配
+        bool search(word) 如果数据结构中存在字符串与 word 匹配，则返回 true ；否则，返回  false 。word 中可能包含一些 '.' ，每个 . 都可以表示任何一个字母。*/
+
+    /********************************* 方法1：正则 ********************************/
+
+    /**
+     * Initialize your data structure here.
+     */
+    var WordDictionary = function() {
+        this.map = {};
+    };
+
+    /**
+     * @param {string} word
+     * @return {void}
+     */
+    WordDictionary.prototype.addWord = function(word) {
+        let len = word.length;
+        if (!this.map[len]) {
+            this.map[len] = [word];
+        } else {
+            this.map[len].push(word);
+        }
+    };
+
+    /**
+     * @param {string} word
+     * @return {boolean}
+     */
+    WordDictionary.prototype.search = function(word) {
+        let len = word.length;
+        /*
+        语法：
+            创建正则表达式的对象:
+			    var 变量 = new RegExp("正则表达式","匹配模式")
+            test():
+			    使用这个方法可以用来检查一个字符串是否符合正则表达式的规则，
+			    如果符合则返回true，否则返回false
+            replace()
+			    可以将字符串中指定内容替换为新的内容
+			    参数：
+			        1.被替换的内容，可以接受一个正则表达式作为参数
+			  		2.新的内容
+            ^ 表示开头
+			$ 表示结尾
+            \\  表示\
+            \w  任意字母、数字、_  [A-z0-9_]
+         */
+        let reg = new RegExp("^" + word.replace(".","\\w") + "$");
+        if (!this.map[len]) {
+            return false;
+        }
+        for (let i = 0; i < this.map[len].length; i++) {
+            if (reg.test(this.map[len][i])) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    /**
+     * Your WordDictionary object will be instantiated and called as such:
+     * var obj = new WordDictionary()
+     * obj.addWord(word)
+     * var param_2 = obj.search(word)
+     */
+
+    //运行结果：运行时间击败42.86%(276ms)，内存消耗击败57.69%(55.9mb)
+
+    /********************************* 方法2：字典树+DFS ********************************/
+
+    var Trie = function() {
+        this.next ={};
+        this.isEnd = false;
+    }
+    /**
+     * Initialize your data structure here.
+     */
+    var WordDictionary = function() {
+        this.root = new Trie();
+    };
+
+    /**
+     * @param {string} word
+     * @return {void}
+     */
+    WordDictionary.prototype.addWord = function(word) {
+        if (!word.length) return;
+        let node = this.root;
+        for (let i = 0; i < word.length; i++) {
+            if (!node.next[word[i]]) {
+                node.next[word[i]] = new Trie();
+            }
+            node = node.next[word[i]];
+        }
+        node.isEnd = true;
+    };
+    WordDictionary.prototype.dfs = function(root, word) {
+        let node = root;
+        const length = word.length;
+        for (let i = 0; i < length; i++) {
+            let v = word[i];
+            // 若是通配符，则尝试遍历所有的情况(DFS)
+            if (v === '.') {
+                //Reflect.ownKeys()返回一个由自身对象属性所组成的数组
+                const keys = Reflect.ownKeys(node.next);
+                for (let key of keys) {
+                    let found = this.dfs(node.next[key], word.slice(i+1));
+                    if (found) return true;
+                }
+                return false;
+            }
+
+            if (!node.next[v]) {
+                return false;
+            }
+            node = node.next[v];
+        }
+        return node.isEnd;
+    }
+    /**
+     * @param {string} word
+     * @return {boolean}
+     */
+    WordDictionary.prototype.search = function(word) {
+        if (!word.length) return false;
+        return this.dfs(this.root, word);
+    };
+
+    /**
+     * Your WordDictionary object will be instantiated and called as such:
+     * var obj = new WordDictionary()
+     * obj.addWord(word)
+     * var param_2 = obj.search(word)
+     */
+
+    //运行结果：运行时间击败26.92%(292ms)，内存消耗击败57.5%(35.71mb)
+
+</script>
+</body>
+</html>

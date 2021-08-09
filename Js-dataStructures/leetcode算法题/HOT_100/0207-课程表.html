@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0207-课程表</title>
+</head>
+<body>
+<script>
+    /*你这个学期必须选修 numCourses 门课程，记为 0 到 numCourses - 1 。
+    在选修某些课程之前需要一些先修课程。 先修课程按数组 prerequisites 给出，
+    其中 prerequisites[i] = [ai, bi] ，表示如果要学习课程 ai 则 必须 先学习课程  bi 。
+    例如，先修课程对 [0, 1] 表示：想要学习课程 0 ，你需要先完成课程 1 。
+    请你判断是否可能完成所有课程的学习？如果可以，返回 true ；否则，返回 false 。*/
+
+
+
+    /**
+     * @param {number} numCourses
+     * @param {number[][]} prerequisites
+     * @return {boolean}
+     */
+    var canFinish = function(numCourses, prerequisites) {
+        //转换为有向环图结构（类似BFS处理），有向边A -->B，A有出度为1，B有入度为1
+        //入度数组，用来表示对应下标所代表课的入度
+        const inDegree = new Array(numCourses).fill(0);
+        //邻接表，用来记录当前课，与依赖当前课的后续课程(数组)
+        const map = {};
+
+        //1.遍历prerequisites 更新入度数组以及邻接表
+        for (let i = 0; i < prerequisites.length; i++) {
+            //依赖别的课的课才会有入度(先修数组的第一个元素)
+            inDegree[prerequisites[i][0]]++;                // 求课的初始入度值
+            if (map[prerequisites[i][1]]) {       // 依赖的课已经存在于邻接表
+                map[prerequisites[i][1]].push(prerequisites[i][0]) // 添加依赖它的后续课(更新后续课数组)
+            } else {                               // 依赖的课不存在于邻接表
+                //当前课----------------------依赖当前课的课
+                map[prerequisites[i][1]] = [prerequisites[i][0]] // 设置依赖它的后续课（数组）
+            }
+        }
+
+        //2.创建队列，将入度为0的课依次入队列进行处理
+        const queue = [];
+        for (let i = 0; i < inDegree.length; i++) {//将已有入度为0的课入队列，先进行处理
+            if (inDegree[i] == 0) {
+                queue.push(i)//下标对应该课的课程号
+            }
+        }
+        let count = 0; //用来记录已修的课程数
+
+        //3.对入队列的课及依赖该课的后续课程进行处理
+        while (queue.length) {
+            const selected = queue.shift(); // 当前选的课，出列（学习完）
+            count++;                        // 修课数+1
+            const toEnqueue = map[selected]; // 获取这门课对应的后续课
+            if (toEnqueue && toEnqueue.length) { // 确实有后续课存在
+                for (let i = 0; i < toEnqueue.length; i++) {
+                    inDegree[toEnqueue[i]]--; // 后续课的入度-1（依赖的课已经修过1门了）
+                    if (inDegree[toEnqueue[i]] == 0) { // 如果因此减为0，入列进行处理
+                        queue.push(toEnqueue[i]);
+                    }
+                }
+            }
+        }
+        return count == numCourses; // 修了的课等于总课数，为true，否则false
+    };
+
+    //运行结果：运行时间击败86.40%(96ms)，内存消耗击败62.99%(41.5mb)
+
+</script>
+</body>
+</html>

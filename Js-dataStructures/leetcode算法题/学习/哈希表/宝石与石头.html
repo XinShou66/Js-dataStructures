@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>宝石与石头</title>
+</head>
+<body>
+<script>
+    /*给定字符串J 代表石头中宝石的类型，和字符串 S代表你拥有的石头。 
+    S 中每个字符代表了一种你拥有的石头的类型，你想知道你拥有的石头中有多少是宝石。
+    J 中的字母不重复，J 和 S中的所有字符都是字母。字母区分大小写，因此"a"和"A"是不同类型的石头。*/
+
+
+    /**
+     * @param {string} jewels
+     * @param {string} stones
+     * @return {number}
+     */
+    var numJewelsInStones = function(jewels, stones) {
+        let count = 0;
+        let set = new Set();
+        for (let i = 0; i < jewels.length; i++) {
+            set.add(jewels[i]);
+        }
+        for (let j = 0; j < stones.length; j++) {
+            if (set.has(stones[j])) {
+                count++;
+            }
+        }
+        return count;
+    };
+
+    //运行结果：运行时间击败35.03%(96ms)，内存消耗击败44.83%(39.2mb)
+
+</script>
+</body>
+</html>

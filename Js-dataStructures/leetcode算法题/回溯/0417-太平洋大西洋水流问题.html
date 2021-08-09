@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>417-太平洋大西洋水流问题</title>
+</head>
+<body>
+<script>
+    var pacificAtlantic = function(heights) {
+        let h = heights.length, w = heights[0].length;
+        const res = [];
+        if (!h || !w) {
+            return res;
+        }
+        const dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]]; //定义方向数组
+        const tpy = new Array(h).fill().map(item => new Array(w)); //太平洋的节点记录矩阵
+        const dxy = new Array(h).fill().map(item => new Array(w)); //大西洋的节点记录矩阵
+        //1. 从上下边界开始两大洋的回流搜索，变动的是列
+        for (let i = 0; i < w; i++) {
+            dfs(0, i, tpy);
+            dfs(h - 1, i, dxy)
+        }
+        //2. 从左右边界开始两大洋的回流搜索，变动的是行
+        for (let i = 0; i < h; i++) {
+            dfs(i, 0, tpy);
+            dfs(i, w - 1, dxy);
+        }
+        //3. 找出交叠的坐标
+        for (let i = 0; i < h; i++) {
+            for (let j = 0; j < w; j++) {
+                if (tpy[i][j] == 1 && dxy[i][j] == 1) {
+                    res.push([i, j])
+                }
+            }
+        }
+        //4. 输出结果
+        return res;
+
+
+        function dfs(i, j, temp) {
+            //标记可以从海洋流回经过的节点
+            temp[i][j] = 1;
+            //更新坐标并递归搜索
+            for (let [x, y] of dirs) {
+                let newI = i + x;
+                let newJ = j + y;
+                //判断下标是否越界
+                if (newI < 0 || newJ < 0 || newI >= h || newJ >= w) {
+                    continue;
+                }
+                if (heights[i][j] <= heights[newI][newJ] && temp[newI][newJ] != 1) {
+                    dfs(newI, newJ, temp)
+                }
+
+            }
+
+        }
+
+    };
+
+    //运行结果：运行时间击败66.67%(156ms)，内存消耗击败90.54%(45.6mb)
+
+</script>
+</body>
+</html>

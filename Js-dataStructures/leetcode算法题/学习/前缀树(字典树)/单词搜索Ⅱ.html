@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>单词搜索Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个 m x n 二维字符网格 board 和一个单词（字符串）列表 words，找出所有同时在二维网格和字典中出现的单词。
+    单词必须按照字母顺序，通过 相邻的单元格 内的字母构成，其中“相邻”单元格是那些水平相邻或垂直相邻的单元格。
+    同一个单元格内的字母在一个单词中不允许被重复使用。*/
+
+    /**
+     * @param {character[][]} board
+     * @param {string[]} words
+     * @return {string[]}
+     */
+    var findWords = function(board, words) {
+        let res = [];
+        row = board.length;
+        col = board[0].length;
+        //构建Trie
+        function getTrie(words){
+            //Object.create()创建一个新对象
+            let root = Object.create(null);
+            for (let word of words) {
+                let node = root;
+                for (let v of word) {
+                    if (!node[v]) {
+                        node[v] = {};
+                    }
+                    node = node[v]
+                }
+                //为节点添加word属性（完整的单词节点）
+                node.word = word;
+            }
+            return root;
+        }
+
+
+        //DSF深度优先搜索
+        function search(trie, x, y) {
+            //如果单元格的元素存在在树中，且该节点是完整单词节点，则放进返回数组
+            if (trie.word) {
+                res.push(trie.word);
+                trie.word = null; //确保每个单词只打印一次
+            }
+
+            //如果单元格越界返回
+            if (x < 0 || y < 0 || x >= row || y >= col) return;
+
+            //如果树里边没有单元格中的元素，返回
+            if (!trie[board[x][y]]) return;
+
+            let temp = board[x][y];
+            board[x][y] = '#';//访问过的单元格元素进行处理
+            //搜索单元格元素上下左右的元素
+            search(trie[temp], x - 1, y);
+            search(trie[temp], x + 1, y);
+            search(trie[temp], x, y - 1);
+            search(trie[temp], x, y + 1);
+            board[x][y] = temp // 搜索之后进行复原
+        }
+
+        //将单词数组建为前缀树并返回根节点
+        let trie = getTrie(words);
+        //在前缀树中搜索单元格中的每一个元素；
+        for (let x = 0; x < row; x++) {
+            for (let y = 0; y < col; y++) {
+                search(trie, x, y);
+            }
+        }
+        //返回结果数组
+        return res;
+    };
+
+    //运行结果：运行时间击败40.00%(820ms)，内存消耗击败54.44%(39.7mb)
+
+</script>
+</body>
+</html>

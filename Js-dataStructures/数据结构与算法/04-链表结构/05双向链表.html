@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>双向链表</title>
+</head>
+<body>
+<script>
+   /*
+    append（element）：向链表尾部添加一个新的项；
+    insert（position，element）：向链表的特定位置插入一个新的项；
+    get（element）：获取对应位置的元素；
+    indexOf（element）：返回元素在链表中的索引，如果链表中没有元素就返回-1；
+    update（position，element）：修改某个位置的元素；
+    removeAt（position）：从链表的特定位置移除一项；
+    isEmpty（）：如果链表中不包含任何元素，返回trun，如果链表长度大于0则返回false；
+    size（）：返回链表包含的元素个数，与数组的length属性类似；
+    toString（）：由于链表项使用了Node类，就需要重写继承自JavaScript对象默认的toString方法，让其只输出元素的值；
+    forwardString（）：返回正向遍历节点字符串形式；
+    backwordString（）：返回反向遍历的节点的字符串形式；
+    */
+
+
+    //封装双向链表类
+    function DoubleLinkList() {
+        //封装内部类：节点类
+        function Node(data) {
+            this.data = data
+            this.prev = null
+            this.next = null
+        }
+        //属性
+        this.head = null
+        this.tail = null
+        this.length = 0
+
+        /*1.append(element)*/
+        DoubleLinkList.prototype.append = function(data) {
+            //1.根据data创建新节点
+            let newNode = new Node(data)
+            //2.添加节点
+            //情况1：添加的是第一个节点
+            if (this.length == 0) {
+                this.tail = newNode
+                this.head = newNode
+
+                //情况2：添加的不是第一个节点
+            } else {
+                this.tail.next = newNode
+                newNode.prev = this.tail
+
+                this.tail = newNode
+            }
+            this.length += 1
+        }
+
+        /*2.forwardString()*/
+        DoubleLinkList.prototype.forwardString = function () {
+            //1.定义变量
+            var current = this.tail
+            var resultString = ''
+            //2.依次向前遍历，获取每一个节点
+            while (current) {
+                resultString += current.data + ' '
+                current = current.prev
+            }
+            return resultString
+        }
+
+        /*3.backwardString()*/
+        DoubleLinkList.prototype.backwardString = function () {
+            //1.定义变量
+            var current = this.head
+            var resultString = ''
+            //2.依次向后遍历，获取每一个节点
+            while (current) {
+                resultString += current.data + ' '
+                current = current.next
+            }
+            return resultString
+        }
+
+        /*4.toString()*/
+        DoubleLinkList.prototype.toString = function () {
+            return this.backwardString()
+        }
+
+        /*5.insert(position,element)方法*/
+        DoubleLinkList.prototype.insert = function (position,data) {
+            //1.越界判断
+            if (position < 0 || position > this.length) return false
+            //2.根据data创建新的节点
+            var newNode = new Node(data)
+            //3.插入新节点
+            //原链表为空
+            //情况1：插入的newNode是第一个节点
+            if (this.length == 0) {
+                this.head = newNode
+                this.tail = newNode
+                //原链表不为空
+            } else {
+                //情况2：插入到第一个
+                if (position == 0) {
+                    this.head.prev = newNode
+                    newNode.next = this.head
+                    this.head = newNode
+                    //情况3：插入到最后
+                } else if (position == this.length) {
+                    this.tail.next = newNode
+                    newNode.prev = this.tail
+                    this.tail = newNode
+                    //情况4：插入到中间
+                } else {
+                    var current = this.head
+                    var index = 0
+                    while (index++ < position) {
+                        current = current.next
+                    }
+                    newNode.next = current
+                    newNode.prev = current.prev
+                    current.prev.next = newNode
+                    //注意必须最后才修改current.prev的指向，不然就无法通过current.prev获取需要
+                    current.prev = newNode
+                }
+            }
+            //4.length+1
+            this.length += 1
+            return true
+        }
+
+        /*6.get(position)*/
+        DoubleLinkList.prototype.get = position => {
+            //1.越界判断
+            if (position < 0 || position >= this.length) {//获取元素时position不能等于length
+                return null
+            }
+            //2.获取元素
+            var current = null
+            var index = 0
+            if ((this.length/2) > position) { //this.length / 2 > position:从头开始遍历
+                current = this.head
+                while (index++ < position) {
+                   current = current.next
+                }
+            } else {//this.length / 2 =< position:从尾开始遍历
+                current = this.tail
+                index = this.length-1
+                while (index-- > position) {
+                    current = current.prev
+                }
+            }
+            return current.data
+        }
+
+        /*7.indexOf(element)*/
+        DoubleLinkList.prototype.indexOf = function (data) {
+            //1.定义变量
+            var current = this.head
+            var index = 0
+            while (current) {  //2.遍历链表，查找与data相同的节点
+                if (current.data == data) {
+                    return index
+                }
+                current = current.next
+                index +=1
+            }
+            return -1
+        }
+
+        /*8.update(position,element)*/
+        DoubleLinkList.prototype.update = function (position,newData) {
+            //1.越界判断
+            if (position < 0 || position >= this.length) {
+                return false
+            }
+            //2.寻找正确的节点
+            var current = this.head
+            var index = 0
+            if (this.length/2 > position) {//this.length / 2 > position:从头开始遍历
+                while (index++ < position) {
+                    current = current.next
+                }
+            } else { //this.length / 2 =< position:从尾开始遍历
+                current = this.tail
+                index = this.length - 1
+                while (index-- > position) {
+                    current = current.prev
+                }
+            }
+            //3.修改找到节点的data
+            current.data = newData
+            return true
+        }
+
+        /*9.removeAt(position)*/
+        DoubleLinkList.prototype.removeAt = function (position) {
+            //1.越界判断
+            if (position < 0 || position >= this.length) {
+                return null
+            }
+            //2.删除节点
+            //当链表中length == 1
+            //情况1：链表只有一个节点
+            var current = this.head//定义在最上面方便以下各种情况返回current.data
+            if (this.length == 1) {
+              this.head = null
+              this.tail = null
+            } else {
+                if (position == 0) {//情况2：删除第一个节点
+                    this.head.next.prev = null
+                    this.head = this.head.next
+                } else if (position == this.length-1) {//情况3：删除最后一个节点
+                    current = this.tail
+                    this.tail.prev.next = null
+                    this.tail = this.tail.prev
+                } else { //情况4：删除链表中间的节点
+                    var index = 0
+                    while (index++ < position) {
+                       current = current.next
+                    }
+                    current.next.prev = current.prev
+                    current.prev.next = current.next
+
+                }
+            }
+            //3.length -= 1
+            this.length -= 1
+            return current.data//返回被删除节点的数据
+        }
+
+        /* 10.remove(element)*/
+        DoubleLinkList.prototype.remove = data => {
+            //1.根据data获取下标值
+            let index = this.indexOf(data)
+
+            //2.根据index删除对应位置的节点
+            return this.removeAt(index)
+        }
+
+        /* 11.isEmpty()*/
+        DoubleLinkList.prototype.isEmpty = () => {
+            return this.length == 0
+        }
+
+        /*12.size()*/
+        DoubleLinkList.prototype.size = () => {
+            return this.length
+        }
+
+        /*13.getHead方法：获取链表的第一个元素*/
+        DoubleLinkList.prototype.getHead = () => {
+            return this.head.data
+        }
+
+        /*14.getTail方法：获取链表的最后一个元素*/
+        DoubleLinkList.prototype.getTail = () => {
+            return this.tail.data
+        }
+
+    }
+
+
+
+
+
+    var list = new DoubleLinkList()
+    //1.测试append方法
+    list.append('aaa')
+    list.append('bbb')
+    list.append('ccc')
+    list.append('ddd')
+    console.log(list)
+   //2.测试forwardString方法
+   console.log(list.forwardString());
+   //3.测试backwardString方法
+   console.log(list.backwardString());
+    //4.测试toString方法
+   console.log(list.toString());
+    //5.测试insert方法
+   list.insert(0, '123')
+   list.insert(3, '234')
+   console.log(list.toString());
+   //6.测试get方法
+   console.log(list.get(1));
+   console.log(list.get(3));
+   //7.测试indexOf方法
+   console.log(list.indexOf('bbb'));
+   console.log(list.indexOf('c'));
+   //8.测试update方法
+   console.log(list.update(4, '666'));
+   console.log(list.toString());
+   //9.测试removeAt方法
+   console.log(list.removeAt(1));
+   console.log(list.toString());
+   //10.remove方法
+   console.log(list.remove('666'));
+   console.log(list.toString());
+   //11.isEmpty方法
+   console.log(list.isEmpty());
+   //12.size方法
+   console.log(list.size());
+   //13.getHead方法
+   console.log(list.getHead());
+   //14.getTail方法
+   console.log(list.getTail());
+</script>
+</body>
+</html>

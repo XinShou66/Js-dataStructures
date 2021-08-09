@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0139-单词拆分</title>
+</head>
+<body>
+<script>
+    /*给定一个非空字符串 s 和一个包含非空单词的列表 wordDict，判定 s 是否可以被空格拆分为一个或多个在字典中出现的单词。
+        说明：
+        拆分时可以重复使用字典中的单词。
+        你可以假设字典中没有重复的单词。*/
+
+    /**
+     * @param {string} s
+     * @param {string[]} wordDict
+     * @return {boolean}
+     */
+    var wordBreak = function(s, wordDict) {
+        const wordSet = new Set(wordDict);
+        const len = s.length;
+        const dp = new Array(len + 1).fill(false);
+        //dp[i] 长度为i的s[0:i-1]子串是否能拆分成单词
+        dp[0] = true;//长度为 0 的s[0:-1]能拆分成单词表单词,只是为了让边界情况也能满足状态转移方程
+        for (let i = 1; i <= len; i++) {
+            //将字符分为一个一个的短字符进行判断
+            for (let j = i - 1; j >= 0; j--) {// j将当前短字符划分成两部分
+                //优化动态规划的步骤
+                if (dp[i] == true) break;
+                if (dp[j] == false) continue;
+
+                let str = s.slice(j, i) // // 后缀部分 s[j: i-1]
+                if (wordSet.has(str) && dp[j] == true) {//如果0~j的字符可以拆分为单词，且j~len组成的字符也是单词
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length];
+    };
+
+    //运行结果：运行时间击败69.97%(92ms)，内存消耗击败68.31%(39.5mb)
+
+
+
+</script>
+</body>
+</html>

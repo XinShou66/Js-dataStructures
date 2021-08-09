@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树的后序遍历序列</title>
+</head>
+<body>
+<script>
+    /*输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。
+    如果是则返回 true，否则返回 false。
+    假设输入的数组的任意两个数字都互不相同。*/
+
+    /*递归法*/
+
+    /**
+     * @param {number[]} postorder
+     * @return {boolean}
+     */
+    var verifyPostorder = function(postorder) {
+        const length = postorder.length;
+        if (length < 2) return true;
+        const root = postorder[length - 1];
+        let leftNUm = 0;//左子树节点的数量
+        while (postorder[leftNUm] < root) {//划分左右子树，左子树比根节点小，右子树比根节点大
+            leftNUm++;
+        }
+        for (let i = leftNUm; i < length - 1; i++) {//检查右子树中的值是否满足条件
+            if (postorder[i] < root) {//右子树中必须都比根节点大
+                return false;
+            }
+        }
+        //递归判断左右子树
+        return verifyPostorder(postorder.slice(0,leftNUm)) && verifyPostorder(postorder.slice(leftNUm,length - 1));
+
+    };
+
+    //运行结果：运行时间击败80.30%(80ms)，内存消耗击败40.16%(39.2mb)
+
+
+
+
+
+
+
+
+    /*辅助单调栈解法，时间复杂度低于递归解法，（但是不理解）*/
+    //后序遍历，先左右，后根节点
+    //根节点大于左节点，小于右节点
+    var verifyPostorder = function(postorder) {
+        var root = Number.MAX_VALUE
+        var stack = []
+        for(let i = postorder.length - 1;i >= 0;i--)
+        {
+            if(postorder[i] > root) return false
+            while(stack.length && postorder[i] < stack[stack.length -1])
+            {
+                //
+                root = stack.pop()
+            }
+            stack.push(postorder[i])
+        }
+        return true
+
+    };
+    //运行结果：运行时间击败42.07%(88ms)，内存消耗击败98.37%(37.5mb)
+
+</script>
+</body>
+</html>

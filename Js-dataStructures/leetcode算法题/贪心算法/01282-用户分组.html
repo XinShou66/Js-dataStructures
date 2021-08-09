@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>01282-用户分组</title>
+</head>
+<body>
+<script>
+    /*有 n 位用户参加活动，他们的 ID 从 0 到 n - 1，每位用户都 恰好 属于某一用户组。
+    给你一个长度为 n 的数组 groupSizes，其中包含每位用户所处的用户组的大小，
+    请你返回用户分组情况（存在的用户组以及每个组中用户的 ID）。
+
+    你可以任何顺序返回解决方案，ID 的顺序也不受限制。此外，题目给出的数据保证至少存在一种解决方案*/
+
+    /**
+     * @param {number[]} groupSizes
+     * @return {number[][]}
+     */
+    var groupThePeople = function(groupSizes) {
+        //最后用来返回的结果数组
+        const res = [];
+        //用来存放已经创建的数组，key为数组长度，value为数组
+        const map = new Map();
+
+        for (let i = 0; i < groupSizes.length; i++) {
+            //1. 获取该元素所在数组的长度
+            let length = groupSizes[i];
+
+            //2. 如果有该长度的数组，则将元素放进对应长度的数组
+            if (map.has(length)) {
+                map.get(length).push(i);
+                //2.1 判断该长度数组是否存满，如果存满，将该数组放进结果数组中，并从map中删除该映射
+                if (map.get(length).length === length) {
+                    res.push(map.get(length));
+                    map.delete(length);
+                }
+            } else {
+                //3. 如果没有该长度的数组，则创建一个，并将其映射存进map,然后元素进入数组
+                let arr = [];
+                map.set(length, arr);
+                arr.push(i);
+                //3.1 如果该数组刚放进去就满了（长度为1），则将该数组放进结果数组中，并从map中删除该映射
+                if (arr.length === length) {
+                    res.push(arr);
+                    map.delete(length);
+                }
+
+            }
+
+        }
+
+        //返回结果数组
+        return res;
+    };
+
+    //运行结果：运行时间击败100%(96ms)，内存消耗击败50.52%(43.1mb)
+
+    /******************* 优化 *******************/
+    /**
+     * @param {number[]} groupSizes
+     * @return {number[][]}
+     */
+    var groupThePeople = function(groupSizes) {
+        //最后用来返回的结果数组
+        const res = [];
+        //用来存放已经创建的数组，key为数组长度，value为数组
+        const map = new Map();
+
+        for (let i = 0; i < groupSizes.length; i++) {
+            //1. 获取该元素所在数组的长度
+            let length = groupSizes[i];
+
+            //2. 如果有该长度的数组，则将元素放进对应长度的数组
+            if (map.has(length)) {
+                map.get(length).push(i);
+            } else {
+                //3. 如果没有该长度的数组，则创建一个，并将其映射存进map,然后元素进入数组
+                let arr = [];
+                map.set(length, arr);
+                arr.push(i);
+            }
+            //4 判断该长度数组是否存满，如果存满，将该数组放进结果数组中，并更新map中该长度的数组
+            if (map.get(length).length === length) {
+                res.push(map.get(length));
+                map.set(length, []);
+            }
+
+        }
+
+        //返回结果数组
+        return res;
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>最长不含重复字符的子字符串</title>
+</head>
+<body>
+<script>
+    /*请从字符串中找出一个最长的不包含重复字符的子字符串，计算该最长子字符串的长度。*/
+
+    /*滑动窗口*/
+
+    /**
+     * @param {string} s
+     * @return {number}
+     */
+    var lengthOfLongestSubstring = function(s) {
+        const length = s.length;
+        const map = new Map();  //  创建map用来存放出现过的字符以及对应的位置下标
+        let i = 0;  //滑动窗口的左边界
+        let j = 0;  //滑动窗口的右边界
+        let res = 0;    //最长不重复字符串的长度
+        while ( i < length && j < length) {
+            // 容易理解：检查s[j]是否出现过，并且s[j]重复的字符是否在当前的滑动窗口中
+            if (map.has(s[j]) && map.get(s[j]) >= i) {
+                i = map.get(s[j]) + 1;
+            }
+            res = Math.max(j - i + 1,res);
+            map.set(s[j],j)
+            j++;
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败99.74%(88ms)，内存消耗击败40.5%(78.95mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0152-乘积最大子数组</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums ，请你找出数组中乘积最大的连续子数组（该子数组中至少包含一个数字），
+    并返回该子数组所对应的乘积。*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var maxProduct = function(nums) {
+        //从左到右依次计算小数组中的最大乘积
+        let res = nums[0];
+        //从开头到当前位置子数组的最小乘积
+        let prevMin = nums[0];
+        //从开头到当前位置子数组的最大乘积
+        let prevMax = nums[0];
+        //用来转储最小最大乘积的变量
+        let temp1 = 0, temp2 = 0;
+        //初始变量时，已经用了下标0元素，所以循环从1开始
+        for (let i = 1; i < nums.length; i++) {
+            //因为负负得正，两个负数的乘积可能最大,所以要计算最小与最大乘积与当前元素的乘积
+            temp1 = prevMin * nums[i];
+            temp2 = prevMax * nums[i];
+            prevMin = Math.min(temp1, temp2, nums[i]);
+            prevMax = Math.max(temp1, temp2, nums[i]);
+            res = Math.max(res, prevMax);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败59.16%(92ms)，内存消耗击败93.69%(39mb)
+
+</script>
+</body>
+</html>

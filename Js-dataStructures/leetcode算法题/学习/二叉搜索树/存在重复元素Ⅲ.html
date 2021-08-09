@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>存在重复元素Ⅲ</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums 和两个整数 k 和 t 。请你判断是否存在两个下标 i 和 j，
+    使得 abs(nums[i] - nums[j]) <= t ，同时又满足 abs(i - j) <= k 。
+    如果存在则返回 true，不存在返回 false。*/
+    /*** Math.abs()获取绝对值 ***/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @param {number} t
+     * @return {boolean}
+     */
+    var containsNearbyAlmostDuplicate = function(nums, k, t) {
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = i + 1; j < nums.length ; j++) {
+                let numAbs = Math.abs(nums[i] - nums[j])
+                let indexAbs = Math.abs(i - j)
+                if (numAbs <= t && indexAbs <= k) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    //运行结果：运行时间击败40.62%(824ms)，内存消耗击败32.50%(39.1mb)
+
+
+    /*不同暴力法*/
+    var containsNearbyAlmostDuplicate = function(nums, k, t) {
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = i + 1; j - i <= k ; j++) {
+                if (Math.abs(nums[i] - nums[j]) <= t) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    //运行结果：运行时间击败36.14%(904ms)，内存消耗击败28.29%(39.3mb)
+
+</script>
+</body>
+</html>

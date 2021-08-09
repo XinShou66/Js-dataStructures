@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>求1+2+...+n</title>
+</head>
+<body>
+<script>
+    /*求 1+2+...+n ，要求不能使用乘除法、for、while、if、else、switch、case等关键字及条件判断语句（A?B:C）。*/
+
+    /*逻辑符短路的方法*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var sumNums = function(n) {
+        return n && sumNums(n - 1) + n;
+    };
+
+    //运行结果：运行时间击败42.25%(88ms)，内存消耗击败64.46%(38.2mb)
+
+/*******************************方法2***************************************************/
+    /*运用对数的方法*/
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var sumNums = function (n) {//1+2+...+n = n(n+1)/2
+       //log(a)xy = log(a)x + log(a)y
+        //log(a)x/y = log(a)x - log(a)y
+        //对数和幂运算有浮点误差，最终通过取整消除误差
+        //Math.round()四舍五入
+        //Math.exp(x)返回e的x次幂
+        //Math.log()返回数的自然对数（底为e）
+        return Math.round(Math.exp(Math.log(n) + Math.log(n + 1) - Math.log(2)));
+    };
+
+    //运行结果：运行时间击败77.13%(80ms)，内存消耗击败84.69%(37.7mb)
+
+</script>
+</body>
+</html>

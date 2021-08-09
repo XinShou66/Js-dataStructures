@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>最小的k个数</title>
+</head>
+<body>
+<script>
+    /*输入整数数组 arr ，找出其中最小的 k 个数。
+    例如，输入4、5、1、6、2、7、3、8这8个数字，则最小的4个数字是1、2、3、4。*/
+
+    /**
+     * @param {number[]} arr
+     * @param {number} k
+     * @return {number[]}
+     */
+    var getLeastNumbers = function(arr, k) {
+        arr.sort(function(a,b) {
+            return a - b;
+        })
+        let res = arr.slice(0,k);
+        return res;
+
+    };
+
+    //运行结果：运行时间击败65.41%(128ms)，内存消耗击败74.13%(42mb)
+
+</script>
+</body>
+</html>

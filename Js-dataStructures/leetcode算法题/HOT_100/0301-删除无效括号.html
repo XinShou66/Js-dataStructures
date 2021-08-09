@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0301-删除无效括号</title>
+</head>
+<body>
+<script>
+    /*给你一个由若干括号和字母组成的字符串 s ，删除最小数量的无效括号，使得输入的字符串有效。
+    返回所有可能的结果。答案可以按 任意顺序 返回。*/
+
+    /**
+     * @param {string} s
+     * @return {string[]}
+     */
+    var removeInvalidParentheses = function(s) {
+        let res = [];
+
+        // 第 1 步：遍历一次，计算多余的左右括号
+        /** 通过这样的计数规则，最后「左括号」和「右括号」的数量就是各自最少应该删除的数量 */
+        let leftRemove = 0, rightRemove = 0;
+        for (let i = 0; i < s.length; i++) {
+            if (s.charAt(i) == '(') {
+                leftRemove++;
+            } else if(s.charAt(i) == ')') {
+                //如果此时「左括号」的数量不为 0，因为 「右括号」可以与之前遍历到的「左括号」匹配
+                // 此时「左括号」出现的次数 -1；
+                if (leftRemove > 0) {
+                    leftRemove--;
+                } else {//如果此时「左括号」的数量为 0
+                    rightRemove++;
+                }
+            }
+        }
+
+        // 第 2 步：回溯算法，尝试每一种可能的删除操作
+        /**
+         * @param index       当前遍历到的下标
+         * @param leftCount   已经遍历到的左括号的个数
+         * @param rightCount  已经遍历到的右括号的个数
+         * @param lRemove  最少应该删除的左括号的个数
+         * @param rRemove 最少应该删除的右括号的个数
+         * @param str        一个可能的结果
+         */
+        const dfs = (index, leftCount, rightCount, lRemove, rRemove, str) => {
+            if (index >= s.length) {
+                if (lRemove == 0 && rRemove == 0) {//添加进结果数组的条件
+                    res.push(str);
+                }
+                return;// 结束当前递归
+            }
+
+            let cur = s[index];
+            // 可能的操作 1：删除当前遍历到的字符
+            if (cur == '(' && lRemove > 0) {
+                // 由于 lRemove > 0，并且当前遇到的是左括号，因此可以尝试删除当前遇到的左括号
+                dfs(index+1, leftCount, rightCount, lRemove-1, rRemove, str);
+            }
+            if (cur == ')' && rRemove > 0) {
+                // 由于 rightRemove > 0，并且当前遇到的是右括号，因此可以尝试删除当前遇到的右括号
+                dfs(index+1, leftCount, rightCount, lRemove, rRemove-1, str);
+            }
+
+            // 可能的操作 2：保留当前遍历到的字符
+            if (cur != '(' && cur != ')') {
+                // 如果不是括号，继续深度优先遍历
+                dfs(index+1, leftCount, rightCount, lRemove, rRemove, str+cur)
+            } else if(cur == '(') {// 考虑左括号
+                dfs(index+1, leftCount+1, rightCount, lRemove, rRemove, str+cur)
+            } else if(rightCount < leftCount){// 考虑右括号(经过上边的判断，此时肯定时右括号，所以省略没写cur==')')
+                dfs(index+1, leftCount, rightCount+1, lRemove, rRemove, str+cur)
+            }
+        }
+
+        dfs(0, 0, 0, leftRemove, rightRemove, '') // 入口
+        return res.length == 0 ? [''] : Array.from(new Set([...res]));//可能有重复需要去重
+
+    }
+
+    //运行结果：运行时间击败71.79%(92ms)，内存消耗击败50.00%(39.9mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>093-复原 IP 地址</title>
+</head>
+<body>
+<script>
+    /*给定一个只包含数字的字符串，用以表示一个 IP 地址，返回所有可能从 s 获得的 有效 IP 地址 。你可以按任何顺序返回答案。
+    有效 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 '.' 分隔。
+    例如：
+        "0.1.2.201" 和 "192.168.1.1" 是 有效 IP 地址，但是 "0.011.255.245"、"192.168.1.312" 和 "192.168@1.1" 是 无效 IP 地址。*/
+
+    /**
+     * @param {string} s
+     * @return {string[]}
+     */
+    var restoreIpAddresses = function(s) {
+        const ipArea = 4;   //ip一共分为四个区域
+        const ip = new Array(ipArea); //先将IP用数组储存，最后转成字符串
+        const res = [];
+
+        backTrack(0, 0); //第一个参数为ip所在区域（段），第二个参数为数字字符串的下标（代表从第几位往下运行）
+        return res;
+
+        function backTrack(areaIndex, strIndex) {
+            // 如果找到了 4 段 IP 地址并且遍历完了字符串，那么就是一种答案，将其转换为字符串放进结果数组
+            if (areaIndex === ipArea) {
+                if (strIndex === s.length) {
+                    res.push(ip.join('.'));
+                }
+                return;
+            }
+
+            // 如果还没有找到 4 段 IP 地址就已经遍历完了字符串，那么提前回溯
+            if (strIndex === s.length) {
+                return;
+            }
+
+            // 由于不能有前导零，如果当前数字为 0，那么这一段 IP 地址只能为 0
+            if (s.charAt(strIndex) === '0') {
+                ip[areaIndex] = 0;
+                backTrack(areaIndex + 1, strIndex + 1);
+            }
+
+            // 一般情况，枚举每一种可能性并递归
+            let addr = 0;//IP的每一段，初始为0
+            for (let strEnd = strIndex; strEnd < s.length; strEnd++) {//strEnd代表每一段区域的最后一位
+                addr = addr * 10 + (s.charAt(strEnd) - '0');
+                if (addr > 0 && addr <= 255) {
+                    ip[areaIndex] = addr;
+                    backTrack(areaIndex + 1, strEnd + 1);
+                } else {
+                    break;
+                }
+            }
+        }
+    };
+
+</script>
+</body>
+</html>

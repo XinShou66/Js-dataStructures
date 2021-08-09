@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用队列实现栈</title>
+</head>
+<body>
+<script>
+    /*请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通队列的全部四种操作（push、top、pop 和 empty）。
+        实现 MyStack 类：
+            void push(int x) 将元素 x 压入栈顶。
+            int pop() 移除并返回栈顶元素。
+            int top() 返回栈顶元素。
+            boolean empty() 如果栈是空的，返回 true ；否则，返回 false 。
+        注意：
+            你只能使用队列的基本操作 —— 也就是 push to back、peek/pop from front、size 和 is empty 这些操作。
+            你所使用的语言也许不支持队列。 你可以使用 list （列表）或者 deque（双端队列）来模拟一个队列 , 只要是标准的队列操作即可。
+            */
+
+
+    /**
+     * Initialize your data structure here.
+     */
+    var MyStack = function() {
+        this.inQueue = [];
+        this.outQueue = [];
+    };
+
+    /**
+     * Push element x onto stack.
+     * @param {number} x
+     * @return {void}
+     */
+    MyStack.prototype.push = function(x) {
+        this.inQueue.push(x);
+    };
+
+    /**
+     * Removes the element on top of the stack and returns that element.
+     * @return {number}
+     */
+    MyStack.prototype.pop = function() {
+        //将最后的元素移到队列头部
+        while (this.inQueue.length > 1) {
+            this.outQueue.push(this.inQueue.shift());
+        }
+        while (this.outQueue.length) {
+            this.inQueue.push(this.outQueue.shift());
+        }
+       //删除队列头部元素，即栈的顶部元素
+        return this.inQueue.shift();
+    };
+
+    /**
+     * Get the top element.
+     * @return {number}
+     */
+    MyStack.prototype.top = function() {
+
+        return this.inQueue[this.inQueue.length - 1]
+    };
+
+    /**
+     * Returns whether the stack is empty.
+     * @return {boolean}
+     */
+    MyStack.prototype.empty = function() {
+        return this.inQueue.length == 0;
+    };
+
+    /**
+     * Your MyStack object will be instantiated and called as such:
+     * var obj = new MyStack()
+     * obj.push(x)
+     * var param_2 = obj.pop()
+     * var param_3 = obj.top()
+     * var param_4 = obj.empty()
+     */
+
+    //运行结果：运行时间击败31.40%(88ms)，内存消耗击败90.85%(37.1mb)
+
+</script>
+</body>
+</html>

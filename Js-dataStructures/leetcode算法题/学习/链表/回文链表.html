@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>回文链表</title>
+</head>
+<body>
+<script>
+    /*请判断一个链表是否为回文链表。*/
+    /*进阶：
+        你能否用 O(n) 时间复杂度和 O(1) 空间复杂度解决此题？*/
+
+    /****************************************** 方法1：将值复制到数组后使用双指针法 *****************************************/
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @return {boolean}
+     */
+    var isPalindrome = function(head) {
+        const arr = [];
+        while (head) {
+            arr.push(head.val);
+            head = head.next;
+        }
+        for (let i = 0, j = arr.length - 1; i < j; i++, j--) {
+            if (arr[i] !== arr[j]) {
+                return false;
+            }
+        }
+        return true;
+    };
+    //运行结果：运行时间击败12.50%(276ms)，内存消耗击败40.65%(63.2mb)
+
+
+    /***************************************** 方法2：快慢指针 *****************************************/
+    /*思路：
+        1.快慢指针，起初都指向表头，快指针一次走两步，慢指针一次走一步，遍历结束时：
+            要么，slow 正好指向中间两个结点的后一个。
+            要么，slow 正好指向中间结点。
+        2.用 prev 保存 slow 的前一个结点，通过prev.next = null断成两个链表。
+        3.将后半段链表翻转，和前半段从头比对。空间复杂度降为O(1)
+    */
+
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode} head
+     * @return {boolean}
+     */
+    var isPalindrome = function(head) {
+        if (!head || !head.next) {
+            return true;
+        }
+        let fast = head;
+        let slow = head;
+        let prev = null;
+        while (fast && fast.next) {
+            prev = slow;    //prev为slow的前继
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        //此时slow指向中间节点或中间两个节点的后一个
+        prev.next = null;   //将链表短成两个部分
+        //翻转链表的后半段
+        let tempHead = null;
+        while (slow) {//slow为后半部分链表的头节点
+            const next = slow.next;
+            slow.next = tempHead;
+            tempHead = slow;
+            slow = next;
+        }
+        while (head && tempHead) {//将前半部分与后半部分比对
+            if (head.val != tempHead.val) {
+                return false;
+            }
+            head = head.next;
+            tempHead = tempHead.next;
+        }
+        return true;
+    };
+
+    //运行结果：运行时间击败48.92%(192ms)，内存消耗击败51%(57.3mb)
+
+</script>
+</body>
+</html>

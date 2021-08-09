@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树中和为某一值的路径</title>
+</head>
+<body>
+<script>
+    /*输入一棵二叉树和一个整数，
+    打印出二叉树中节点值的和为输入整数的所有路径。
+    从树的根节点开始往下一直到叶节点所经过的节点形成一条路径。
+    */
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @param {number} sum
+     * @return {number[][]}
+     */
+    var pathSum = function(root, sum) {
+        let result = [];
+        let path = [];
+        function dfs(node,sum) {
+            if (!node) return;
+            sum -= node.val;
+            path.push(node.val)
+            if (!node.left && !node.right && !sum) {
+                result.push([...path]);
+            }
+            dfs(node.left,sum);
+            dfs(node.right,sum);
+            path.pop();//向上回溯前，需要将当前节点从路径 path 中删除(左子节点访问后，删除左子节点，开始访问右子节点)
+        }
+        dfs(root,sum);
+        return result;
+
+    };
+
+    //运行结果：运行时间击败79.42%(96ms)，内存消耗击败81.73%(40.6mb)
+
+</script>
+</body>
+</html>

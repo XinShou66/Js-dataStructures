@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0130-被围绕的区域</title>
+</head>
+<body>
+<script>
+    /*给你一个 m x n 的矩阵 board ，由若干字符 'X' 和 'O' ，
+    找到所有被 'X' 围绕的区域，并将这些区域里所有的 'O' 用 'X' 填充。*/
+
+    /*****
+     * 解释：
+    被围绕的区间不会存在于边界上，换句话说，任何边界上的 'O' 都不会被填充为 'X'。
+    任何不在边界上，或不与边界上的 'O' 相连的 'O' 最终都会被填充为 'X'。
+    如果两个元素在水平或垂直方向相邻，则称它们是“相连”的。
+     ******/
+
+
+    /*方法1：dfs*/
+
+    /**
+     * @param {character[][]} board
+     * @return {void} Do not return anything, modify board in-place instead.
+     */
+    var solve = function(board) {
+        //思路：将边界以及与边界相连的区域的O换位A，然后挨个对元素处理，A换为O，O换为X
+
+        let h = board.length;
+        if (h == 0) {
+            return;
+        }
+        let w = board[0].length;
+
+        //处理左右上下边界的元素
+        for (let i = 0; i < h; i++) {
+            for (let j = 0; j < w; j++) {
+                if (i == 0 || i == h - 1 || j == 0 || j == w - 1) {
+                    if (board[i][j] == 'O') {D
+                        dfs(i, j); // 从最外层的O，开始DFS
+                   }
+                }
+            }
+        }
+        //对改变后的区域进行挨个判断
+        for (let i = 0; i < h; i++) {
+            for (let j = 0; j < w; j++) {
+                if (board[i][j] == 'A') {
+                    board[i][j] = 'O';
+                } else if (board[i][j] == 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+
+        function dfs(i, j) {
+            if (i < 0 || i >= h || j < 0 || j >= w || board[i][j] !== 'O') return;
+            board[i][j] = 'A';
+            dfs(i - 1, j);
+            dfs(i + 1, j);
+            dfs(i, j - 1);
+            dfs(i, j + 1);
+        }
+    };
+
+    //运行结果：运行时间击败68.09%(112ms)，内存消耗击败87.40%(41.4mb)
+
+
+
+    /*方法2：bfs*/
+
+    /**
+     * @param {character[][]} board
+     * @return {void} Do not return anything, modify board in-place instead.
+     */
+    var solve = function(board) {
+        //思路：将边界以及与边界相连的区域的O换位NO，然后挨个对元素处理，NO换为O，O换为X
+        let h = board.length;
+        if (h == 0) {
+            return;
+        }
+        let w = board[0].length;
+        const dirs = [[-1,0], [1,0],[0,-1],[0,1]];//定义上下左右四个方向
+
+
+        for (let i = 0; i < h; i++) {
+            for (let j = 0; j < w; j++) {
+                if (i == 0 || i == h - 1 || j == 0 || j == w - 1) {
+                    if (board[i][j] == 'O') {
+                        bfs(i, j); // 从最外层的O，开始BFS
+                    }
+                }
+            }
+        }
+
+        for (let i = 0; i < h; i++) {
+            for (let j = 0; j < w; j++) {
+                if (board[i][j] === 'NO') {
+                    board[i][j] = 'O';
+                } else if(board[i][j] === 'O') {
+                    board[i][j] = 'X';
+                }
+            }
+        }
+
+        function bfs(i, j) {
+            let queue = [[i, j]];
+            board[i][j] = "NO"; // 入列的“root”染色一下
+            while (queue.length) {
+                let [curI, curJ] = queue.shift();
+                for (const [dx,dy] of dirs) {//处理四周元素
+                    let x = curI + dx; // 求出新坐标
+                    let y = curJ + dy;
+                    if (x < 0 || x == h || y < 0 || y == w) continue; // 越界了就忽略
+                    if (board[x][y] == 'O') {
+                        board[x][y] = 'NO'; // 是O，染色成O
+                        queue.push([x,y]); // 染色成NO的节点入列，后边处理其周围元素
+                    }
+
+                }
+            }
+        }
+    };
+
+    //运行结果：运行时间击败31.71%(132ms)，内存消耗击败41.46%(42.7mb)
+
+</script>
+</body>
+</html>

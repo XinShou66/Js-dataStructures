@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>无重复字符的最长子串</title>
+</head>
+<body>
+<script>
+    /*给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。*/
+
+    /***************************** 方法1：哈希表 *****************************/
+    /**
+     * @param {string} s
+     * @return {number}
+     */
+    var lengthOfLongestSubstring = function(s) {
+        let map = new Map();
+        let count = 0;
+        let res = 0;
+        let i = 0;
+        while (i < s.length) {
+            if (!map.has(s[i])) {
+                map.set(s[i], i);
+                count++;
+                i++;
+            } else {
+                if (res < count) {
+                    res = count;
+                }
+                i = map.get(s[i]) + 1; //从没出现过的元素重新开始处理
+                map.clear();    //清空哈希表重复利用
+                count = 0;  //重置count
+            }
+        }
+        //最后这里再判断一下防止直接在if条件中结束循环 res未被赋新值的情况(例如是一个空字符的情况)
+        if (res < count) {
+            res = count;
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败14.82%(360ms)，内存消耗击败16.05%(44.3mb)
+
+
+    /***************************** 方法2：数组 *****************************/
+
+    /**
+     * @param {string} s
+     * @return {number}
+     */
+    var lengthOfLongestSubstring = function(s) {
+        if (!s.length) return 0;
+        let str = s[0];
+        let res = 1;
+        for (let i = 1; i < s.length; i++) {
+            if (str.indexOf(s[i]) != -1) {//如果str中存在该字符，则将该字符从str中删除
+                str = str.slice(str.indexOf(s[i]) + 1);//str为重复字符后边的字符串
+            }
+            str += s[i];
+            if (res < str.length) {
+                res = str.length;
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败38.55%(132ms)，内存消耗击败25.15%(43.9mb)
+
+
+</script>
+</body>
+</html>

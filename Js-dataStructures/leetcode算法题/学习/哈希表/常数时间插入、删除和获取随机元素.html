@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>常数时间插入、删除和获取随机元素</title>
+</head>
+<body>
+<script>
+    /*设计一个支持在平均 时间复杂度 O(1) 下，执行以下操作的数据结构。
+        insert(val)：当元素 val 不存在时，向集合中插入该项。
+        remove(val)：元素 val 存在时，从集合中移除该项。
+        getRandom：随机返回现有集合中的一项。每个元素应该有相同的概率被返回。*/
+
+    /**
+     * Initialize your data structure here.
+     */
+    var RandomizedSet = function() {
+        this.items = [];
+        this.map = new Map();
+    };
+
+    /**
+     * Inserts a value to the set. Returns true if the set did not already contain the specified element.
+     * @param {number} val
+     * @return {boolean}
+     */
+    RandomizedSet.prototype.insert = function(val) {
+        if (!this.map.has(val)) {//如果不存在
+            //在哈希表中记录插入的值以及在数组中的下标
+            this.map.set(val, this.items.length);
+            //将该元素放进数组
+            this.items.push(val);
+            return true;
+        } else {//如果存在
+            return false;
+        }
+    };
+
+    /**
+     * Removes a value from the set. Returns true if the set contained the specified element.
+     * @param {number} val
+     * @return {boolean}
+     */
+    RandomizedSet.prototype.remove = function(val) {
+        if (!this.map.has(val)) { // 如果不存在
+            return false;
+        } else { //如果存在,因为需要常数的时间复杂度，所以要做一系列处理
+            // 1.找到要删除元素的下标
+            let deleteIndex = this.map.get(val);
+            if (deleteIndex == this.items.length - 1) {//2.1 如果要删除的元素是最后一个元素
+                this.items.pop();
+                this.map.delete(val);
+            } else {//2.1 如果要删除的元素不是最后一个元素
+                // 2.2 删除数组最后的元素并接收，用于后边将该值放到要删除的位置
+                let lastNum = this.items.pop()
+                // 2.3 数组中要删除的元素更新为数组最后的元素，此时要删除的元素已经从数组中删除
+                this.items[deleteIndex] = lastNum;
+                // 2.4 将哈希表中数组最后元素的下标更新为要删除位置的下标
+                this.map.set(lastNum,  deleteIndex);
+                // 2.5 将要删除的元素从哈希表中删除
+                this.map.delete(val);
+            }
+            return true;
+        }
+    };
+
+    /**
+     * Get a random element from the set.
+     * @return {number}
+     */
+    RandomizedSet.prototype.getRandom = function() {
+        //生成一个0 ~ 数组长度的随机整数
+        let numIndex = Math.floor(Math.random() * this.items.length);
+        //然后返回这个下标数对应的元素
+        return this.items[numIndex];
+    };
+
+    /**
+     * Your RandomizedSet object will be instantiated and called as such:
+     * var obj = new RandomizedSet()
+     * var param_1 = obj.insert(val)
+     * var param_2 = obj.remove(val)
+     * var param_3 = obj.getRandom()
+     */
+
+    //运行结果：运行时间击败60.64%(176ms)，内存消耗击败61.35%(46.4mb)
+
+</script>
+</body>
+</html>

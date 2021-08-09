@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0213-打家劫舍Ⅱ</title>
+</head>
+<body>
+<script>
+    /*你是一个专业的小偷，计划偷窃沿街的房屋，每间房内都藏有一定的现金。
+    这个地方所有的房屋都 围成一圈 ，这意味着第一个房屋和最后一个房屋是紧挨着的。
+    同时，相邻的房屋装有相互连通的防盗系统，如果两间相邻的房屋在同一晚上被小偷闯入，系统会自动报警 。
+    给定一个代表每个房屋存放金额的非负整数数组，计算你 在不触动警报装置的情况下 ，今晚能够偷窃到的最高金额。*/
+
+    /**
+     注意到当房屋数量不超过两间时，最多只能偷窃一间房屋，因此不需要考虑首尾相连的问题。
+     如果房屋数量大于两间，就必须考虑首尾相连的问题，第一间房屋和最后一间房屋不能同时偷窃。
+     如何才能保证第一间房屋和最后一间房屋不同时偷窃呢？
+     如果偷窃了第一间房屋，则不能偷窃最后一间房屋，因此偷窃房屋的范围是第一间房屋到最后第二间房屋；------> [0,n-2]
+     如果偷窃了最后一间房屋，则不能偷窃第一间房屋，因此偷窃房屋的范围是第二间房屋到最后一间房屋。------> [1,n-1]
+
+     在确定偷窃房屋的下标范围之后，即可用第 198 题的方法解决。
+     对于两段下标范围分别计算可以偷窃到的最高总金额，其中的最大值即为在 nn 间房屋中可以偷窃到的最高总金额。
+     * **/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var rob = function(nums) {
+        const length = nums.length;
+        if (length === 1) {
+            return nums[0];
+        } else if(length === 2) {
+            return Math.max(nums[0], nums[1])
+        }
+        return Math.max(robRange(0, length - 2), robRange(1, length - 1));
+
+        function robRange(start, end) {
+            let first = nums[start], second = Math.max(nums[start], nums[start + 1]);
+            for (let i = start + 2; i <= end; i++) {
+                let temp = second;
+                second = Math.max(first + nums[i], second);
+                first = temp;
+            }
+            return second;
+        }
+    };
+
+    //运行结果：运行时间击败61.80%(84ms)，内存消耗击败45.02%(37.8mb)
+
+</script>
+</body>
+</html>

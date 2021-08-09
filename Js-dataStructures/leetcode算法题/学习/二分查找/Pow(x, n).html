@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pow(x, n)</title>
+</head>
+<body>
+<script>
+
+    /****************** 与剑指offer 016-数值的整数次方 解题思路相同 ******************/
+
+    /*方法1： 二分法递归*/
+    /**
+     * @param {number} x
+     * @param {number} n
+     * @return {number}
+     */
+    var myPow = function(x, n) {
+        if (n === 0) return 1;
+        if (n === 1) return x;
+        if (n < 0) {//如果n是负数
+            n = -n;
+            x = (1 / x);
+        }
+        let result = 1;
+        if (n % 2 === 1) {//如果n是奇数
+            result = x;
+            n = n -1;
+        }
+        let lastResult = myPow(x,n/2);
+        result = lastResult * lastResult * result;
+        return result;
+    };
+    //运行结果：运行时间击败62.16%(88ms)，内存消耗击败69.95%(38.9mb)
+
+
+    /*方法2： 笨方法*/
+    /**
+     * @param {number} x
+     * @param {number} n
+     * @return {number}
+     */
+    var myPow = function(x, n) {
+        let ifEven = false;
+        let temp = 1;
+        let res = 1;
+        if (n < 0) {
+            x = 1 / x;
+            n = -n;
+        }
+        if (n % 2 == 0) {
+            temp = n / 2;
+            ifEven = true;
+        } else {
+            temp = (n - 1) / 2;
+        }
+        for (let i = 0; i < temp; i++) {
+            res *= x;
+        }
+
+        return ifEven ? res * res : res * res * x;
+    };
+
+    //运行结果：运行时间击败7.36%(8436ms)，内存消耗击败5.36%(39.5mb)
+
+</script>
+</body>
+</html>

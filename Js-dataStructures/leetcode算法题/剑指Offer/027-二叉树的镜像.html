@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树的镜像</title>
+</head>
+<body>
+<script>
+    /*请完成一个函数，输入一个二叉树，该函数输出它的镜像。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {TreeNode}
+     */
+    var mirrorTree = function(root) {
+        if (!root) return null;
+        let left = root.left;
+        let right = root.right;
+        root.left = right;
+        root.right = left;
+        mirrorTree(root.left)
+        mirrorTree(root.right)
+        return root;
+
+    };
+
+    //运行结果：运行时间击败81.57%(80ms)，内存消耗击败29.33%(39mb)
+
+</script>
+</body>
+</html>

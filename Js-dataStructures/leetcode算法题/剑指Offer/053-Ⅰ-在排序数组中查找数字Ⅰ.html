@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>在排序数组中查找数字Ⅰ</title>
+</head>
+<body>
+<script>
+    /*统计一个数字在排序数组中出现的次数。*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} target
+     * @return {number}
+     */
+    var search = function(nums, target) {
+        let res = 0;
+        for (let i = 0; i < nums.length; i++) {
+            if (nums[i] == target) {
+                res++;
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败33.95%(92ms)，内存消耗击败35.12%(39.1mb)
+
+
+
+    /************************************快一点的两头查找相同数的边界******************************************/
+    /**
+     * @param {number[]} nums
+     * @param {number} target
+     * @return {number}
+     */
+    var search = function(nums, target) {
+        if (!nums.length) return 0;
+        let left = 0;
+        let right = nums.length - 1;
+        while (nums[left] !=target && left < nums.length) {
+            left++;
+        }
+        while (nums[right] !=target && right >= 0) {
+            right--;
+        }
+        return left <= right ? right - left + 1 : 0;
+    };
+
+    //运行结果：运行时间击败33.95%(92ms)，内存消耗击败84.47%(38.8mb)
+
+</script>
+</body>
+</html>

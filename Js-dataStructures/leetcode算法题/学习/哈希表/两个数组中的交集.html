@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>两个数组中的交集</title>
+</head>
+<body>
+<script>
+    /*给定两个数组，编写一个函数来计算它们的交集。
+    * 说明：
+        输出结果中的每个元素一定是唯一的。
+        我们可以不考虑输出结果的顺序。*/
+
+    /**
+     * @param {number[]} nums1
+     * @param {number[]} nums2
+     * @return {number[]}
+     */
+    var intersection = function(nums1, nums2) {
+        let res = [];
+        let set = new Set();
+        for (let num of nums1) {
+            if (set.has(num)) {
+                continue;
+            }
+            set.add(num);
+        }
+        for (let num of nums2) {
+            if (set.has(num)) {
+                res.push(num);
+            }
+        }
+        //或
+        /*for (let num of nums2) {
+            if (set.has(num) && res.indexOf(num) < 0) {
+                res.push(num);
+            }
+        }
+        return res;*/
+        return Array.from(new Set(res));
+    };
+
+    //运行结果：运行时间击败31.95%(96ms)，内存消耗击败13.31%(39.7mb)
+
+
+
+    /**
+     * @param {number[]} nums1
+     * @param {number[]} nums2
+     * @return {number[]}
+     */
+    var intersection = function(nums1, nums2) {
+        let res = [];
+        let set = new Set();
+        for (let num of nums1) {
+            if (set.has(num)) {
+                continue;
+            }
+            set.add(num);
+        }
+
+        return res;
+    };
+
+</script>
+</body>
+</html>

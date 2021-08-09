@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0448-找到所有数组中消失的数字</title>
+</head>
+<body>
+<script>
+    /*给你一个含 n 个整数的数组 nums ，其中 nums[i] 在区间 [1, n] 内。
+    请你找出所有在 [1, n] 范围内但没有出现在 nums 中的数字，并以数组的形式返回结果。*/
+
+    /*方法1：原地修改*/
+
+    /**
+     * @param {number[]} nums
+     * @return {number[]}
+     */
+    var findDisappearedNumbers = function(nums) {
+        const n = nums.length;
+        const res = [];
+        for (let i = 0; i <= n; i++) {
+            nums[Math.abs(nums[i]) - 1] = -Math.abs(nums[Math.abs(nums[i]) - 1]);
+        }
+        for (let i = 0; i <= n; i++) {
+            if (nums[i] > 0) {
+                res.push(i+1);
+            }
+        }
+
+        return res;
+    };
+
+    //运行结果：运行时间击败99.36%(108ms)，内存消耗击败92.02%(45.5mb)
+
+
+    /*** 方法2：暴力 太慢了 ***/
+    /**
+     * @param {number[]} nums
+     * @return {number[]}
+     */
+    var findDisappearedNumbers = function(nums) {
+        let n = nums.length;
+        let res = [];
+        for (let i = 1; i <= n; i++) {
+            if (nums.indexOf(i) == -1) {
+                res.push(i);
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败5.23%(9008ms)，内存消耗击败55.84%(46.1mb)
+
+</script>
+</body>
+</html>

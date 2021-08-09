@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>077-组合</title>
+</head>
+<body>
+<script>
+    /*给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。*/
+
+    /**
+     * @param {number} n
+     * @param {number} k
+     * @return {number[][]}
+     */
+    var combine = function(n, k) {
+        let res = [];
+        backTrack([], 1);
+        return res;
+
+        function backTrack(arr, index) {
+            if (arr.length === k) {
+                res.push([...arr]);  // 拷贝一份arr，推入res
+                return;
+            }
+
+            for (let i = index; i <= n; i++) {
+                arr.push(i); // 选择
+                backTrack(arr, i + 1); // 向下继续选择
+                arr.pop(); // 撤销选择
+
+            }
+
+        }
+    };
+
+    //运行结果：运行时间击败60.25%(136ms)，内存消耗击败63.47%(42.9mb)
+
+</script>
+</body>
+</html>

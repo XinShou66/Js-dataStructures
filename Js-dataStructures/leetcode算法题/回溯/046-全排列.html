@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>046-全排列</title>
+</head>
+<body>
+<script>
+    /*给定一个 没有重复 数字的序列，返回其所有可能的全排列。*/
+
+    /*方法1：*/
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var permute = function(nums) {
+        let res = [];
+        backTrack(0);
+        return res;
+
+        function backTrack(index) {
+            if (index === nums.length) {
+                res.push([...nums]);
+            }
+
+            for (let i = index; i < nums.length; i++) {
+                swap(index, i); // 动态维护数组
+                backTrack(index + 1);
+                swap(index, i);// 撤销操作
+            }
+        }
+
+        function swap(i, j) {
+            if (i === j) {
+                return;
+            }
+            let temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    };
+
+    //运行结果：运行时间击败21.42%(116ms)，内存消耗击败82.27%(40.5mb)
+
+
+
+    /*方法2：*/
+    /**
+     * @param {number[]} nums
+     * @return {number[][]}
+     */
+    var permute = function(nums) {
+        let res = [];
+        let used = {};
+        backTrack([]);  // 递归的入口，空arr传进去
+        return res;
+
+        function backTrack(arr) {
+            if (arr.length === nums.length) {
+                res.push(arr.slice());  // 拷贝一份arr，加入解集res
+                return;     // 结束当前递归分支
+            }
+            for (let num of nums) {
+                //if (arr.includes(num)) continue; // 别这么写！查找的时间是O(n)，增加时间复杂度
+                if (used[num]) continue; // 使用过的，跳过
+                arr.push(num);   // 选择当前的数，加入arr
+                used[num] = true;   // 记录一下 使用了
+                backTrack(arr);  // 基于当前的排列数组，递归
+
+                arr.pop();   // 上一句的递归结束，回溯，将最后选的数pop出来
+                used[num] = false; // 撤销这个记录
+            }
+
+        }
+    };
+
+    //运行结果：运行时间击败58.76%(104ms)，内存消耗击败86.92%(40.5mb)
+
+</script>
+</body>
+</html>

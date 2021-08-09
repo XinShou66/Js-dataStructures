@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>股票的最大利润</title>
+</head>
+<body>
+<script>
+    /*假设把某股票的价格按照时间先后顺序存储在数组中，
+    请问买卖该股票一次可能获得的最大利润是多少？*/
+
+    /*示例：
+        输入: [7,1,5,3,6,4]
+        输出: 5
+        解释: 在第 2 天（股票价格 = 1）的时候买入，在第 5 天（股票价格 = 6）的时候卖出，最大利润 = 6-1 = 5 。
+        注意利润不能是 7-1 = 6, 因为卖出价格需要大于买入价格。
+     */
+
+    /*********************动态规划******************/
+    /*前i日最大利润=max(前(i−1)日最大利润,第i日价格−前i日最低价格)
+        dp[i]=max(dp[i−1],prices[i]−min(prices[0:i]))
+
+        时间复杂度降低：
+            优化后的状态转移方程为：
+            dp[i]=max(dp[i−1],prices[i]−min(cost,prices[i]) cost为每日的最低价格
+        空间复杂度降低：
+            由于 dp[i] 只与 dp[i - 1] , prices[i] , cost 相关，因此可使用一个变量（记为利润 profit ）代替 dp 列表。
+            优化后的状态转移方程为：
+            profit=max(profit,prices[i]−min(cost,prices[i])
+    */
+
+    /**
+     * @param {number[]} prices
+     * @return {number}
+     */
+    var maxProfit = function(prices) {
+        let profit = 0; //定义最大利润，初始值为0
+        let cost = Infinity;    //定义最低价格
+        for (let i = 0; i < prices.length; i++) {
+            cost = Math.min(cost,prices[i]) //更新最低价格
+            //最大利润为前一天的最大利润与今天的价格减去最低价格的最大值
+            profit = Math.max(profit,prices[i] - cost);
+        }
+        return profit;
+    };
+
+    //运行结果：运行时间击败85.23%(84ms)，内存消耗击败69.27%(39.4mb)
+
+</script>
+</body>
+</html>

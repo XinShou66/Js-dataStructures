@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>旋转矩阵</title>
+</head>
+<body>
+<script>
+    /*给你一幅由 N × N 矩阵表示的图像，其中每个像素的大小为 4 字节。请你设计一种算法，将图像旋转 90 度。
+        不占用额外内存空间能否做到？*/
+
+
+    /*******************************************方法1*******************************************/
+
+    // [
+    //   [1,2,3],
+    //   [4,5,6],
+    //   [7,8,9]
+    // ]
+    // 中间水平对换 (如 以456这条线为中间)
+    // [
+    //   [7,8,9],
+    //   [4,5,6],
+    //   [1,2,3]
+    // ]
+    // 对角线两两交换(如 753这条线)
+    // [
+    //   [7,4,1],
+    //   [8,5,2],
+    //   [9,6,3]
+    // ]
+    /**
+     * @param {number[][]} matrix
+     * @return {void} Do not return anything, modify matrix in-place instead.
+     */
+    var rotate = function(matrix) {
+        let length = matrix.length;
+        // 把矩阵水平中间对换
+        for (let i = 0; i < length /2; i++) {
+            [matrix[i],matrix[length - i - 1]] = [matrix[length - i - 1],matrix[i]]
+        }
+        // 对角线交换
+        for (let i = 0; i < length; i++) {
+            for (let j = 0; j < i; j++) {
+                [matrix[i][j],matrix[j][i]] = [matrix[j][i],matrix[i][j]]
+            }
+        }
+    };
+    //运行结果：运行时间击败17.88%(96ms)，内存消耗击败28.21%(39mb)
+
+
+    /*******************************************方法2*******************************************/
+
+    /*
+    *   1 2 3
+        4 5 6
+        7 8 9
+        *
+        1.将矩阵转置--->
+        *
+        1 4 7
+        2 5 8
+        3 6 9
+        *
+        2.将每一行row倒序reverse --->
+        *
+        7 4 1
+        8 5 2
+        9 6 3
+    * */
+    //一、倒序倒置法
+    /**
+     * @param {number[][]} matrix
+     * @return {void} Do not return anything, modify matrix in-place instead.
+     */
+    var rotate = function(matrix) {
+        for (let i = 0; i < matrix.length; i++) {
+            for(let j = i;j < matrix[i].length; j++){
+                //行列互换
+                [matrix[i][j],matrix[j][i]] = [matrix[j][i],matrix[i][j]]
+            }
+        }
+        matrix.forEach(row => row.reverse());
+    };
+
+    //运行结果：运行时间击败98.99%(68ms)，内存消耗击败26.45%(39mb)
+
+</script>
+</body>
+</html>

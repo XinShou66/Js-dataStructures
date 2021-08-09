@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>剪绳子2</title>
+</head>
+<body>
+<script>
+    /*
+    * 给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），
+    * 每段绳子的长度记为 k[0],k[1]...k[m - 1] 。
+    * 请问 k[0]*k[1]*...*k[m - 1] 可能的最大乘积是多少？
+    例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
+    答案需要取模 1e9+7（1000000007），如计算初始结果为：1000000008，请返回 1。
+*/
+
+    /*会遇到“大数越界情况下的求余问题” */
+
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var cuttingRope = function(n) {
+        let product = 1;
+        if (n == 2) return 1;
+        if (n == 3) return 2;
+        if (n == 4) return 4;
+        while (n > 4) {//当 一段绳子的长度n > 4的时候，优先分成较多的长度为3的分段
+            product = product * 3 % (1e9+7);
+            n = n - 3;
+        }
+        //当一段绳子的长度n <= 4 的时候，它最长的分段长度就是n
+        return (product * n) % (1e9+7) ;
+    };
+    //运行结果：运行时间击败27.47%(92ms)，内存消耗击败63.27%(37.7mb)
+
+</script>
+</body>
+</html>

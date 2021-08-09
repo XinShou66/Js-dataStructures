@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0146-LRU缓存机制</title>
+</head>
+<body>
+<script>
+
+    /*方法1：利用双向链表*/
+
+    /********************** ES5写法 **************************/
+    /**
+     * @param {number} capacity
+     */
+    //链表结点：存 key 和 对应的数据值
+    var ListNode = function(key, value) {
+        this.key = key;
+        this.value = value;
+        this.prev = null;
+        this.next = null;
+    }
+    var LRUCache = function(capacity) {
+        this.capacity = capacity; // 缓存的总容量
+        this.hash = {}; // 哈希表
+        this.count = 0; // 缓存数目
+        //虚拟头尾节点，不存数据，只是为了让真实头尾节点的操作，和其他节点一致，方便快速访问头尾节点
+        this.tempHead = new ListNode(); // 虚拟头结点
+        this.tempTail = new ListNode(); // 虚拟尾节点
+        // 初始还没有添加真实节点，要将虚拟头尾节点联结在一起
+        this.tempHead.next = this.tempTail;
+        this.tempTail.prev = this.tempHead;
+
+    };
+
+    /**
+     * @param {number} key
+     * @return {number}
+     */
+    LRUCache.prototype.get = function(key) {
+        let node = this.hash[key];// 从哈希表中，获取对应的节点
+        if (node == null) { // 如果节点不存在，返回-1
+            return -1;
+        }
+        this.moveToHead(node); // 被读取了，有操作，该节点移动到链表头部
+        return node.value; // 返回出节点值
+    };
+
+    /**
+     * @param {number} key
+     * @param {number} value
+     * @return {void}
+     */
+    LRUCache.prototype.put = function(key, value) {
+        let node = this.hash[key]; // 获取链表中的node
+        if (node == null) { // 不存在于链表，是新数据
+            if (this.count == this.capacity) {// 容量已满
+                this.removeLRUItem();  // 删除最远一次使用的数据
+            }
+            let newNode = new ListNode(key, value);
+            this.hash[key] = newNode; // 存入哈希表
+            this.addToHead(newNode); // 将节点添加到链表头部(保持较新的操作都在链表前边)
+            this.count++;
+        } else { // 已经存在于链表，老数据
+            node.value = value; // 更新value
+            this.moveToHead(node)  // 将节点移到链表头部
+
+        }
+    };
+
+    LRUCache.prototype.moveToHead = function(node) {//移动到链表头部
+        //1.从原链表中删除该节点
+        this.removeFromList(node);
+        //2.将该节点添加到链表头部
+        this.addToHead(node);
+    }
+
+    LRUCache.prototype.removeFromList = function(node) {// 从链表中删除节点
+        let tempPrev = node.prev; // 暂存它的前驱节点
+        let tempTail = node.next; // 暂存它的后继节点
+        tempPrev.next = tempTail;  // 前驱节点的next指向后继节点
+        tempTail.prev = tempPrev; // 后继节点的prev指向前驱节点
+    }
+
+    LRUCache.prototype.addToHead = function(node) {// 添加到链表的头部
+        node.prev = this.tempHead; // node的prev指针，指向虚拟头结点
+        node.next = this.tempHead.next; // node的next指针，指向原来的真实头结点
+        this.tempHead.next.prev = node; // 原来的真实头结点的prev，指向node
+        this.tempHead.next = node; // 虚拟头结点的next，指向node
+    }
+
+    LRUCache.prototype.removeLRUItem = function() {//// 删除最远一次使用的节点
+        let tail = this.popTail(); // 将它从链表尾部删除,并保存该节点
+        delete this.hash[tail.key]  // 哈希表中也将它删除
+        this.count--; // 缓存数目-1
+    }
+
+    LRUCache.prototype.popTail = function() {// 删除链表尾节点
+        let tail = this.tempTail.prev; // 通过虚拟尾节点找到它
+        this.removeFromList(tail) // 删除该真实尾节点
+        return tail; // 返回被删除的节点
+    }
+    /**
+     * Your LRUCache object will be instantiated and called as such:
+     * var obj = new LRUCache(capacity)
+     * var param_1 = obj.get(key)
+     * obj.put(key,value)
+     */
+    //运行结果：运行时间击败5.10%(872ms)，内存消耗击败5.01%(94.7mb)
+
+    /******************************* ES6写法 *******************************/
+
+    class ListNode {
+        constructor(key, value) {
+            this.key = key
+            this.value = value
+            this.next = null
+            this.prev = null
+        }
+    }
+
+    class LRUCache {
+        constructor(capacity) {
+            this.capacity = capacity
+            this.hash = {}
+            this.count = 0
+            this.dummyHead = new ListNode()
+            this.dummyTail = new ListNode()
+            this.dummyHead.next = this.dummyTail
+            this.dummyTail.prev = this.dummyHead
+        }
+
+        get(key) {
+            let node = this.hash[key]
+            if (node == null) return -1
+            this.moveToHead(node)
+            return node.value
+        }
+
+        put(key, value) {
+            let node = this.hash[key]
+            if (node == null) {
+                if (this.count == this.capacity) {
+                    this.removeLRUItem()
+                }
+                let newNode = new ListNode(key, value)
+                this.hash[key] = newNode
+                this.addToHead(newNode)
+                this.count++
+            } else {
+                node.value = value
+                this.moveToHead(node)
+            }
+        }
+
+        moveToHead(node) {
+            this.removeFromList(node)
+            this.addToHead(node)
+        }
+
+        removeFromList(node) {
+            let temp1 = node.prev
+            let temp2 = node.next
+            temp1.next = temp2
+            temp2.prev = temp1
+        }
+
+        addToHead(node) {
+            node.prev = this.dummyHead
+            node.next = this.dummyHead.next
+            this.dummyHead.next.prev = node
+            this.dummyHead.next = node
+        }
+
+        removeLRUItem() {
+            let tail = this.popTail()
+            delete this.hash[tail.key]
+            this.count--
+        }
+
+        popTail() {
+            let tail = this.dummyTail.prev
+            this.removeFromList(tail)
+            return tail
+        }
+    }
+
+    //运行结果：运行时间击败7.01%(772ms)，内存消耗击败5.01%(93.8mb)
+
+
+
+    /* 方法2：不用双向链表，利用库函数----效率较低 */
+    /**
+     * @param {number} capacity
+     */
+    var LRUCache = function(capacity) {
+        //总体思路，操作过的都往后放
+        this.items = new Map();
+        this.capacity = capacity;
+    };
+
+    LRUCache.prototype.get = function(key) {
+        let val = this.items.get(key);
+        if (val !== undefined) {
+            this.items.delete(key); // 因为被用过一次，原有位置删除
+            this.items.set(key, val); // 放入最下面表示最新使用
+            return val;
+        } else {
+            return -1;
+        }
+
+    };
+
+    LRUCache.prototype.put = function(key, value) {
+        if (this.items.has(key)) { // 如果有，删除
+            this.items.delete(key)
+        }  else {
+            if (this.items.size == this.capacity) {
+                // 这里有个知识点
+                // map的entries方法，还有keys方法(可以看mdn))，会返回一个迭代器
+                // 迭代器调用next也是顺序返回，所以返回第一个的值就是最老的，找到并删除即可
+                //next()方法返回的迭代器对象有两个属性{done: false, value:''}
+
+                this.items.delete(this.items.keys().next().value)
+                //{ value: 2, done: false }
+                //this.items.delete(this.items.entries().next().value[0])
+                //{ value: [ 2, 2 ], done: false }
+            }
+        }
+        this.items.set(key, value); // 放到最下面表示最新使用
+    };
+
+    //运行结果：运行时间击败5.37%(788ms)，内存消耗击败6.65%(90.8mb)
+
+</script>
+</body>
+</html>

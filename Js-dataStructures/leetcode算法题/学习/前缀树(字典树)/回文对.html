@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>回文对</title>
+</head>
+<body>
+<script>
+    /*给定一组 互不相同 的单词， 找出所有 不同 的索引对 (i, j)，
+    使得列表中的两个单词， words[i] + words[j] ，可拼接成回文串。*/
+
+    /*************************** 方法1：哈希表 ********************************/
+
+
+    //判断是不是回文串的方法
+    var isPalindrome = function(str) {
+            let left = 0;
+            let right = str.length - 1;
+            while (left < right) {
+                if (str[left] != str[right]) {
+                    return false;
+                }
+                left++;
+                right--;
+            }
+            return true;
+        }
+
+    /**
+     * @param {string[]} words
+     * @return {number[][]}
+     */
+    var palindromePairs = function(words) {
+        //用来存翻转字符串的哈希表
+        const reverseMap = new Map();
+        for (let i = 0; i < words.length; i++) {
+            //将数组中的每一个单词翻转后放进哈希表中，将在数组中的下标也一起放入
+            const reverseStr = words[i].split('').reverse().join('');
+            reverseMap.set(reverseStr, i);
+        }
+
+        const res = [];
+        //为了能快速找出翻转词，我们提前将单词都翻转一遍，存入哈希表，还有它对应的索引
+        for (let i = 0; i < words.length; i++) {
+            let curWord = words[i];
+
+            //1.如果当前元素是回文串(且不为空串)，且哈希表中又空串可以与之拼接成回文串
+            if (isPalindrome(curWord) && reverseMap.has('') && curWord !== '') {
+                //将其下标与可以与之组成回文串的元素的下标放进返回数组
+                res.push([reverseMap.get(''), i]);
+                //后边如果在哈希表中找到与自己相同的元素a,则说明a在未翻转之前，也就是原数组中存在与自己可以拼接成回文串的字符串
+            }
+
+            //2.如果当前元素不是回文串
+            for (let j = 0; j < curWord.length; j++) {
+                //2.1 将每个单词划分为两部分
+                const left = curWord.substring(0, j);
+                const right = curWord.substring(j);
+
+                //先看看左边部分是不是回文，如果是，则期望右边部分找到翻转词。
+                if (isPalindrome(left) && reverseMap.has(right) && reverseMap.get(right) !== i) {
+                    res.push([reverseMap.get(right), i]);
+                }
+
+                //再看看右边部分是不是回文，如果是，则期望左边部分找到翻转词。
+                if (isPalindrome(right) && reverseMap.has(left) && reverseMap.get(left) !== i) {
+                    res.push([i, reverseMap.get(left)]);
+                }
+            }
+        }
+
+        return res;
+
+    };
+
+    //运行结果：运行时间击败90.74%(212ms)，内存消耗击败92.59%(47.8mb)
+
+    /*************************** 方法2：字典树（较长，不采用？？？） ********************************/
+
+
+</script>
+</body>
+</html>

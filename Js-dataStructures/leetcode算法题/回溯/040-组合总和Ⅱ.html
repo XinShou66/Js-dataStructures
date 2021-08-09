@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组合总和Ⅱ</title>
+</head>
+<body>
+<script>
+    /*给定一个数组 candidates 和一个目标数 target ，
+    找出 candidates 中所有可以使数字和为 target 的组合。
+    candidates 中的每个数字在每个组合中只能使用一次。
+    说明：
+    所有数字（包括目标数）都是正整数。
+    解集不能包含重复的组合。*/
+
+    /*方法1：*/
+
+    /**
+     * @param {number[]} candidates
+     * @param {number} target
+     * @return {number[][]}
+     */
+    var combinationSum2 = function(candidates, target) {
+        let res = [];
+        candidates.sort();//先排序便于后边做处理
+        backTrack([], 0, 0);
+        return res;
+
+        function backTrack(arr, index, sum) {
+
+            if (sum >= target) {
+                if (sum == target) {
+                    res.push([...arr].sort());
+                }
+                //此处是超过与等于都要结束递归，所以要写在push外边
+                return;  // 结束当前递归
+            }
+            const set = new Set();
+            for (let i = index; i < candidates.length; i++) {
+                if (!set.has(candidates[i])) {
+                    set.add(candidates[i]);
+                    arr.push(candidates[i]);
+                    backTrack(arr, i + 1, sum + candidates[i]); // 基于此继续选择，传i，下一次就不会选到i左边的数
+                    arr.pop(); // 撤销选择，回到选择candidates[i]之前的状态，继续尝试选同层右边的数
+                }
+
+            }
+
+        }
+    };
+    //运行结果：运行时间击败82.19%(92ms)，内存消耗击败34.09%(41mb)
+
+
+    /*方法2：*/
+
+    /**
+     * @param {number[]} candidates
+     * @param {number} target
+     * @return {number[][]}
+     */
+    var combinationSum2 = function(candidates, target) {
+        let res = [];
+        candidates.sort();//先排序便于后边做处理
+        backTrack([], 0, 0);
+        return res;
+
+        function backTrack(arr, index, sum) {
+
+            if (sum >= target) {
+                if (sum == target) {
+                    res.push([...arr].sort());
+                }
+                //此处是超过与等于都要结束递归，所以要写在push外边
+                return;  // 结束当前递归
+            }
+
+            for (let i = index; i < candidates.length; i++) {
+                if (i - 1 >= index && candidates[i - 1] == candidates[i]) { // 当前选项和左邻选项一样，跳过
+                    continue;
+                }
+
+                arr.push(candidates[i]);
+                backTrack(arr, i + 1, sum + candidates[i]); // 基于此继续选择，传i，下一次就不会选到i左边的数
+                arr.pop(); // 撤销选择，回到选择candidates[i]之前的状态，继续尝试选同层右边的数
+
+
+            }
+
+        }
+    };
+
+    //运行结果：运行时间击败56.51%(100ms)，内存消耗击败45.66%(39.8mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从上到下打印二叉树</title>
+</head>
+<body>
+<script>
+    /*从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val) {
+     *     this.val = val;
+     *     this.left = this.right = null;
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {number[]}
+     */
+    var levelOrder = function(root) {
+        if (!root) return []; // 如果根节点为空，直接返回
+        let queue = [root];
+        let res = [];
+        while (queue.length) {
+            let node = queue.shift();//队列的唯一（第一个）元素
+            res.push(node.val);
+            if (node.left) {
+                queue.push(node.left);
+            }
+            if (node.right) {
+                queue.push(node.right);
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败92.22%(80ms)，内存消耗击败79.42%(39.4mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>左旋字符串</title>
+</head>
+<body>
+<script>
+    /*字符串的左旋转操作是把字符串前面的若干个字符转移到字符串的尾部。
+    请定义一个函数实现字符串左旋转操作的功能。比如，输入字符串"abcdefg"和数字2，
+    该函数将返回左旋转两位得到的结果"cdefgab"。*/
+
+    /**
+     * @param {string} s
+     * @param {number} n
+     * @return {string}
+     */
+    var reverseLeftWords = function(s, n) {
+        let arr = s.split('');  //将字符串转为数组
+        let res1 = arr.splice(0,n); //将前n位数字从数组中删除，并将删除的数作为返回值返回
+        //将删除前n位数的数组转为字符串与删除的前n位数组转成的字符串拼接
+        return arr.join('') + res1.join('');
+    };
+
+    //运行结果：运行时间击败80.26%(80ms)，内存消耗击败27.22%(39.7mb)
+
+
+
+    /**********************************如果没有规定不能用切片函数，也可使用substring方法**************************/
+
+    /**
+     * @param {string} s
+     * @param {number} n
+     * @return {string}
+     */
+    var reverseLeftWords = function(s, n) {
+        return s.substring(n) + s.substring(0,n)
+    };
+
+    //运行结果：运行时间击败46.01%(88ms)，内存消耗击败66.78%(39.2mb)
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>快乐数</title>
+</head>
+<body>
+<script>
+    /*编写一个算法来判断一个数 n 是不是快乐数。
+    「快乐数」定义为：
+        对于一个正整数，每一次将该数替换为它每个位置上的数字的平方和。
+        然后重复这个过程直到这个数变为 1，也可能是 无限循环 但始终变不到 1。
+        如果 可以变为  1，那么这个数就是快乐数。
+        如果 n 是快乐数就返回 true ；不是，则返回 false 。*/
+
+    /***************** 方法1：用哈希集合检测循环 *****************/
+
+    /**
+     * @param {number} n
+     * @return {boolean}
+     */
+    var isHappy = function(n) {
+        if (n === 1) return true;
+        let set = new Set();
+        while (!set.has(n)) {
+            set.add(n);
+            n = getNext(n);
+            if (n === 1) return true;
+        }
+        //如果它在哈希集合中，这意味着我们处于一个循环中，因此应该返回 false
+        return false;
+
+        //获取下一个数字的方法
+        function getNext(n) {
+            let newNum = 0;
+            while (n > 0) {//将数字的每一位的平方相加
+                let indexStr = n % 10;
+                n = parseInt(n / 10);
+                newNum += indexStr * indexStr;
+            }
+            return newNum;
+        }
+    };
+
+    //运行结果：运行时间击败14.38%(116ms)，内存消耗击败44.19%(39.7mb)
+
+
+
+
+    /***************** 方法2：快慢指针法 *****************/
+
+
+    /**
+     * @param {number} n
+     * @return {boolean}
+     */
+    var isHappy = function(n) {
+        //慢指针一次走一步，快指针一次走两步
+        let slow = n;
+        let fast = getNext(n);
+        //当快慢指针相遇，代表形参环路，该数不是快乐数。
+        //指针移动过程中，找到了 1，则当前数是一个快乐数
+        while (fast != 1 && slow != fast) {
+            slow = getNext(slow);
+            fast = getNext(getNext(fast));
+        }
+        return fast == 1;
+
+
+
+        //获取下一个数字的方法
+        function getNext(n) {
+            let newNum = 0;
+            while (n > 0) {//将数字的每一位的平方相加
+                let indexStr = n % 10;
+                n = parseInt(n / 10);
+                newNum += indexStr * indexStr;
+            }
+            return newNum;
+        }
+
+    };
+
+    //运行结果：运行时间击败41.59%(100ms)，内存消耗击败96.57%(39.1mb)
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>两数求和</title>
+</head>
+<body>
+<script>
+
+    /*
+    * 给定一个整数数组 nums 和一个整数目标值 target，
+    * 请你在该数组中找出 和为目标值 的那 两个 整数，并返回它们的数组下标。
+    * 你可以假设每种输入只会对应一个答案。但是，数组中同一个元素不能使用两遍。
+    * 你可以按任意顺序返回答案。
+    * */
+
+    /*方法1：哈希映射*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} target
+     * @return {number[]}
+     */
+    var twoSum = function(nums, target) {
+        let map = new Map();
+        for (let i = 0; i < nums.length; i++) {
+            //对于每一个 x，我们首先查询哈希表中是否存在 target - x，然后将 x 插入到哈希表中，即可保证不会让 x 和自己匹配。
+            if (map.has(target - nums[i])) {
+                return [i,map.get(target - nums[i])]
+            } else {
+                map.set(nums[i], i);
+            }
+        }
+        return [];
+
+    };
+
+    //运行结果：运行时间击败64.78%(84ms)，内存消耗击败78.07%(37.9mb)
+
+
+
+    /*方法2： 暴力法*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} target
+     * @return {number[]}
+     */
+    var twoSum = function(nums, target) {
+        var arr = [];
+        for (var i = 0;i < nums.length;i++) {
+            for (var j = i + 1; j < nums.length; j++) {
+                if ((nums[i]+ nums[j]) == target) {
+                    arr.push(i,j)
+                    return arr;
+                }
+            }
+        }
+    };
+
+
+    //运行结果：运行时间击败62.45%(88ms)，内存消耗击败84.88%(37.9mb)
+
+</script>
+</body>
+</html>

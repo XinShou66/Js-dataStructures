@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>四数相加</title>
+</head>
+<body>
+<script>
+   /*给定四个包含整数的数组列表 A , B , C , D ,计算有多少个元组 (i, j, k, l) ，使得 A[i] + B[j] + C[k] + D[l] = 0。
+    为了使问题简单化，所有的 A, B, C, D 具有相同的长度 N，且 0 ≤ N ≤ 500 。
+    所有整数的范围在 -228 到 228 - 1 之间，最终结果不会超过 231 - 1 。。*/
+
+
+   /**
+    * @param {number[]} nums1
+    * @param {number[]} nums2
+    * @param {number[]} nums3
+    * @param {number[]} nums4
+    * @return {number}
+    */
+   var fourSumCount = function(nums1, nums2, nums3, nums4) {
+       let map = new Map();
+       let count = 0;
+       for (let i = 0; i < nums1.length; i++) {
+           for (let j = 0; j < nums2.length; j++) {
+               let sum = nums1[i] + nums2[j];
+               if (!map.has(sum)) {
+                   map.set(sum, 1);
+               } else {
+                   map.set(sum, map.get(sum) + 1);
+               }
+           }
+       }
+       //根据加法结合律 a + b + c + d = (a + b) + (c + d)， 题目要求等于0， 也就是说 a + b = -( c + d )
+       //拆成两次for循环，提高效率
+       for (let i = 0; i < nums3.length; i++) {
+           for (let j = 0; j < nums4.length; j++) {
+               let sum = nums3[i] + nums4[j];
+               if (map.has(-sum)) {
+                   count += map.get(-sum);
+               }
+           }
+       }
+       return count;
+   };
+
+   //运行结果：运行时间击败39.73%(252ms)，内存消耗击败95.20%(42mb)
+
+</script>
+</body>
+</html>

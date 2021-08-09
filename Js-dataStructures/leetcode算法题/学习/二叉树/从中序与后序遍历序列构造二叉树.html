@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>从中序与后序遍历序列构造二叉树</title>
+</head>
+<body>
+<script>
+    /*从中序与后序遍历序列构造二叉树*/
+    /*注意:
+            你可以假设树中没有重复的元素。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {number[]} inorder
+     * @param {number[]} postorder
+     * @return {TreeNode}
+     */
+    var buildTree = function(inorder, postorder) {
+        const map = new Map();
+        // 将节点值在inorder数组中的下标提前存入map
+        for (let i = 0; i < inorder.length; i++) {
+            map.set(inorder[i], i);
+        }
+        // 根据iStart到iEnd的inorder数组，和从pStart到pEnd的postorder数组构建当前子树
+        function tempFun (inorderStart, inorderEnd, postorderStart, postorderEnd) {
+            if (postorderStart > postorderEnd || inorderStart > inorderEnd) {// 指针交错了，返回null节点
+                return null;
+            }
+            //后序遍历数组最后一个节点为根节点
+            /****与 从前序与中序遍历序列构造二叉树 区别是此处根节点不同， ****/
+            let rootVal = postorder[postorderEnd];  // 获取当前要构建的根节点的值
+            let mid = map.get(rootVal); // 获取到它在inorder数组中的位置,左边元素为左子树，右边元素为右子节点
+            let leftNodeNum = mid - inorderStart;   // 获取左子树的节点个数
+
+            let root = new TreeNode(rootVal);  // 创建节点
+            /****与 从前序与中序遍历序列构造二叉树 区别是此处区间不同 ****/
+            root.left = tempFun(inorderStart, mid - 1, postorderStart, postorderStart + leftNodeNum - 1);// 递归构建左子树
+            root.right = tempFun(mid + 1, inorderEnd, postorderStart + leftNodeNum, postorderEnd - 1);// 递归构建右子树
+
+            return root; // 返回当前构建好的子树
+        }
+
+        return tempFun(0, inorder.length - 1, 0, postorder.length - 1);// 递归的入口
+    };
+
+    //运行结果：运行时间击败57.52%(120ms)，内存消耗击败98.56%(40.6mb)
+
+</script>
+</body>
+</html>

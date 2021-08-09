@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>寻找重复的子树</title>
+</head>
+<body>
+<script>
+    /*给定一棵二叉树，返回所有重复的子树。对于同一类的重复子树，你只需要返回其中任意一棵的根结点即可。
+        两棵树重复是指它们具有相同的结构以及相同的结点值。*/
+
+    /************************* 解题思路   ************************/
+    /*使用深度优先搜索，其中递归函数返回当前子树的序列化结果。把每个节点开始的子树序列化结果保存在 mapmap 中，然后判断是否存在重复的子树。*/
+
+    /**
+     * Definition for a binary tree node.
+     * function TreeNode(val, left, right) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.left = (left===undefined ? null : left)
+     *     this.right = (right===undefined ? null : right)
+     * }
+     */
+    /**
+     * @param {TreeNode} root
+     * @return {TreeNode[]}
+     */
+    var findDuplicateSubtrees = function(root) {
+        // 思路: 需要先序列化二叉树, 让它变成字符串, 然后才可以进行比较是否重复, 用map来保存字符串
+        // 1. 初始化
+        let map = new Map();
+        let res = [];
+        // 3. 先执行序列化, 然后保存在map中, 当map里取到值为2, 说明出现了重复字符串, 保存到结果集里
+        function preOrder(node) {
+            if (node == null) return '';
+            let str = node.val + ',' + preOrder(node.left) + ',' + preOrder(node.right);
+            if (!map.has(str)) {
+                map.set(str, 1);
+            } else {
+                map.set(str, map.get(str) + 1);
+            }
+            if (map.get(str) === 2) {
+                res.push(node);
+            }
+            return str;
+        }
+
+        // 2. 进入递归返回结果
+        preOrder(root);
+
+        return res;
+    };
+
+    //运行结果：运行时间击败99.42%(116ms)，内存消耗击败92.20%(44.4mb)
+
+</script>
+</body>
+</html>

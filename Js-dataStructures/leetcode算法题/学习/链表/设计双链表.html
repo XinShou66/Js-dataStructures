@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设计双链表</title>
+</head>
+<body>
+<script>
+    /*设计链表*/
+
+    /*设计链表的实现。您可以选择使用单链表或双链表。
+   单链表中的节点应该具有两个属性：val 和 next。val 是当前节点的值，next 是指向下一个节点的指针/引用。
+   如果要使用双向链表，则还需要一个属性 prev 以指示链表中的上一个节点。假设链表中的所有节点都是 0-index 的。
+   在链表类中实现这些功能：
+       get(index)：获取链表中第 index 个节点的值。如果索引无效，则返回-1。
+       addAtHead(val)：在链表的第一个元素之前添加一个值为 val 的节点。插入后，新节点将成为链表的第一个节点。
+       addAtTail(val)：将值为 val 的节点追加到链表的最后一个元素。
+       addAtIndex(index,val)：在链表中的第 index 个节点之前添加值为 val  的节点。如果 index 等于链表的长度，
+                              则该节点将附加到链表的末尾。如果 index 大于链表长度，则不会插入节点。如果index小于0，则在头部插入节点。
+       deleteAtIndex(index)：如果索引 index 有效，则删除链表中的第 index 个节点。*/
+
+
+    /**
+     * Initialize your data structure here.
+     */
+    var MyLinkedList = function() {
+        //链表的属性
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+    };
+    //封装内部节点类
+    var Node = function (val) {
+        this.val = val;
+        this.prev = null;
+        this.next = null;
+    }
+
+    /**
+     * Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+     * @param {number} index
+     * @return {number}
+     */
+    MyLinkedList.prototype.get = function(index) {
+        //1.越界判断
+        if (index < 0 || index >= this.length) {
+            return -1;
+        }
+        //使用二分法提升查找性能
+        let cur = null;
+        let temp = 0;
+        if ((this.length/2) > index) {
+            cur = this.head;
+            while (temp++ < index) {
+                cur = cur.next;
+            }
+        } else {
+            cur = this.tail;
+            temp = this.length - 1;
+            while (temp-- > index) {
+                cur = cur.prev;
+            }
+        }
+        //此时temp == index
+        return cur.val;
+
+    };
+
+    /**
+     * Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtHead = function(val) {
+        //1.创建新节点
+        let newNode = new Node(val);
+        //2.添加新节点(要考虑到链表为空的情况)
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            this.head.prev = newNode;
+            newNode.next = this.head;
+            this.head = newNode;
+        }
+        //3.长度+1
+        this.length++;
+    };
+
+    /**
+     * Append a node of value val to the last element of the linked list.
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtTail = function(val) {
+        //1.创建新节点
+        let newNode = new Node(val);
+        //2.添加新节点(要考虑到链表为空的情况)
+        if (this.head) {
+            newNode.prev = this.tail;
+            this.tail.next = newNode;
+
+        } else {
+            this.head = newNode;
+        }
+        this.tail = newNode;
+        //3.长度+1
+        this.length++;
+    };
+
+    /**
+     * Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+     * @param {number} index
+     * @param {number} val
+     * @return {void}
+     */
+    MyLinkedList.prototype.addAtIndex = function(index, val) {
+        //1.越界判断
+        if (index < 0 || index > this.length) {
+            return false;
+        }
+        //2.创建新节点
+        let newNode = new Node(val);
+        //3.插入新节点
+        //3.1原链表为空
+        if (!this.length) {
+            this.head = newNode;
+            this.tail = newNode;
+        }
+        //3.2不为空
+        if (index == 0) {//3.2.1插入头节点
+            this.head.prev = newNode;
+            newNode.next = this.head;
+            this.head = newNode;
+        } else if (index == this.length){//3.2.2插入尾节点
+            this.tail.next = newNode;
+            newNode.prev = this.tail;
+            this.tail = newNode;
+        } else {//3.2.3插入中间
+            var cur = this.head;
+            var temp = 0;
+            while (temp++ < index) {
+                cur = cur.next;
+            }
+            newNode.next = cur;
+            newNode.prev = cur.prev;
+            cur.prev.next = newNode;
+            //注意必须最后才修改cur.prev的指向，不然就无法通过cur.prev获取需要
+            cur.prev = newNode;
+        }
+        this.length++;
+        return true;
+    };
+
+    /**
+     * Delete the index-th node in the linked list, if the index is valid.
+     * @param {number} index
+     * @return {void}
+     */
+    MyLinkedList.prototype.deleteAtIndex = function(index) {
+        //1.越界判断(要有等于0)
+        if (index >=0 && index < this.length) {
+            let cur = this.head;//如果要返回删除的节点的值时，定义在最上面方便以下各种情况返回cur.val
+            //2.链表只有一个节点
+            if (this.length == 1) {
+                this.head = null;
+                this.tail = null;
+            } else {//3.链表不只有一个节点
+                if (index == 0) {//3.1删除头节点
+                    this.head.next.prev = null;
+                    this.head = this.head.next;
+                } else if(index == this.length - 1) {//3.2删除尾节点
+                    cur = this.tail;
+                    this.tail.prev.next = null;
+                    this.tail = this.tail.prev;
+                } else {//3.2删除中间节点
+                    let temp = 0;
+                    while (temp++ < index) {
+                        cur = cur.next
+                    }
+                    cur.prev.next = cur.next;
+                    cur.next.prev = cur.prev;
+
+
+                }
+            }
+            this.length--;
+            console.log(cur.val) ;
+        }
+    };
+
+    /**
+     * Your MyLinkedList object will be instantiated and called as such:
+     * var obj = new MyLinkedList()
+     * var param_1 = obj.get(index)
+     * obj.addAtHead(val)
+     * obj.addAtTail(val)
+     * obj.addAtIndex(index,val)
+     * obj.deleteAtIndex(index)
+     */
+
+    //运行结果：运行时间击败7.17%(216ms)，内存消耗击败5.20%(46.9mb)
+
+</script>
+</body>
+</html>

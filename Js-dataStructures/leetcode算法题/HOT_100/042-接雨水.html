@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>042-接雨水</title>
+</head>
+<body>
+<script>
+   /*给定 n 个非负整数表示每个宽度为 1 的柱子的高度图，计算按此排列的柱子，下雨之后能接多少雨水。*/
+
+   /**************** 方法2：动态规划 *******************/
+
+   /**
+    * @param {number[]} height
+    * @return {number}
+    */
+   var trap = function(height) {
+       //对于下标i,下雨后能达到的最大高度等于下标i两边最大高度中的最小值
+       //下标i处能接的雨水量等于下标i处水能到达的最大高度减去height[i]
+       const n = height.length;
+       if (n == 0) {
+           return 0;
+       }
+
+       const leftMax = new Array(n).fill(0);
+       leftMax[0] = height[0];
+       for (let i = 1; i < n; i++) {
+           leftMax[i] = Math.max(leftMax[i-1], height[i]);
+       }
+
+       const rightMax = new Array(n).fill(0);
+       rightMax[n-1] = height[n-1];
+       for (let i = n - 2; i >= 0; i--) {
+           rightMax[i] = Math.max(rightMax[i+1], height[i]);
+       }
+
+       let res = 0;
+       for (let i = 0; i < n; i++) {
+           res += Math.min(leftMax[i], rightMax[i]) - height[i];
+       }
+
+       return res;
+   };
+
+   //运行结果：运行时间击败25.18%(112ms)，内存消耗击败32.86%(39.7mb)
+
+
+   /*************** 方法2：双指针 ***************/
+   /*
+   * 对动态规划的优化，不维护 leftMax 和 rightMax 数组，而是使用指针来维护
+   *
+   * */
+   /**
+    * @param {number[]} height
+    * @return {number}
+    */
+   var trap = function(height) {
+       let res = 0;
+       let left = 0, right = height.length - 1;
+       let leftMax = 0, rightMax = 0;
+       while (left < right) {
+           leftMax = Math.max(leftMax, height[left]);
+           rightMax = Math.max(rightMax, height[right]);
+           if (height[left] < height[right]) {//必有leftMax < rightMax,下标left处能接的雨水量等于leftMax-height[left]
+               res += leftMax - height[left];
+               left++;
+           } else {//必有leftMax >= rightMax,下标right处能接的雨水量等于rightMax-height[right]
+               res += rightMax -height[right];
+               right--;
+           }
+       }
+       return res;
+   };
+
+   //运行结果：运行时间击败73.30%(92ms)，内存消耗击败55.13%(39.5mb)
+
+</script>
+</body>
+</html>

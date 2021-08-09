@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>寻找比目标字母大的最小字母</title>
+</head>
+<body>
+<script>
+    /*给你一个排序后的字符列表 letters ，列表中只包含小写英文字母。
+    另给出一个目标字母 target，请你寻找在这一有序列表里比目标字母大的最小字母。
+
+    在比较时，字母是依序循环出现的。举个例子：
+    如果目标字母 target = 'z' 并且字符列表为 letters = ['a', 'b']，则答案返回 'a'*/
+
+
+    /**
+     * @param {character[]} letters
+     * @param {character} target
+     * @return {character}
+     */
+    var nextGreatestLetter = function(letters, target) {
+        //查找条件需要访问元素的直接右邻居,所以用模板Ⅱ
+        let left = 0, right = letters.length;
+        while (left < right) {
+            let mid = parseInt((left + right) / 2);
+            if (letters[mid] <= target) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+        //因为：在比较时，字母是依序循环出现的
+        //所以：如果插入位置是最后一个位置 letters.length，则返回 letters[0]。这就是模运算的运用。
+        return letters[left % letters.length];
+    };
+
+    //运行结果：运行时间击败18.06%(104ms)，内存消耗击败15.28%(40mb)
+
+</script>
+</body>
+</html>

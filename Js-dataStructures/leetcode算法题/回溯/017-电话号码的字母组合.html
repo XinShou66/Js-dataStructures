@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>017-电话号码的字母组合</title>
+</head>
+<body>
+<script>
+    /*给定一个仅包含数字 2-9 的字符串，返回所有它能表示的字母组合。答案可以按 任意顺序 返回。
+    给出数字到字母的映射如下（与电话按键相同）。注意 1 不对应任何字母。*/
+
+    /*提示：
+        0 <= digits.length <= 4
+        digits[i] 是范围 ['2', '9'] 的一个数字。*/
+
+    /**
+     * @param {string} digits
+     * @return {string[]}
+     */
+    var letterCombinations = function(digits) {
+        let res = [];
+        if (digits.length == 0) return res;
+
+        const phoneMap = new Map(); //创建哈希表储存数字到字母的映射
+        phoneMap.set('2', 'abc');
+        phoneMap.set('3', 'def');
+        phoneMap.set('4', 'ghi');
+        phoneMap.set('5', 'jkl');
+        phoneMap.set('6', 'mno');
+        phoneMap.set('7', 'pqrs');
+        phoneMap.set('8', 'tuv');
+        phoneMap.set('9', 'wxyz');
+
+        let str = '';   //当前生成的单个字母组合字符串
+        backTrack(0, str);  //从数字字符串的下标0开始
+        return res;
+
+        function backTrack(index, str) {
+            if (index > digits.length - 1) {//如果下标超出数字字符串的长度（越界），则说明当前的字母组合已经组合完毕，放入结果数组
+                res.push(str);
+                return;
+            } else {
+                let digit = digits.charAt(index);
+                let letters = phoneMap.get(digit);//获取当前位数字对应的字母映射字符串
+                for (letter of letters) {//循环将字母映射字符串的每一位拼接到字母组合字符串上，并与数字字符串的下一位进行运算
+                    backTrack(index + 1, str + letter);
+                }
+            }
+        }
+    };
+
+    //运行结果：运行时间击败74.13%(80ms)，内存消耗击败34.89%(37.9mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bfs完全平方数</title>
+</head>
+<body>
+<script>
+    /*给定正整数 n，找到若干个完全平方数（比如 1, 4, 9, 16, ...）使得它们的和等于 n。你需要让组成和的完全平方数的个数最少。
+    给你一个整数 n ，返回和为 n 的完全平方数的 最少数量 。完全平方数 是一个整数，其值等于另一个整数的平方；换句话说，其值等于一个整数自乘的积。
+    例如，1、4、9 和 16 都是完全平方数，而 3 和 11 不是。*/
+
+    /*********************************************方法1：bfs*********************************************/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numSquares = function(n) {
+        let queue = [];//存储等待处理的所有节点
+        let visited = new Set();//存储所有使用过的节点
+        let step = 0;//所需的步骤数
+        //初始化
+        queue.push(0);
+        visited.add(0);
+        //BFS
+        while (queue.length) {
+            step++;
+            //每一层的节点数量
+            let length = queue.length;//注意一定要在循环开始前重新获取
+            //遍历当前层的所有节点
+            for (let i = 0; i < length; i++) {
+                //节点的值
+                let cur = queue.shift();
+                //访问当前节点的子节点，类比于二叉树的左右子节点
+                for (let j = 1; j <= n; j++) {
+                    //子节点的值
+                    //tmp始终是完全平方数的和
+                    let tmp = cur + j * j;
+                    //
+                    if (tmp == n) {
+                        return step;
+                    }
+                    //如果大于n，终止内层循环
+                    if (tmp > n) {
+                        break;
+                    }
+                    if (!visited.has(tmp)) {
+                        queue.push(tmp);
+                        visited.add(tmp);
+                    }
+                }
+            }
+        }
+        return step;
+    };
+
+    //运行结果：运行时间击败81.58%(172ms)，内存消耗击败10.39%(45.1mb)
+
+
+    /*********************************************方法2：动态规划*********************************************/
+
+    /*首先初始化长度为 n+1 的数组 dp，每个位置都为 0
+        如果 n 为 0，则结果为 0
+        对数组进行遍历，下标为 i，每次都将当前数字先更新为最大的结果，即 dp[i]=i，比如 i=4，最坏结果为 4=1+1+1+1 即为 4 个数字
+        动态转移方程为：dp[i] = MIN(dp[i], dp[i - j * j] + 1)，i 表示当前数字，j*j 表示平方数*/
+    /**
+     * @param {number} n
+     * @return {number}
+     */
+    var numSquares = function(n) {
+        const dp = new Array(n+1).fill(0);
+        //数组的每个元素为从1~n分解的最少的完全平方数的个数
+        for (let i = 1; i <= n; i++) { //
+            dp[i] = i; //最坏的情况就是每次+1（分解的所以完全平方数都是1）
+            for (let j = 1; i - j * j >= 0; j++) {
+                //分解的数是 j*j 和 i-j*j，j依次增大，依次更新dp[i]
+                //所以i分解的完全平方数的个数为最坏情况与i-j*j分解的完全平方数的个数+1(j*j)
+                dp[i] = Math.min(dp[i], dp[i-j*j] + 1);
+            }
+        }
+
+        return dp[n];
+    };
+
+    //运行结果：运行时间击败41.83%(256ms)，内存消耗击败76.18%(41.4mb)
+
+</script>
+</body>
+</html>

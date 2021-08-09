@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>023-合并K个升序链表</title>
+</head>
+<body>
+<script>
+    /*给你一个链表数组，每个链表都已经按升序排列。
+    请你将所有链表合并到一个升序链表中，返回合并后的链表。*/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode[]} lists
+     * @return {ListNode}
+     */
+    var mergeKLists = function(lists) {
+        //reduce[Right](参数1, 参数2) 参数1：用于执行每个数组元素的函数，参数2：传递给函数的初始值
+        return lists.reduce((prev, cur) => {
+            while (cur) {//将所有的链表节点都放进数组
+                prev.push(cur);
+                cur = cur.next;
+            }
+            return prev;
+        }, []).sort((a, b) => {//按照每个节点的值将数组升序排列
+            return a.val - b.val;
+        }).reduceRight((prev, cur) => {//从右向左处理
+            cur.next = prev; //第一次会将数组最后一个元素指向null
+            return cur;
+        }, null)
+    };
+
+    //运行结果：运行时间击败99.79%(92ms)，内存消耗击败77.48%(42.5mb)
+
+
+    /*方法2：递归、顺序合并*/
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val, next) {
+     *     this.val = (val===undefined ? 0 : val)
+     *     this.next = (next===undefined ? null : next)
+     * }
+     */
+    /**
+     * @param {ListNode[]} lists
+     * @return {ListNode}
+     */
+    var mergeKLists = function(lists) {
+        if (!lists.length) return null;
+        //递归出口，即数组中只剩一条链表时，合并完毕
+        if (lists.length === 1) return lists[0];
+
+        //两个一组的合并，合并完了更新数组（每次合并前两个）
+        lists.splice(0, 2, mergeTwoLists(lists[0], lists[1]));
+
+        //递归
+        return mergeKLists(lists);
+    };
+
+
+    //合并两个链表
+    var mergeTwoLists = function(l1, l2) {
+        const preHead = new ListNode(-1);//创建一个新的辅助链表头
+        let prev = preHead;
+        while (l1 && l2) {
+            if (l1.val <= l2.val) {
+                prev.next = l1;
+                l1 = l1.next;
+            } else {
+                prev.next = l2;
+                l2 = l2.next;
+            }
+            prev = prev.next;
+        }
+        // 合并后 l1 和 l2 最多只有一个还未被合并完，我们直接将链表末尾指向未合并完的链表即可
+        prev.next = l1 == null ? l2 : l1;
+        return preHead.next;
+    }
+    
+
+    //运行结果：运行时间击败316%(30.69ms)，内存消耗击败27.38%(43.6mb)
+
+
+
+</script>
+</body>
+</html>

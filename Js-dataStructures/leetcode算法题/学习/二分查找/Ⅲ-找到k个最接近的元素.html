@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ⅲ-找到k个最接近的元素</title>
+</head>
+<body>
+<script>
+    /*给定一个排序好的数组 arr ，两个整数 k 和 x ，从数组中找到最靠近 x（两数之差最小）的 k 个数。返回的结果必须要是按升序排好的。
+    整数 a 比整数 b 更接近 x 需要满足：
+        |a - x| < |b - x| 或者
+        |a - x| == |b - x| 且 a < b  */
+
+    /**
+     * @param {number[]} arr
+     * @param {number} k
+     * @param {number} x
+     * @return {number[]}
+     */
+    var findClosestElements = function(arr, k, x) {
+        // 思路: 二分查找, left + k < right
+        let left = 0;
+        let right = arr.length - 1;
+        // 因为是最小之差, 所以需要的是将边界尽量往左缩,
+        while (left + k <= right) {
+            if (x - arr[left] <= arr[right] - x) {
+                right--;
+            } else {
+                left++;
+            }
+        }
+        return arr.slice(left, left + k);
+    };
+
+    //运行结果：运行时间击败75.31%(120ms)，内存消耗击败85.80%(43.6mb)
+
+</script>
+</body>
+</html>

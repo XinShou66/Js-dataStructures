@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>连续子数组的最大和</title>
+</head>
+<body>
+<script>
+
+    /*输入一个整型数组，数组中的一个或连续多个整数组成一个子数组。
+    求所有子数组的和的最大值。
+    要求时间复杂度为O(n)。*/
+
+    /*动态规划	时间复杂度O(N)	空间复杂度O(1)*/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var maxSubArray = function(nums) {
+        let length = nums.length;
+        if (length === 1) return nums[0];
+        let maxSum = nums[0]; //存放最大和
+        let sum = nums[0]; //存放走过路径的和
+        for (let i = 1; i < length; i++) {
+            // sum 计算规则为如果 上次 sum > 0 让上次sum 参与计算，否则丢弃
+            sum = sum > 0 ? sum + nums[i] : nums[i];
+            // 在上次的最大值和计算好的 sum 中取最大值
+            maxSum = maxSum > sum ? maxSum : sum;
+        }
+        return maxSum;
+    };
+
+    //运行结果：运行时间击败26.59%(104ms)，内存消耗击败53.19%(41.5mb)
+
+</script>
+</body>
+</html>

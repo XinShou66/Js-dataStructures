@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>前k个高频词</title>
+</head>
+<body>
+<script>
+    /*给你一个整数数组 nums 和一个整数 k ，请你返回其中出现频率前 k 高的元素。你可以按 任意顺序 返回答案。*/
+    /*提示：
+        1 <= nums.length <= 105
+        k 的取值范围是 [1, 数组中不相同的元素的个数]
+        题目数据保证答案唯一，换句话说，数组中前 k 个高频元素的集合是唯一的
+      进阶：你所设计算法的时间复杂度 必须 优于 O(n log n) ，其中 n 是数组大小。*/
+
+    /**
+     * @param {number[]} nums
+     * @param {number} k
+     * @return {number[]}
+     */
+    var topKFrequent = function(nums, k) {
+        let map = new Map();
+        let arr = [];
+        for (let i = 0; i < nums.length; i++) {
+            if (map.has(nums[i])) {
+                map.set(nums[i], {num: nums[i], count: map.get(nums[i]).count + 1});
+            } else {
+                map.set(nums[i], {num: nums[i], count:1});
+            }
+        }
+        map.forEach((value, key) => {
+            arr.push(value)
+        })
+        arr.sort((a, b) => {//按出现次数从大到小排序
+            return b.count - a.count;
+        })
+        res = arr.slice(0, k);
+        return res.map((item) => item.num);
+    };
+
+    //运行结果：运行时间击败29.96%(116ms)，内存消耗击败32.78%(41.5mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>最小栈</title>
+</head>
+<body>
+<script>
+    /*设计一个支持 push ，pop ，top 操作，并能在常数时间内检索到最小元素的栈。
+        push(x) —— 将元素 x 推入栈中。
+        pop() —— 删除栈顶的元素。
+        top() —— 获取栈顶元素。
+        getMin() —— 检索栈中的最小元素。*/
+
+    /**
+     * initialize your data structure here.
+     */
+    var MinStack = function() {
+        this.items = [];
+        this.minItems = [];
+    };
+
+    /**
+     * @param {number} val
+     * @return {void}
+     */
+    MinStack.prototype.push = function(val) {
+        this.items.push(val);
+        if (this.minItems[0] >= val) {//注意此处要有等于
+            this.minItems.unshift(val);
+        } else {
+            this.minItems.push(val);
+        }
+    };
+
+    /**
+     * @return {void}
+     */
+    MinStack.prototype.pop = function() {
+        let popValue = this.items.pop();
+        if (this.minItems[0] == popValue) {
+            this.minItems.shift();
+        }
+    };
+
+    /**
+     * @return {number}
+     */
+    MinStack.prototype.top = function() {
+        return this.items[this.items.length - 1];
+    };
+
+    /**
+     * @return {number}
+     */
+    MinStack.prototype.getMin = function() {
+        return this.minItems[0];
+    };
+
+    /**
+     * Your MinStack object will be instantiated and called as such:
+     * var obj = new MinStack()
+     * obj.push(val)
+     * obj.pop()
+     * var param_3 = obj.top()
+     * var param_4 = obj.getMin()
+     */
+
+    //运行结果：运行时间击败74.58%(132ms)，内存消耗击败51.25%(45.1mb)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>相交链表</title>
+</head>
+<body>
+<script>
+    /*编写一个程序，找到两个单链表相交的起始节点。*/
+    /**************************** 与剑指offer第52题，两个链表的第一个公共节点，解法相同 ****************************/
+
+    /**
+     * Definition for singly-linked list.
+     * function ListNode(val) {
+     *     this.val = val;
+     *     this.next = null;
+     * }
+     */
+
+    /**
+     * @param {ListNode} headA
+     * @param {ListNode} headB
+     * @return {ListNode}
+     */
+    var getIntersectionNode = function(headA, headB) {
+        //我们使用两个指针 nodeA，nodeB 分别指向两个链表 headA，headB 的头结点
+        let nodeA = headA;
+        let nodeB = headB;
+        while (nodeA != nodeB) {
+            //然后同时分别逐结点遍历，当 nodeA 到达链表 headA 的末尾时，重新定位到链表 headB 的头结点
+            //当 nodeB 到达链表 headB 的末尾时，重新定位到链表 headA 的头结点。
+            //当它们相遇时(相等时)，所指向的结点就是第一个公共结点。
+            nodeA = nodeA != null ? nodeA.next : headB;
+            nodeB = nodeB != null ? nodeB.next : headA;
+        }
+        return nodeA;
+    };
+
+    //运行结果：运行时间击败43.01%(120ms)，内存消耗击败44.4%(80.53mb)
+
+</script>
+</body>
+</html>

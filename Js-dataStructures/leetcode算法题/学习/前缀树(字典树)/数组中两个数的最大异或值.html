@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组中两个数的最大异或值</title>
+</head>
+<body>
+<script>
+    /*给定一个非空数组，数组中元素为 a0, a1, a2, … , an-1，其中 0 ≤ ai < 231 。
+    找到 ai 和aj 最大的异或 (XOR) 运算结果，其中0 ≤ i,  j < n 。
+    你能在O(n)的时间解决这个问题吗？*/
+
+    /************ 方法1：字典树 *************/
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findMaximumXOR = function(nums) {
+        if (nums.length <= 1) return 0;
+        let res = 0;
+        let trie = new Trie();
+        for (let i = 0; i < nums.length; i++) {
+            //将元素添加进字典树
+            trie.insert(nums[i]);
+            //在字典树中查找与之异或运算后的最大值
+            res = Math.max(res, trie.maxXor(nums[i]))
+        }
+        return res;
+    };
+
+
+    //创建节点函数
+    var Trie = function() {
+        this.children = {};
+    }
+
+    //插入字典树的方法
+    Trie.prototype.insert = function(num) {
+        let node = this.children;
+        for (let i = 30; i >= 0; i--) {
+            //从高到底拿到十进制数转换成二进制数后每一位的值（是0还是1）;
+            let bit = num >> i & 1;
+            //将每一位数字放入字典树
+            if (!node[bit]) {
+                node[bit] = {};
+            }
+            node = node[bit];
+        }
+    }
+
+    //找出字典树中与指定元素异或运算后最大值的方法
+    Trie.prototype.maxXor = function(num) {
+        let node = this.children;
+        let res = 0;
+        for (let i = 30; i >= 0; i--) {
+            //从高到底拿到十进制数转换成二进制数后每一位的值（是0还是1）;
+            let bit = num >> i & 1;
+            //为了最大化异或值，需要在每一步找到当前比特值的互补比特值
+            if (node[1-bit]) {//如果当前比特值存在互补比特值，访问具有互补比特值的孩子节点，并在异或值最右侧附加一个 1
+                res += 1 << i;
+                node = node[1-bit];
+            } else {//如果不存在，直接访问具有当前比特值的孩子节点。
+                node = node[bit];
+            }
+        }
+        return res;
+    }
+
+    //运行结果：运行时间击败73.91%(388ms)，内存消耗击败13.04%(70.1mb)
+
+
+
+    /************ 方法2：暴力遍历 可能不符合题意的O(n) *************/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var findMaximumXOR = function(nums) {
+        let res = 0;
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = i + 1; j < nums.length; j++) {
+                res = Math.max(res, nums[i] ^ nums[j]);
+            }
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败39.13%(488ms)，内存消耗击败60.87%(40.3mb)
+</script>
+</body>
+</html>

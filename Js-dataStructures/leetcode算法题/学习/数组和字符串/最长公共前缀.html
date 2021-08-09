@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>最长公共前缀</title>
+</head>
+<body>
+<script>
+    /*编写一个函数来查找字符串数组中的最长公共前缀。
+        如果不存在公共前缀，返回空字符串 ""。*/
+
+    /**
+     * @param {string[]} strs
+     * @return {string}
+     */
+    /*初始化前缀为第一个字符串
+    再和新字符串比较得出新的前缀
+    循环下去便得出最长公共前缀*/
+
+    var longestCommonPrefix = function(strs) {
+        if (!strs.length) return '';
+        let prefix = strs[0];
+        for (let i = 0; i < strs.length - 1; i++) {
+            //挨个将最新的公共字符串前缀与字符串进行比较
+            prefix = findPrefix(prefix,strs[i+1])
+        }
+        return prefix;
+
+    };
+    var findPrefix = function(m,n) {//接收两个字符串进行比较，确定两个字符串的公共前缀
+        let prefix = '',i = 0;
+        while(m[i] === n[i]) {
+            if (m[i] === undefined) break;
+            prefix += m[i++];
+        }
+        return prefix;
+
+    }
+
+    //运行结果：运行时间击败62.61%(92ms)，内存消耗击败17.47%(40.3mb)
+
+</script>
+</body>
+</html>

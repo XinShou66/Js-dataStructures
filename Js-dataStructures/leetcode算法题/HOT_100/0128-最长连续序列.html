@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0128-最长连续序列</title>
+</head>
+<body>
+<script>
+
+    /*方法1：排序，暴力*/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var longestConsecutive = function(nums) {
+        if (!nums.length) {
+            return 0;
+        }
+        nums.sort((a, b) => a - b);
+        const n = nums.length;
+        let res = 1;
+        let count = 1
+        for (let i = 0; i < n - 1; i++) {
+            if (nums[i] == nums[i+1] - 1) {
+                count++;
+            } else if(nums[i] == nums[i+1]) {
+                continue
+            } else {
+                count = 1;
+            }
+            res = Math.max(res, count);
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败40.62%(132ms)，内存消耗击败37.77%(42.4mb)
+
+    /********************* 方法2：set(速度比排序暴力还慢？？？？？) *********************/
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var longestConsecutive = function(nums) {
+        const set = new Set(nums); // set存放数组的全部数字
+        let max = 0;
+        for (let i = 0; i < nums.length; i++) {
+            if (!set.has(nums[i] - 1)) {// nums[i]没有左邻居，是序列的起点
+                let cur = nums[i];
+                let count = 1;
+                while (set.has(cur + 1)) {// cur有右邻居cur+1
+                    cur++;
+                    count++;
+                }
+                max = Math.max(max, count); // cur不再有右邻居，检查count是否最大
+            }
+        }
+        return max;
+    };
+    //运行结果：运行时间击败12.14%(556ms)，内存消耗击败26.33%(45mb)
+
+    /********************* 方法3：map(速度与内存也一般？？？？？) *********************/
+
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    var longestConsecutive = function(nums) {
+        const map = new Map(); //存放数组元素及其所在连续序列的长度
+        let max = 0;
+        for (let num of nums) {
+            if (!map.has(num)) {// 重复的数字不考察，跳过
+                let leftL = map.get(num - 1) || 0; // 获取左邻居所在连续序列的长度
+                let rightL = map.get(num + 1) || 0; // 获取右邻居所在连续序列的长度
+                let curL = leftL + 1 + rightL; // 新序列的长度
+                map.set(num, curL); // 将该元素及其所在连续序列长度存入 map
+                max = Math.max(max, curL); // 和 max 比较，试图刷新max
+                map.set(num - leftL, curL) // 更新新序列的左端数字的value
+                map.set(num + rightL, curL)// 更新新序列的右端数字的value
+            }
+        }
+        return max;
+    };
+</script>
+</body>
+</html>

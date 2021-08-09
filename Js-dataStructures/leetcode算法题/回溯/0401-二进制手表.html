@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0401-二进制手表.html</title>
+</head>
+<body>
+<script>
+    /*二进制手表顶部有 4 个 LED 代表 小时（0-11），底部的 6 个 LED 代表 分钟（0-59）。每个 LED 代表一个 0 或 1，最低位在右侧。
+    例如，下面的二进制手表读取 "3:25" 。
+        给你一个整数 turnedOn ，表示当前亮着的 LED 的数量，返回二进制手表可以表示的所有可能时间。你可以 按任意顺序 返回答案。
+        小时不会以零开头：
+
+    例如，"01:00" 是无效的时间，正确的写法应该是 "1:00" 。
+        分钟必须由两位数组成，可能会以零开头：
+        例如，"10:2" 是无效的时间，正确的写法应该是 "10:02" 。*/
+
+    /**********************
+     *
+     * 题目可以转化为在 [1, 2, 4, 8, 1, 2, 4, 8, 16, 32] 中任意取 n 个数值, 有几种组合? 组合问题可以使用回溯法求解得到。
+      前置条件: 确认如果一个 led 灯都没亮着是否为 "0:00"。
+      小时位数范围为 [0, 11], 分钟范围为 [0, 59]。
+     *
+     * ********************/
+
+    /**
+     * @param {number} turnedOn
+     * @return {string[]}
+     */
+    var readBinaryWatch = function(turnedOn) {
+        const nums = [1, 2, 4, 8, 1, 2, 4, 8, 16, 32]
+        const res = [];
+        backTrack([0, 0], 0);
+        return res;
+
+        function backTrack(temp, index) {
+            //temp数组为时间，第一个元素为小时，第二个元素为分钟
+            if (temp[0] >= 12 || temp[1] >= 60) {
+                return;
+            }
+            if (turnedOn === 0) {
+                //小时小时不会以零开头，分钟必须由两位数组成，可能会以零开头
+                res.push(`${temp[0]}:${helper(temp[1])}`);
+                return;
+            }
+
+            for (let i = index; i < nums.length; i++) {
+                //做选择
+                if (i <= 3) {//小时
+                    temp[0] = temp[0] + nums[i];
+                } else {//分钟
+                    temp[1] = temp[1] + nums[i];
+                }
+                turnedOn -= 1
+                backTrack(temp, i + 1);
+
+                //撤销选择
+                if (i <= 3) {//小时
+                    temp[0] = temp[0] - nums[i];
+                } else {//分钟
+                    temp[1] = temp[1] - nums[i];
+                }
+                turnedOn += 1
+            }
+        }
+
+        function helper(num) {
+            //分钟必须由两位数组成，可能会以零开头
+            return num < 10 ? `0${num}` : num;
+        }
+    };
+
+    //运行结果：运行时间击败81.11%(80ms)，内存消耗击败46.11%(38.2mb)
+
+</script>
+</body>
+</html>

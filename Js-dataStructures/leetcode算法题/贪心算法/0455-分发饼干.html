@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>0455-分发饼干</title>
+</head>
+<body>
+<script>
+    /*假设你是一位很棒的家长，想要给你的孩子们一些小饼干。但是，每个孩子最多只能给一块饼干。
+    对每个孩子 i，都有一个胃口值 g[i]，这是能让孩子们满足胃口的饼干的最小尺寸；并且每块饼干 j，
+    都有一个尺寸 s[j] 。如果 s[j] >= g[i]，我们可以将这个饼干 j 分配给孩子 i ，这个孩子会得到满足。
+    你的目标是尽可能满足越多数量的孩子，并输出这个最大数值。*/
+
+
+    /*************** 方法1：排序+贪心 ************/
+    /**
+     * @param {number[]} g
+     * @param {number[]} s
+     * @return {number}
+     */
+    var findContentChildren = function(g, s) {
+        g.sort((a,b) => a - b);
+        s.sort((a,b) => a - b);
+        let count = 0;
+        for (let i = 0, j = 0; i < g.length && j < s.length; i++, j++) {
+            while (j < s.length && g[i] > s[j]) {
+                j++;
+            }
+            if (j < s.length) {
+                count++;
+            }
+        }
+        return count;
+    };
+
+    //运行结果：运行时间击败98.46%(104ms)，内存消耗击败49.74%(40.3mb)
+
+
+
+
+    /*************** 方法2：排序+挨个比较 速度较慢************/
+    /**
+     * @param {number[]} g
+     * @param {number[]} s
+     * @return {number}
+     */
+    var findContentChildren = function(g, s) {
+        g.sort((a,b) => a - b);
+        s.sort((a,b) => a - b);
+        let count = 0,set = new Set();
+        for (let i = 0; i < g.length; i++) {
+            for (let j = 0; j < s.length; j++) {
+                if (g[i] <= s[j]) {
+                    if (!set.has(j)) {
+                        count++;
+                        set.add(j);
+                        break;
+                    }
+
+
+                }
+            }
+        }
+        return count;
+    };
+    //运行结果：运行时间击败5.12%(436ms)，内存消耗击败7.75%(41.5mb)
+
+</script>
+</body>
+</html>

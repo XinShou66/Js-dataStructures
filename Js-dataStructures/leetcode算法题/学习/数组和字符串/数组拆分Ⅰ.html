@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组拆分Ⅰ</title>
+</head>
+<body>
+<script>
+    /*给定长度为 2n 的整数数组 nums ，你的任务是将这些数分成 n 对,
+     例如 (a1, b1), (a2, b2), ..., (an, bn) ，使得从 1 到 n 的 min(ai, bi) 总和最大。
+     返回该 最大总和 。*/
+
+
+
+    /**
+     * @param {number[]} nums
+     * @return {number}
+     */
+    /*通过题目我们可以发现，对于每个数对，只有两者中较小的值可以计入最后结果，
+    而较大的值则会“浪费”。因此，为了得到和的最大值，我们必须尽可能地去保留数组中的大数。
+    而最大的值一定会被“浪费”，第二大的值可以保留。所以为了得到正确结果我们可以让数组有序，
+    之后每次间隔取值即可，具体算法如下：*/
+    //排序然后偶数下标元素之和
+
+    var arrayPairSum = function(nums) {
+        nums.sort((a,b) => a - b);
+        let res = 0;
+        for (let i = 0; i < nums.length; i += 2) {
+            res += nums[i];
+        }
+        return res;
+    };
+
+    //运行结果：运行时间击败93.67%(132ms)，内存消耗击败64.07%(43.3mb)
+
+
+</script>
+</body>
+</html>
